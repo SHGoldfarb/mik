@@ -35,14 +35,16 @@ const generateTransactions = number => {
   const transactions = [];
   let total = 0;
   for (let i = 0; i < number; i += 1) {
-    if (total > QUANTITY && randBool()) {
+    const tooMuch = 1 / Math.random() < Math.abs(total);
+    const doExpense = randBool();
+    if ((tooMuch && total > 0) || doExpense) {
       // Expense
-      const amount = randomAmount(total);
+      const amount = randomAmount(QUANTITY);
       transactions.push(expense(amount, i));
       total -= amount;
     } else {
       // Income
-      const amount = randomAmount(QUANTITY * 3);
+      const amount = randomAmount(QUANTITY);
       transactions.push(income(amount, i));
       total += amount;
     }
