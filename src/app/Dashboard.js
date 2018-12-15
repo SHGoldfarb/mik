@@ -1,8 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
+import Transaction from "./dashboard/Transaction";
 
 const Dashboard = ({ transactions }) => (
-  <div>{JSON.stringify(transactions)}</div>
+  <div>
+    {transactions.map(transaction => (
+      <Transaction transaction={transaction} key={transaction.date} />
+    ))}
+  </div>
 );
 
 Dashboard.propTypes = {

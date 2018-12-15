@@ -1,4 +1,5 @@
-const QUANTITY = 1000;
+const QUANTITY = 10000;
+const MULTIPLIER = 100;
 const CASH = "CASH";
 const EXPENSE = "EXPENSE";
 const INCOME = "INCOME";
@@ -19,7 +20,7 @@ const expense = (amount, date) => ({
   type: EXPENSE
 });
 
-const randomAmount = (max = 1, min = 0, multiplier = 10) => {
+const randomAmount = (max = 1, min = 0, multiplier = MULTIPLIER) => {
   if (max === 0) {
     return max;
   }
