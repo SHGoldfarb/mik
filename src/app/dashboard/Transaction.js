@@ -1,9 +1,16 @@
 import React from "react";
 import { transactionPropType } from "../../utils/propTypes";
 
-const Transaction = ({ transaction }) => (
-  <div>{JSON.stringify(transaction)}</div>
-);
+const Transaction = ({ transaction }) => {
+  const { amount, date, account, type } = transaction;
+  return (
+    <div>
+      <div>{}</div>
+      <div>{amount}</div>
+      <div>{date}</div>
+    </div>
+  );
+};
 
 Transaction.propTypes = {
   transaction: transactionPropType.isRequired

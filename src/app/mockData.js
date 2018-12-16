@@ -1,8 +1,10 @@
-const QUANTITY = 10000;
-const MULTIPLIER = 100;
-const CASH = "CASH";
-const EXPENSE = "EXPENSE";
-const INCOME = "INCOME";
+import {
+  QUANTITY,
+  MULTIPLIER,
+  CASH,
+  EXPENSE,
+  INCOME
+} from "../utils/constants";
 
 const randBool = () => Math.random() < 0.5;
 
