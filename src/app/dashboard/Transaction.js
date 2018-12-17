@@ -7,7 +7,7 @@ const Transaction = ({ transaction }) => {
     <div>
       <div>{comment}</div>
       <div>{amount}</div>
-      <div>{date}</div>
+      <div>{new Date(date).toLocaleString()}</div>
     </div>
   );
 };
