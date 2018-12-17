@@ -1,0 +1,23 @@
+.commentContainer {
+    color: green;
+}
+
+.expense {
+    color: red;
+}
+
+.income {
+    color: blue;
+}
+
+.transactionContainer {
+    width: 100%
+}
+
+.commentAmountContainer {
+    display: flex;
+}
+
+.amountContainer {
+    margin-left: auto;
+}
