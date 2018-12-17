@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import Transaction from "./dashboard/Transaction";
+import { selectAllTransactions } from "../redux/selectors";
 
 const Dashboard = ({ transactions }) => (
   <div>
@@ -21,4 +23,8 @@ Dashboard.propTypes = {
   ).isRequired
 };
 
-export default Dashboard;
+const mapStateToProps = state => ({
+  transactions: selectAllTransactions(state)
+});
+
+export default connect(mapStateToProps)(Dashboard);
