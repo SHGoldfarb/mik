@@ -8,19 +8,16 @@ import {
 
 const randBool = () => Math.random() < 0.5;
 
-const income = (amount, date) => ({
+const createTransaction = (amount, date, type) => ({
   amount,
   date,
   account: CASH,
-  type: INCOME
+  type
 });
 
-const expense = (amount, date) => ({
-  amount,
-  date,
-  account: CASH,
-  type: EXPENSE
-});
+const income = (amount, date) => createTransaction(amount, date, INCOME);
+
+const expense = (amount, date) => createTransaction(amount, date, EXPENSE);
 
 const randomAmount = (max = 1, min = 0, multiplier = MULTIPLIER) => {
   if (max === 0) {
