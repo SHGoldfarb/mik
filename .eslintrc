@@ -6,6 +6,7 @@
     ],
     "rules": {
         "react/jsx-filename-extension": "off",
-        "import/no-extraneous-dependencies": "off"
+        "import/no-extraneous-dependencies": "off",
+        "jsx-a11y/label-has-for": "off"
     }
 }

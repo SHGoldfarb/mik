@@ -6,7 +6,7 @@ import mockData from "./app/mockData";
 import "./App.css";
 import { setTransactions } from "./redux/actions";
 
-const initialTransactionsNumber = 500;
+const initialTransactionsNumber = 5;
 
 class App extends Component {
   constructor(props) {
