@@ -1,13 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import { rootReducer } from "./redux/reducers";
+import { KEY } from "./utils/constants";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
-const store = createStore(rootReducer);
+const persister = store => next => action => {
+  const result = next(action);
+  const state = store.getState();
+  localStorage.setItem(KEY, JSON.stringify(state));
+  return result;
+};
+
+const store = createStore(rootReducer, applyMiddleware(persister));
 
 ReactDOM.render(
   <Provider store={store}>

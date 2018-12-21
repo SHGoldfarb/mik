@@ -1,4 +1,8 @@
-import { SET_TRANSACTIONS, ADD_TRANSACTION } from "./actionTypes";
+import {
+  SET_TRANSACTIONS,
+  ADD_TRANSACTION,
+  DELETE_TRANSACTION
+} from "./actionTypes";
 import { CASH } from "../utils/constants";
 
 const createTransaction = ({ amount, type, comment = "comment" }) => ({
@@ -35,7 +39,11 @@ export const rootReducer = (state = {}, action) => {
         transactions: { ...state.transactions, [newId]: newTransaction }
       };
     }
-
+    case DELETE_TRANSACTION: {
+      const { transactions } = state;
+      delete transactions[payload];
+      return { ...state, transactions };
+    }
     default:
       return state;
   }

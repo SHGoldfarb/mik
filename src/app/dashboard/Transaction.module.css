@@ -21,3 +21,11 @@
 .amountContainer {
     margin-left: auto;
 }
+
+.deleteButton {
+    margin-left: auto;
+}
+
+.dateContainer {
+    display: flex;
+}

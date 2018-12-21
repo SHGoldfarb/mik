@@ -3,7 +3,9 @@ import { INCOME, EXPENSE } from "../utils/constants";
 
 export const selectAllTransactions = state =>
   state.transactions
-    ? Object.values(state.transactions).sort((a, b) => -a.date + b.date)
+    ? Object.keys(state.transactions)
+        .map(key => ({ ...state.transactions[key], id: key }))
+        .sort((a, b) => -a.date + b.date)
     : [];
 
 export const selectTotal = createSelector(

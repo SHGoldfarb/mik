@@ -5,13 +5,25 @@ import Dashboard from "./app/Dashboard";
 import mockData from "./app/mockData";
 import "./App.css";
 import { setTransactions } from "./redux/actions";
+import { KEY } from "./utils/constants";
 
 const initialTransactionsNumber = 5;
+
+const setInitialTransactions = setTransactionsAction => {
+  const storeData = localStorage.getItem(KEY);
+  console.log(storeData);
+  if (storeData === null) {
+    setTransactionsAction(mockData(initialTransactionsNumber));
+  } else {
+    const { transactions } = JSON.parse(storeData);
+    setTransactionsAction(transactions);
+  }
+};
 
 class App extends Component {
   constructor(props) {
     super(props);
-    props.setTransactions(mockData(initialTransactionsNumber));
+    setInitialTransactions(props.setTransactions);
   }
 
   render() {

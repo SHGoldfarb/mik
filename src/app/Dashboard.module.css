@@ -9,3 +9,7 @@
     overflow-y: auto;
     flex-grow: 1;
 }
+
+.total {
+    font-size: 30px;
+}

@@ -1,4 +1,8 @@
-import { SET_TRANSACTIONS, ADD_TRANSACTION } from "./actionTypes";
+import {
+  SET_TRANSACTIONS,
+  ADD_TRANSACTION,
+  DELETE_TRANSACTION
+} from "./actionTypes";
 
 // eslint-disable-next-line import/prefer-default-export
 export const setTransactions = transactions => ({
@@ -9,4 +13,9 @@ export const setTransactions = transactions => ({
 export const addTransaction = transaction => ({
   type: ADD_TRANSACTION,
   payload: transaction
+});
+
+export const deleteTransaction = id => ({
+  type: DELETE_TRANSACTION,
+  payload: id
 });

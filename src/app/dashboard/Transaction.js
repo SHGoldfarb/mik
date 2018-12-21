@@ -1,15 +1,30 @@
 import React from "react";
-import style from "./Transaction.module.css";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { deleteTransaction } from "../../redux/actions";
 import { transactionPropType } from "../../utils/propTypes";
 import { classnames, toMoneyString } from "../../utils";
 import { EXPENSE } from "../../utils/constants";
+import { Button } from "../../components";
+import style from "./Transaction.module.css";
 
-const Transaction = ({ transaction }) => {
+const Transaction = ({ transaction, onDeleteTransaction }) => {
   const { amount, date, type, comment } = transaction;
   const dateStr = new Date(date).toLocaleString();
+  const handleDeleteTransaction = () => {
+    onDeleteTransaction(transaction.id);
+  };
   return (
     <div className={style.transactionContainer}>
-      <div className={style.dateContainer}>{dateStr}</div>
+      <div className={style.dateContainer}>
+        {dateStr}
+        <Button
+          onClick={handleDeleteTransaction}
+          className={style.deleteButton}
+        >
+          Eliminar
+        </Button>
+      </div>
       <div className={style.commentAmountContainer}>
         <div className={style.commentContainer}>{comment}</div>
         <div
@@ -26,7 +41,15 @@ const Transaction = ({ transaction }) => {
 };
 
 Transaction.propTypes = {
-  transaction: transactionPropType.isRequired
+  transaction: transactionPropType.isRequired,
+  onDeleteTransaction: PropTypes.func.isRequired
 };
 
-export default Transaction;
+const mapDispatchToProps = dispatch => ({
+  onDeleteTransaction: id => dispatch(deleteTransaction(id))
+});
+
+export default connect(
+  () => ({}),
+  mapDispatchToProps
+)(Transaction);
