@@ -11,7 +11,6 @@ const initialTransactionsNumber = 5;
 
 const setInitialTransactions = setTransactionsAction => {
   const storeData = localStorage.getItem(KEY);
-  console.log(storeData);
   if (storeData === null) {
     setTransactionsAction(mockData(initialTransactionsNumber));
   } else {
