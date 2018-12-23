@@ -12,26 +12,35 @@ const FORM = "FORM";
 class Dashboard extends Component {
   state = { showing: TRANSACTIONS };
 
+  handleShowingChange = showing => this.setState({ showing });
+
   render = () => {
     const { transactions, total } = this.props;
     const { showing } = this.state;
+    const { handleShowingChange } = this;
     return (
       <div className={style.dashboard}>
-        {showing === TRANSACTIONS ? (
-          <Fragment>
-            <div className={style.total}>{toMoneyString(total)}</div>
-            <div className={style.transactionsContainer}>
-              {transactions.map(transaction => (
-                <Transaction transaction={transaction} key={transaction.date} />
-              ))}
-            </div>
-          </Fragment>
-        ) : (
-          <Form />
-        )}
+        <div className={style.content}>
+          {showing === TRANSACTIONS ? (
+            <Fragment>
+              <div className={style.total}>{toMoneyString(total)}</div>
+              <div className={style.transactionsContainer}>
+                {transactions.map(transaction => (
+                  <Transaction
+                    transaction={transaction}
+                    key={transaction.date}
+                  />
+                ))}
+              </div>
+            </Fragment>
+          ) : (
+            <Form showing={{ handleShowingChange, TRANSACTIONS, FORM }} />
+          )}
+        </div>
         <NavBar
           onShowForm={() => this.setState({ showing: FORM })}
           onShowTransactions={() => this.setState({ showing: TRANSACTIONS })}
+          className={style.navBar}
         />
       </div>
     );

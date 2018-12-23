@@ -13,3 +13,12 @@
 .total {
     font-size: 30px;
 }
+
+.content {
+    flex: 1 0 200px;
+}
+
+.navBar {
+    flex: 0 0 100px;
+    display: flex;
+}
