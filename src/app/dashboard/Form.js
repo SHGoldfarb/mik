@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { INCOME, EXPENSE } from "../../utils/constants";
 import { addTransaction } from "../../redux/actions";
 import style from "./Form.module.css";
+import { dictionary } from "../../config";
 
 const amountId = "AMOUNT";
 const typeId = "TYPE";
@@ -43,9 +44,14 @@ class Form extends Component {
             handleShowingChange(TRANSACTIONS);
           }}
         >
-          <label htmlFor={typeId}>
-            Type
-            <select id={typeId} onChange={this.handleTypeChange} value={type}>
+          <label className={style.label} htmlFor={typeId}>
+            {`${dictionary.transaction.type}:`}
+            <select
+              className={style.input}
+              id={typeId}
+              onChange={this.handleTypeChange}
+              value={type}
+            >
               {types.map(value => (
                 <option value={value} key={value}>
                   {value}
@@ -53,9 +59,10 @@ class Form extends Component {
               ))}
             </select>
           </label>
-          <label htmlFor={amountId}>
-            Amount
+          <label className={style.label} htmlFor={amountId}>
+            {`${dictionary.transaction.amount}:`}
             <input
+              className={style.input}
               type="number"
               id={amountId}
               onChange={this.handleAmountChange}
@@ -66,16 +73,17 @@ class Form extends Component {
             />
           </label>
 
-          <label htmlFor={commentId}>
-            Comment
+          <label className={style.label} htmlFor={commentId}>
+            {`${dictionary.transaction.comment}:`}
             <input
+              className={style.input}
               type="text"
               id={commentId}
               onChange={this.handleCommentChange}
               value={comment}
             />
           </label>
-          <input type="submit" value="Guardar" />
+          <input type="submit" value={dictionary.transaction.save} />
         </form>
       </div>
     );

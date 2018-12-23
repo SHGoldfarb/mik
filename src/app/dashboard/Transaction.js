@@ -7,6 +7,7 @@ import { classnames, toMoneyString } from "../../utils";
 import { EXPENSE } from "../../utils/constants";
 import { Button } from "../../components";
 import style from "./Transaction.module.css";
+import { dictionary } from "../../config";
 
 const Transaction = ({ transaction, onDeleteTransaction }) => {
   const { amount, date, type, comment } = transaction;
@@ -22,7 +23,7 @@ const Transaction = ({ transaction, onDeleteTransaction }) => {
           onClick={handleDeleteTransaction}
           className={style.deleteButton}
         >
-          Eliminar
+          {dictionary.delete}
         </Button>
       </div>
       <div className={style.commentAmountContainer}>

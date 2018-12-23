@@ -7,7 +7,7 @@ import { dictionary } from "../../config";
 const NavBar = ({ onShowTransactions, onShowForm, className }) => (
   <div className={className}>
     <Button className={style.button} onClick={onShowTransactions}>
-      {dictionary.dashboard}
+      {dictionary.transactions}
     </Button>
     <Button className={style.button} onClick={onShowForm}>
       {dictionary.form}

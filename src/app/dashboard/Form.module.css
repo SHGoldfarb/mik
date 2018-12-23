@@ -2,3 +2,12 @@
     display: flex;
     flex-direction: column;
 }
+
+.label {
+    display: flex;
+    padding: 2px 0px;
+}
+
+.input {
+    margin-left: auto;
+}
