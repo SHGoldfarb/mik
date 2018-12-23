@@ -11,7 +11,11 @@ const commentId = "COMMENT";
 const types = [EXPENSE, INCOME];
 
 class Form extends Component {
-  state = { amount: 0, type: EXPENSE, comment: "" };
+  state = { amount: "", type: EXPENSE, comment: "" };
+
+  componentDidMount() {
+    this.firstInput.focus();
+  }
 
   handleAmountChange = ev => this.setState({ amount: ev.target.value });
 
@@ -39,15 +43,6 @@ class Form extends Component {
             handleShowingChange(TRANSACTIONS);
           }}
         >
-          <label htmlFor={amountId}>
-            Amount
-            <input
-              type="number"
-              id={amountId}
-              onChange={this.handleAmountChange}
-              value={amount}
-            />
-          </label>
           <label htmlFor={typeId}>
             Type
             <select id={typeId} onChange={this.handleTypeChange} value={type}>
@@ -58,6 +53,19 @@ class Form extends Component {
               ))}
             </select>
           </label>
+          <label htmlFor={amountId}>
+            Amount
+            <input
+              type="number"
+              id={amountId}
+              onChange={this.handleAmountChange}
+              value={amount}
+              ref={element => {
+                this.firstInput = element;
+              }}
+            />
+          </label>
+
           <label htmlFor={commentId}>
             Comment
             <input
