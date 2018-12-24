@@ -19,6 +19,5 @@
 }
 
 .navBar {
-    flex: 0 0 100px;
-    display: flex;
+    flex: 0 0 50px;
 }

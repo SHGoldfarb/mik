@@ -1,0 +1,12 @@
+:root {
+    --color-red: red;
+    --color-blue: blue;
+    --color-black: black;
+    --color-white: white;
+    --color-green: green;
+
+    --color-expense: var(--color-red);
+    --color-income: var(--color-blue);
+    --color-neutral: var(--color-black);
+    --color-highlight: var(--color-green);
+}

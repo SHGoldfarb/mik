@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { Button } from "../../components";
 import { INCOME, EXPENSE } from "../../utils/constants";
 import { addTransaction } from "../../redux/actions";
 import style from "./Form.module.css";
@@ -31,10 +32,48 @@ class Form extends Component {
     } = this.props;
     const { amount, type, comment } = this.state;
     return (
-      <div>
-        <form
-          className={style.form}
-          onSubmit={ev => {
+      <div className={style.form}>
+        <label className={style.label} htmlFor={typeId}>
+          {`${dictionary.transaction.type}:`}
+          <select
+            className={style.input}
+            id={typeId}
+            onChange={this.handleTypeChange}
+            value={type}
+          >
+            {types.map(value => (
+              <option value={value} key={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className={style.label} htmlFor={amountId}>
+          {`${dictionary.transaction.amount}:`}
+          <input
+            className={style.input}
+            type="number"
+            id={amountId}
+            onChange={this.handleAmountChange}
+            value={amount}
+            ref={element => {
+              this.firstInput = element;
+            }}
+          />
+        </label>
+
+        <label className={style.label} htmlFor={commentId}>
+          {`${dictionary.transaction.comment}:`}
+          <input
+            className={style.input}
+            type="text"
+            id={commentId}
+            onChange={this.handleCommentChange}
+            value={comment}
+          />
+        </label>
+        <Button
+          onClick={ev => {
             ev.preventDefault();
             handleSaveTransaction({
               amount: parseInt(amount, 10),
@@ -44,47 +83,8 @@ class Form extends Component {
             handleShowingChange(TRANSACTIONS);
           }}
         >
-          <label className={style.label} htmlFor={typeId}>
-            {`${dictionary.transaction.type}:`}
-            <select
-              className={style.input}
-              id={typeId}
-              onChange={this.handleTypeChange}
-              value={type}
-            >
-              {types.map(value => (
-                <option value={value} key={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className={style.label} htmlFor={amountId}>
-            {`${dictionary.transaction.amount}:`}
-            <input
-              className={style.input}
-              type="number"
-              id={amountId}
-              onChange={this.handleAmountChange}
-              value={amount}
-              ref={element => {
-                this.firstInput = element;
-              }}
-            />
-          </label>
-
-          <label className={style.label} htmlFor={commentId}>
-            {`${dictionary.transaction.comment}:`}
-            <input
-              className={style.input}
-              type="text"
-              id={commentId}
-              onChange={this.handleCommentChange}
-              value={comment}
-            />
-          </label>
-          <input type="submit" value={dictionary.transaction.save} />
-        </form>
+          {dictionary.transaction.save}
+        </Button>
       </div>
     );
   };

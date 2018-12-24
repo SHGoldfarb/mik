@@ -3,9 +3,10 @@ import PropTypes from "prop-types";
 import style from "./NavBar.module.css";
 import { Button } from "../../components";
 import { dictionary } from "../../config";
+import { classnames } from "../../utils";
 
 const NavBar = ({ onShowTransactions, onShowForm, className }) => (
-  <div className={className}>
+  <div className={classnames(style.navBar, className)}>
     <Button className={style.button} onClick={onShowTransactions}>
       {dictionary.transactions}
     </Button>
