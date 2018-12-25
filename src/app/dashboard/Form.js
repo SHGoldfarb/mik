@@ -15,6 +15,8 @@ const types = [EXPENSE, INCOME];
 class Form extends Component {
   state = { amount: "", type: EXPENSE, comment: "" };
 
+  formRef = React.createRef();
+
   componentDidMount() {
     this.firstInput.focus();
   }
@@ -31,60 +33,60 @@ class Form extends Component {
       showing: { handleShowingChange, TRANSACTIONS }
     } = this.props;
     const { amount, type, comment } = this.state;
+    const handleSubmit = ev => {
+      ev.preventDefault();
+      handleSaveTransaction({
+        amount: parseInt(amount, 10),
+        type,
+        comment
+      });
+      handleShowingChange(TRANSACTIONS);
+    };
     return (
-      <div className={style.form}>
-        <label className={style.label} htmlFor={typeId}>
-          {`${dictionary.transaction.type}:`}
-          <select
-            className={style.input}
-            id={typeId}
-            onChange={this.handleTypeChange}
-            value={type}
-          >
-            {types.map(value => (
-              <option value={value} key={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className={style.label} htmlFor={amountId}>
-          {`${dictionary.transaction.amount}:`}
-          <input
-            className={style.input}
-            type="number"
-            id={amountId}
-            onChange={this.handleAmountChange}
-            value={amount}
-            ref={element => {
-              this.firstInput = element;
-            }}
-          />
-        </label>
+      <div>
+        <form ref={this.formRef} className={style.form} onSubmit={handleSubmit}>
+          <label className={style.label} htmlFor={typeId}>
+            {`${dictionary.transaction.type}:`}
+            <select
+              className={style.input}
+              id={typeId}
+              onChange={this.handleTypeChange}
+              value={type}
+            >
+              {types.map(value => (
+                <option value={value} key={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className={style.label} htmlFor={amountId}>
+            {`${dictionary.transaction.amount}:`}
+            <input
+              className={style.input}
+              type="number"
+              id={amountId}
+              onChange={this.handleAmountChange}
+              value={amount}
+              ref={element => {
+                this.firstInput = element;
+              }}
+            />
+          </label>
 
-        <label className={style.label} htmlFor={commentId}>
-          {`${dictionary.transaction.comment}:`}
-          <input
-            className={style.input}
-            type="text"
-            id={commentId}
-            onChange={this.handleCommentChange}
-            value={comment}
-          />
-        </label>
-        <Button
-          onClick={ev => {
-            ev.preventDefault();
-            handleSaveTransaction({
-              amount: parseInt(amount, 10),
-              type,
-              comment
-            });
-            handleShowingChange(TRANSACTIONS);
-          }}
-        >
-          {dictionary.transaction.save}
-        </Button>
+          <label className={style.label} htmlFor={commentId}>
+            {`${dictionary.transaction.comment}:`}
+            <input
+              className={style.input}
+              type="text"
+              id={commentId}
+              onChange={this.handleCommentChange}
+              value={comment}
+            />
+          </label>
+          <input type="submit" hidden />
+          <Button onClick={handleSubmit}>{dictionary.transaction.save}</Button>
+        </form>
       </div>
     );
   };
