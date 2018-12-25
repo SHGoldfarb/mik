@@ -26,10 +26,7 @@ class Dashboard extends Component {
               <div className={style.total}>{toMoneyString(total)}</div>
               <div className={style.transactionsContainer}>
                 {transactions.map(transaction => (
-                  <Transaction
-                    transaction={transaction}
-                    key={transaction.date}
-                  />
+                  <Transaction transaction={transaction} key={transaction.id} />
                 ))}
               </div>
             </Fragment>

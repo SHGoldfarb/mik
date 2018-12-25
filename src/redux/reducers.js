@@ -5,9 +5,14 @@ import {
 } from "./actionTypes";
 import { CASH } from "../utils/constants";
 
-const createTransaction = ({ amount, type, comment = "comment" }) => ({
+const createTransaction = ({
   amount,
-  date: new Date().getTime(),
+  type,
+  comment = "comment",
+  date = new Date().getTime()
+}) => ({
+  amount,
+  date: new Date(date).getTime(),
   account: CASH,
   type,
   comment

@@ -10,10 +10,18 @@ import { dictionary } from "../../config";
 const amountId = "AMOUNT";
 const typeId = "TYPE";
 const commentId = "COMMENT";
+const dateId = "DATE";
 const types = [EXPENSE, INCOME];
 
 class Form extends Component {
-  state = { amount: "", type: EXPENSE, comment: "" };
+  state = {
+    amount: "",
+    type: EXPENSE,
+    comment: "",
+    date: new Date(new Date() - new Date().getTimezoneOffset() * 60 * 1000)
+      .toISOString()
+      .slice(0, 16)
+  };
 
   formRef = React.createRef();
 
@@ -21,24 +29,27 @@ class Form extends Component {
     this.firstInput.focus();
   }
 
-  handleAmountChange = ev => this.setState({ amount: ev.target.value });
-
-  handleTypeChange = ev => this.setState({ type: ev.target.value });
-
-  handleCommentChange = ev => this.setState({ comment: ev.target.value });
+  handleFieldChange = field => ev =>
+    this.setState({ [field]: ev.target.value });
 
   render = () => {
     const {
       handleSaveTransaction,
       showing: { handleShowingChange, TRANSACTIONS }
     } = this.props;
-    const { amount, type, comment } = this.state;
+    const { amount, type, comment, date } = this.state;
+    const handleAmountChange = this.handleFieldChange("amount");
+    const handleTypeChange = this.handleFieldChange("type");
+    const handleCommentChange = this.handleFieldChange("comment");
+    const handleDateChange = this.handleFieldChange("date");
+
     const handleSubmit = ev => {
       ev.preventDefault();
       handleSaveTransaction({
         amount: parseInt(amount, 10),
         type,
-        comment
+        comment,
+        date
       });
       handleShowingChange(TRANSACTIONS);
     };
@@ -50,7 +61,7 @@ class Form extends Component {
             <select
               className={style.input}
               id={typeId}
-              onChange={this.handleTypeChange}
+              onChange={handleTypeChange}
               value={type}
             >
               {types.map(value => (
@@ -60,13 +71,25 @@ class Form extends Component {
               ))}
             </select>
           </label>
+
+          <label className={style.label} htmlFor={dateId}>
+            {`${dictionary.transaction.date}: ${date}`}
+            <input
+              className={style.input}
+              type="datetime-local"
+              id={dateId}
+              onChange={handleDateChange}
+              value={date}
+            />
+          </label>
+
           <label className={style.label} htmlFor={amountId}>
             {`${dictionary.transaction.amount}:`}
             <input
               className={style.input}
               type="number"
               id={amountId}
-              onChange={this.handleAmountChange}
+              onChange={handleAmountChange}
               value={amount}
               ref={element => {
                 this.firstInput = element;
@@ -80,7 +103,7 @@ class Form extends Component {
               className={style.input}
               type="text"
               id={commentId}
-              onChange={this.handleCommentChange}
+              onChange={handleCommentChange}
               value={comment}
             />
           </label>

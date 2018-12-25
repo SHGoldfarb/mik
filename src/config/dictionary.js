@@ -8,6 +8,7 @@ export default {
     amount: "Amount",
     comment: "Comment",
     save: "Save",
-    confirmDelete: "Are you sure you want to delete?"
+    confirmDelete: "Are you sure you want to delete?",
+    date: "Date"
   }
 };

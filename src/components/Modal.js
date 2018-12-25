@@ -2,15 +2,16 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Button } from ".";
 import style from "./Modal.module.css";
+import { classnames } from "../utils";
 
 const Modal = ({ children, onOverlayClick, active }) => (
-  <div className={style.modalContainer}>
+  <div className={classnames(style.modalContainer, active ? "" : style.hidden)}>
     <Button
-      className={style.overlay}
+      className={classnames(style.overlay, active ? "" : style.hidden)}
       onClick={onOverlayClick}
       style={{ display: active ? "initial" : "none" }}
     />
-    <div className={style.box} style={{ display: active ? "initial" : "none" }}>
+    <div className={classnames(style.box, active ? "" : style.hidden)}>
       {children}
     </div>
   </div>
