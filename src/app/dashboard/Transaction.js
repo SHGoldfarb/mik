@@ -49,8 +49,8 @@ class Transaction extends Component {
           </div>
         </div>
         <Modal onOverlayClick={handleDeleteCancel} active={deleteing}>
-          Are you sure you want to delete?
-          <Button onClick={handleDeleteConfirm}>Yes</Button>
+          {dictionary.transaction.confirmDelete}
+          <Button onClick={handleDeleteConfirm}>{dictionary.yes}</Button>
         </Modal>
       </div>
     );

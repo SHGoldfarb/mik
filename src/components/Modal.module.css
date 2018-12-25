@@ -3,7 +3,8 @@
 .overlay {
   width: 100%; /* Full width */
   height: 100%; /* Full height */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  background-color: var(--color-black); /* Black w/ opacity */
+  opacity: 0.4;
   position: fixed;
   top: 0;
   left: 0;
