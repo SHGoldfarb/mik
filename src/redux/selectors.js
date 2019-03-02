@@ -1,15 +1,20 @@
 import { createSelector } from "reselect";
 import { INCOME, EXPENSE } from "../utils/constants";
 
+const parseTransaction = ({ amount, ...rest }) => ({
+  amount: amount || 0,
+  ...rest
+});
+
 export const selectTransaction = (state, id) =>
   state.transactions && state.transactions[id]
-    ? { ...state.transactions[id], id }
+    ? { ...parseTransaction(state.transactions[id]), id }
     : null;
 
 export const selectAllTransactions = state =>
   state.transactions
     ? Object.keys(state.transactions)
-        .map(id => ({ ...state.transactions[id], id }))
+        .map(id => ({ ...parseTransaction(state.transactions[id]), id }))
         .sort((a, b) => -a.date + b.date)
     : [];
 

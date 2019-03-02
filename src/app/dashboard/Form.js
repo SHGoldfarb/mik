@@ -3,9 +3,12 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Button } from "../../components";
 import { INCOME, EXPENSE } from "../../utils/constants";
-import { addTransaction } from "../../redux/actions";
+import { createOrUpdateTransaction } from "../../redux/actions";
 import style from "./Form.module.css";
 import { dictionary } from "../../config";
+import { locationParams } from "../../utils/location";
+import { selectTransaction } from "../../redux/selectors";
+import { transactionPropType } from "../../utils/propTypes";
 
 const amountId = "AMOUNT";
 const typeId = "TYPE";
@@ -20,21 +23,42 @@ class Form extends Component {
     comment: "",
     date: new Date(new Date() - new Date().getTimezoneOffset() * 60 * 1000)
       .toISOString()
-      .slice(0, 16)
+      .slice(0, 16),
+    editing: false
   };
 
   formRef = React.createRef();
+
+  static getDerivedStateFromProps = (nextProps, prevState) => {
+    const { transaction } = nextProps;
+    const { editing } = prevState;
+
+    if (transaction && !editing) {
+      return {
+        ...transaction,
+        date: new Date(
+          new Date(transaction.date) -
+            new Date().getTimezoneOffset() * 60 * 1000
+        )
+          .toISOString()
+          .slice(0, 16),
+        editing: true
+      };
+    }
+    return null;
+  };
 
   componentDidMount = () => {
     this.firstInput.focus();
   };
 
-  handleFieldChange = field => ev =>
+  handleFieldChange = field => ev => {
     this.setState({ [field]: ev.target.value });
+  };
 
   render = () => {
     const { handleSaveTransaction, history } = this.props;
-    const { amount, type, comment, date } = this.state;
+    const { amount, type, comment, date, id } = this.state;
     const handleAmountChange = this.handleFieldChange("amount");
     const handleTypeChange = this.handleFieldChange("type");
     const handleCommentChange = this.handleFieldChange("comment");
@@ -46,7 +70,8 @@ class Form extends Component {
         amount: parseInt(amount, 10),
         type,
         comment,
-        date
+        date,
+        id
       });
       history.push("/");
     };
@@ -112,16 +137,29 @@ class Form extends Component {
   };
 }
 
+Form.defaultProps = {
+  transaction: null
+};
+
 Form.propTypes = {
   handleSaveTransaction: PropTypes.func.isRequired,
-  history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired
+  history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
+  transaction: transactionPropType
 };
 
 const mapDispatchToProps = dispatch => ({
-  handleSaveTransaction: transaction => dispatch(addTransaction(transaction))
+  handleSaveTransaction: transaction =>
+    dispatch(createOrUpdateTransaction(transaction))
 });
 
+const mapStateToProps = (state, { history }) => {
+  const { id } = locationParams(history);
+  return {
+    transaction: selectTransaction(state, id)
+  };
+};
+
 export default connect(
-  () => ({}),
+  mapStateToProps,
   mapDispatchToProps
 )(Form);

@@ -1,7 +1,8 @@
 import {
   SET_TRANSACTIONS,
   ADD_TRANSACTION,
-  DELETE_TRANSACTION
+  DELETE_TRANSACTION,
+  CREATE_OR_UPDATE_TRANSACTION
 } from "./actionTypes";
 
 export const setTransactions = transactions => ({
@@ -11,6 +12,11 @@ export const setTransactions = transactions => ({
 
 export const addTransaction = transaction => ({
   type: ADD_TRANSACTION,
+  payload: transaction
+});
+
+export const createOrUpdateTransaction = transaction => ({
+  type: CREATE_OR_UPDATE_TRANSACTION,
   payload: transaction
 });
 

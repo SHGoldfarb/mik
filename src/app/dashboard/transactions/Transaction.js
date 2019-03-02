@@ -8,6 +8,7 @@ import { EXPENSE } from "../../../utils/constants";
 import { Modal, Button } from "../../../components";
 import style from "./Transaction.module.css";
 import { dictionary } from "../../../config";
+import Clickable from "../../../components/Clickable";
 
 class Transaction extends Component {
   state = { deleteing: false };
@@ -22,7 +23,7 @@ class Transaction extends Component {
   };
 
   render = () => {
-    const { transaction } = this.props;
+    const { transaction, onClick } = this.props;
     const { amount, date, type, comment } = transaction;
     const { deleteing } = this.state;
     const dateStr = new Date(date).toLocaleString();
@@ -30,7 +31,7 @@ class Transaction extends Component {
     const { handleDeleteCancel, handleDeleteClick, handleDeleteConfirm } = this;
 
     return (
-      <div className={style.transactionContainer}>
+      <Clickable className={style.transactionContainer} onClick={onClick}>
         <div className={style.dateContainer}>
           {dateStr}
           <Button onClick={handleDeleteClick} className={style.deleteButton}>
@@ -52,14 +53,15 @@ class Transaction extends Component {
           {dictionary.transaction.confirmDelete}
           <Button onClick={handleDeleteConfirm}>{dictionary.yes}</Button>
         </Modal>
-      </div>
+      </Clickable>
     );
   };
 }
 
 Transaction.propTypes = {
   transaction: transactionPropType.isRequired,
-  onDeleteTransaction: PropTypes.func.isRequired
+  onDeleteTransaction: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired
 };
 
 const mapDispatchToProps = dispatch => ({

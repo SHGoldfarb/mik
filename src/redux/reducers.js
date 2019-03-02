@@ -1,7 +1,8 @@
 import {
   SET_TRANSACTIONS,
   ADD_TRANSACTION,
-  DELETE_TRANSACTION
+  DELETE_TRANSACTION,
+  CREATE_OR_UPDATE_TRANSACTION
 } from "./actionTypes";
 import { CASH } from "../utils/constants";
 
@@ -9,13 +10,15 @@ const createTransaction = ({
   amount,
   type,
   comment = "comment",
-  date = new Date().getTime()
+  date = new Date().getTime(),
+  id
 }) => ({
   amount,
   date: new Date(date).getTime(),
   account: CASH,
   type,
-  comment
+  comment,
+  id
 });
 
 const getId = object => {
@@ -43,6 +46,17 @@ export const rootReducer = (state = {}, action) => {
       return {
         ...state,
         transactions: { ...state.transactions, [newId]: newTransaction }
+      };
+    }
+    case CREATE_OR_UPDATE_TRANSACTION: {
+      const newTransaction = createTransaction(payload);
+      const id = newTransaction.id || getId(state.transactions);
+      return {
+        ...state,
+        transactions: {
+          ...state.transactions,
+          [id]: { ...state.transactions[id], ...newTransaction }
+        }
       };
     }
     case DELETE_TRANSACTION: {
