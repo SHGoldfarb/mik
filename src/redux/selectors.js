@@ -1,10 +1,15 @@
 import { createSelector } from "reselect";
 import { INCOME, EXPENSE } from "../utils/constants";
 
+export const selectTransaction = (state, id) =>
+  state.transactions && state.transactions[id]
+    ? { ...state.transactions[id], id }
+    : null;
+
 export const selectAllTransactions = state =>
   state.transactions
     ? Object.keys(state.transactions)
-        .map(key => ({ ...state.transactions[key], id: key }))
+        .map(id => ({ ...state.transactions[id], id }))
         .sort((a, b) => -a.date + b.date)
     : [];
 
@@ -19,7 +24,7 @@ export const selectTotal = createSelector(
         case EXPENSE:
           return total - amount;
         default:
-          return total;
+          throw Error(`Unsupported transaction type ${type}`);
       }
     }, 0)
 );
