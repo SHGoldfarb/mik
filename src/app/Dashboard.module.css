@@ -5,15 +5,6 @@
     flex-direction: column;
 }
 
-.transactionsContainer {
-    overflow-y: auto;
-    flex-grow: 1;
-}
-
-.total {
-    font-size: 30px;
-}
-
 .content {
     flex: 1 0 200px;
 }

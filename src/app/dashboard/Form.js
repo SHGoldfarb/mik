@@ -25,18 +25,15 @@ class Form extends Component {
 
   formRef = React.createRef();
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.firstInput.focus();
-  }
+  };
 
   handleFieldChange = field => ev =>
     this.setState({ [field]: ev.target.value });
 
   render = () => {
-    const {
-      handleSaveTransaction,
-      showing: { handleShowingChange, TRANSACTIONS }
-    } = this.props;
+    const { handleSaveTransaction, history } = this.props;
     const { amount, type, comment, date } = this.state;
     const handleAmountChange = this.handleFieldChange("amount");
     const handleTypeChange = this.handleFieldChange("type");
@@ -51,7 +48,7 @@ class Form extends Component {
         comment,
         date
       });
-      handleShowingChange(TRANSACTIONS);
+      history.push("/");
     };
     return (
       <div>
@@ -117,10 +114,7 @@ class Form extends Component {
 
 Form.propTypes = {
   handleSaveTransaction: PropTypes.func.isRequired,
-  showing: PropTypes.shape({
-    handleShowingChange: PropTypes.func.isRequired,
-    TRANSACTIONS: PropTypes.string.isRequired
-  }).isRequired
+  history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired
 };
 
 const mapDispatchToProps = dispatch => ({

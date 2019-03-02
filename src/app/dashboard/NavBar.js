@@ -5,12 +5,12 @@ import { Button } from "../../components";
 import { dictionary } from "../../config";
 import { classnames } from "../../utils";
 
-const NavBar = ({ onShowTransactions, onShowForm, className }) => (
+const NavBar = ({ className, history }) => (
   <div className={classnames(style.navBar, className)}>
-    <Button className={style.button} onClick={onShowTransactions}>
+    <Button className={style.button} onClick={() => history.push("/")}>
       {dictionary.transactions}
     </Button>
-    <Button className={style.button} onClick={onShowForm}>
+    <Button className={style.button} onClick={() => history.push("/form")}>
       {dictionary.form}
     </Button>
   </div>
@@ -21,8 +21,7 @@ NavBar.defaultProps = {
 };
 
 NavBar.propTypes = {
-  onShowTransactions: PropTypes.func.isRequired,
-  onShowForm: PropTypes.func.isRequired,
+  history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
   className: PropTypes.string
 };
 

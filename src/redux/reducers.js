@@ -20,8 +20,9 @@ const createTransaction = ({
 
 const getId = object => {
   let exists = true;
-  const newId = Math.random().toString();
+  let newId;
   while (exists) {
+    newId = Math.random().toString();
     exists = object[newId];
   }
   return newId;

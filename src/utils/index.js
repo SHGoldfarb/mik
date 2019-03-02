@@ -6,7 +6,7 @@ export const classnames = (...classes) => {
   return str;
 };
 
-export const toMoneyString = amount => {
+export const prettyCurrency = amount => {
   let strAmount = amount.toString();
   if (strAmount[0] === "-") {
     strAmount = strAmount.slice(1, strAmount.length);

@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { deleteTransaction } from "../../redux/actions";
-import { transactionPropType } from "../../utils/propTypes";
-import { classnames, toMoneyString } from "../../utils";
-import { EXPENSE } from "../../utils/constants";
-import { Modal, Button } from "../../components";
+import { deleteTransaction } from "../../../redux/actions";
+import { transactionPropType } from "../../../utils/propTypes";
+import { classnames, prettyCurrency } from "../../../utils";
+import { EXPENSE } from "../../../utils/constants";
+import { Modal, Button } from "../../../components";
 import style from "./Transaction.module.css";
-import { dictionary } from "../../config";
+import { dictionary } from "../../../config";
 
 class Transaction extends Component {
   state = { deleteing: false };
@@ -45,7 +45,7 @@ class Transaction extends Component {
               type === EXPENSE ? style.expense : style.income
             )}
           >
-            {toMoneyString(amount)}
+            {prettyCurrency(amount)}
           </div>
         </div>
         <Modal onOverlayClick={handleDeleteCancel} active={deleteing}>
