@@ -10,6 +10,7 @@ export default {
     save: "Save",
     confirmDelete: "Are you sure you want to delete?",
     date: "Date",
-    delete: "Delete"
+    delete: "Delete",
+    tags: "Tags"
   }
 };

@@ -11,14 +11,16 @@ const createTransaction = ({
   type,
   comment = "comment",
   date = new Date().getTime(),
-  id
+  id,
+  tags
 }) => ({
   amount,
   date: new Date(date).getTime(),
   account: CASH,
   type,
   comment,
-  id
+  id,
+  tags
 });
 
 const getId = object => {

@@ -10,13 +10,16 @@ import {
 import style from "./Form.module.css";
 import { dictionary } from "../../config";
 import { locationParams } from "../../utils/location";
-import { selectTransaction } from "../../redux/selectors";
+import { selectTransaction, selectAllTags } from "../../redux/selectors";
 import { transactionPropType } from "../../utils/propTypes";
 
 const amountId = "AMOUNT";
 const typeId = "TYPE";
 const commentId = "COMMENT";
 const dateId = "DATE";
+const tagsId = "TAGS";
+const tagsDatalistId = "TAGSDATALIST";
+const tagsFormId = "TAGSFORM";
 const types = [EXPENSE, INCOME];
 
 class Form extends Component {
@@ -27,8 +30,10 @@ class Form extends Component {
     date: new Date(new Date() - new Date().getTimezoneOffset() * 60 * 1000)
       .toISOString()
       .slice(0, 16),
+    tags: [],
     editing: false,
-    deleteModalActive: false
+    deleteModalActive: false,
+    tagInputValue: ""
   };
 
   formRef = React.createRef();
@@ -64,8 +69,10 @@ class Form extends Component {
     const {
       handleSaveTransaction,
       history,
-      handleDeleteTransaction
+      handleDeleteTransaction,
+      existingTags
     } = this.props;
+
     const {
       amount,
       type,
@@ -73,12 +80,21 @@ class Form extends Component {
       date,
       id,
       editing,
-      deleteModalActive
+      deleteModalActive,
+      tags,
+      tagInputValue
     } = this.state;
     const handleAmountChange = this.handleFieldChange("amount");
     const handleTypeChange = this.handleFieldChange("type");
     const handleCommentChange = this.handleFieldChange("comment");
     const handleDateChange = this.handleFieldChange("date");
+    const handleTagInputValueChange = this.handleFieldChange("tagInputValue");
+
+    const handleAddTag = tag =>
+      this.setState(({ tags: prevTags }) => ({
+        tags: [...prevTags, tag],
+        tagInputValue: ""
+      }));
 
     const handleSubmit = ev => {
       ev.preventDefault();
@@ -87,7 +103,8 @@ class Form extends Component {
         type,
         comment,
         date,
-        id
+        id,
+        tags
       });
       history.push("/");
     };
@@ -99,6 +116,7 @@ class Form extends Component {
     };
     return (
       <div>
+        <form onSubmit={ev => console.log({ ...ev })} id={tagsFormId} />
         <form ref={this.formRef} className={style.form} onSubmit={handleSubmit}>
           <label className={style.label} htmlFor={typeId}>
             {`${dictionary.transaction.type}:`}
@@ -141,6 +159,35 @@ class Form extends Component {
             />
           </label>
 
+          <label className={style.label} htmlFor={tagsId}>
+            {`${dictionary.transaction.tags}:`}
+            <input
+              form={tagsFormId}
+              autoComplete="off"
+              className={style.input}
+              list={tagsDatalistId}
+              id={tagsId}
+              value={tagInputValue}
+              onChange={handleTagInputValueChange}
+              onKeyPress={ev => {
+                console.log(ev.key);
+                if (ev.key === "Enter") {
+                  ev.preventDefault();
+                  handleAddTag(ev.target.value);
+                }
+              }}
+            />
+            <datalist id={tagsDatalistId}>
+              {existingTags.map(tag => (
+                <option key={tag} value={tag} />
+              ))}
+            </datalist>
+          </label>
+
+          {tags.map(tag => (
+            <div key={tag}>{tag}</div>
+          ))}
+
           <label className={style.label} htmlFor={commentId}>
             {`${dictionary.transaction.comment}:`}
             <input
@@ -179,7 +226,8 @@ Form.propTypes = {
   handleSaveTransaction: PropTypes.func.isRequired,
   handleDeleteTransaction: PropTypes.func.isRequired,
   history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
-  transaction: transactionPropType
+  transaction: transactionPropType,
+  existingTags: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -191,7 +239,8 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = (state, { history }) => {
   const { id } = locationParams(history);
   return {
-    transaction: selectTransaction(state, id)
+    transaction: selectTransaction(state, id),
+    existingTags: selectAllTags(state)
   };
 };
 

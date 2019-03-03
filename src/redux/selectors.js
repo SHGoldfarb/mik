@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 import { INCOME, EXPENSE } from "../utils/constants";
+import flatten from "../utils/flatten";
 
 const parseTransaction = ({ amount, ...rest }) => ({
   amount: amount || 0,
@@ -32,4 +33,10 @@ export const selectTotal = createSelector(
           throw Error(`Unsupported transaction type ${type}`);
       }
     }, 0)
+);
+
+export const selectAllTags = createSelector(
+  selectAllTransactions,
+  transactions =>
+    flatten(transactions.map(transaction => transaction.tags || []))
 );
