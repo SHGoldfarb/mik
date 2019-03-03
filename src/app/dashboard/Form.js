@@ -19,7 +19,6 @@ const commentId = "COMMENT";
 const dateId = "DATE";
 const tagsId = "TAGS";
 const tagsDatalistId = "TAGSDATALIST";
-const tagsFormId = "TAGSFORM";
 const types = [EXPENSE, INCOME];
 
 class Form extends Component {
@@ -116,7 +115,6 @@ class Form extends Component {
     };
     return (
       <div>
-        <form onSubmit={ev => console.log({ ...ev })} id={tagsFormId} />
         <form ref={this.formRef} className={style.form} onSubmit={handleSubmit}>
           <label className={style.label} htmlFor={typeId}>
             {`${dictionary.transaction.type}:`}
@@ -159,18 +157,35 @@ class Form extends Component {
             />
           </label>
 
+          <label className={style.label} htmlFor={commentId}>
+            {`${dictionary.transaction.comment}:`}
+            <input
+              className={style.input}
+              type="text"
+              id={commentId}
+              onChange={handleCommentChange}
+              value={comment}
+            />
+          </label>
           <label className={style.label} htmlFor={tagsId}>
             {`${dictionary.transaction.tags}:`}
             <input
-              form={tagsFormId}
               autoComplete="off"
               className={style.input}
               list={tagsDatalistId}
               id={tagsId}
               value={tagInputValue}
-              onChange={handleTagInputValueChange}
+              onKeyUp={ev => {
+                if (ev.which === undefined) {
+                  // One of the datalist options was clicked on
+                  ev.preventDefault();
+                  handleAddTag(ev.target.value);
+                }
+              }}
+              onChange={ev => {
+                handleTagInputValueChange(ev);
+              }}
               onKeyPress={ev => {
-                console.log(ev.key);
                 if (ev.key === "Enter") {
                   ev.preventDefault();
                   handleAddTag(ev.target.value);
@@ -187,17 +202,6 @@ class Form extends Component {
           {tags.map(tag => (
             <div key={tag}>{tag}</div>
           ))}
-
-          <label className={style.label} htmlFor={commentId}>
-            {`${dictionary.transaction.comment}:`}
-            <input
-              className={style.input}
-              type="text"
-              id={commentId}
-              onChange={handleCommentChange}
-              value={comment}
-            />
-          </label>
           <input type="submit" hidden />
           <Button onClick={handleSubmit}>{dictionary.transaction.save}</Button>
           {editing ? (
