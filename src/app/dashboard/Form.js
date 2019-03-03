@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Button } from "../../components";
+import { Button, Modal } from "../../components";
 import { INCOME, EXPENSE } from "../../utils/constants";
-import { createOrUpdateTransaction } from "../../redux/actions";
+import {
+  createOrUpdateTransaction,
+  deleteTransaction
+} from "../../redux/actions";
 import style from "./Form.module.css";
 import { dictionary } from "../../config";
 import { locationParams } from "../../utils/location";
@@ -24,7 +27,8 @@ class Form extends Component {
     date: new Date(new Date() - new Date().getTimezoneOffset() * 60 * 1000)
       .toISOString()
       .slice(0, 16),
-    editing: false
+    editing: false,
+    deleteModalActive: false
   };
 
   formRef = React.createRef();
@@ -57,8 +61,20 @@ class Form extends Component {
   };
 
   render = () => {
-    const { handleSaveTransaction, history } = this.props;
-    const { amount, type, comment, date, id } = this.state;
+    const {
+      handleSaveTransaction,
+      history,
+      handleDeleteTransaction
+    } = this.props;
+    const {
+      amount,
+      type,
+      comment,
+      date,
+      id,
+      editing,
+      deleteModalActive
+    } = this.state;
     const handleAmountChange = this.handleFieldChange("amount");
     const handleTypeChange = this.handleFieldChange("type");
     const handleCommentChange = this.handleFieldChange("comment");
@@ -73,6 +89,12 @@ class Form extends Component {
         date,
         id
       });
+      history.push("/");
+    };
+
+    const handleDelete = ev => {
+      ev.preventDefault();
+      handleDeleteTransaction(id);
       history.push("/");
     };
     return (
@@ -131,7 +153,19 @@ class Form extends Component {
           </label>
           <input type="submit" hidden />
           <Button onClick={handleSubmit}>{dictionary.transaction.save}</Button>
+          {editing ? (
+            <Button onClick={() => this.setState({ deleteModalActive: true })}>
+              {dictionary.transaction.delete}
+            </Button>
+          ) : null}
         </form>
+        <Modal
+          onOverlayClick={() => this.setState({ deleteModalActive: false })}
+          active={deleteModalActive}
+        >
+          {dictionary.transaction.confirmDelete}
+          <Button onClick={handleDelete}>{dictionary.yes}</Button>
+        </Modal>
       </div>
     );
   };
@@ -143,13 +177,15 @@ Form.defaultProps = {
 
 Form.propTypes = {
   handleSaveTransaction: PropTypes.func.isRequired,
+  handleDeleteTransaction: PropTypes.func.isRequired,
   history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
   transaction: transactionPropType
 };
 
 const mapDispatchToProps = dispatch => ({
   handleSaveTransaction: transaction =>
-    dispatch(createOrUpdateTransaction(transaction))
+    dispatch(createOrUpdateTransaction(transaction)),
+  handleDeleteTransaction: id => dispatch(deleteTransaction(id))
 });
 
 const mapStateToProps = (state, { history }) => {
