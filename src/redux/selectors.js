@@ -1,9 +1,11 @@
 import { createSelector } from "reselect";
 import { INCOME, EXPENSE } from "../utils/constants";
 import flatten from "../utils/flatten";
+import uniques from "../utils/uniques";
 
-const parseTransaction = ({ amount, ...rest }) => ({
+const parseTransaction = ({ amount, tags, ...rest }) => ({
   amount: amount || 0,
+  tags: tags || [],
   ...rest
 });
 
@@ -38,5 +40,5 @@ export const selectTotal = createSelector(
 export const selectAllTags = createSelector(
   selectAllTransactions,
   transactions =>
-    flatten(transactions.map(transaction => transaction.tags || []))
+    uniques(flatten(transactions.map(transaction => transaction.tags || [])))
 );

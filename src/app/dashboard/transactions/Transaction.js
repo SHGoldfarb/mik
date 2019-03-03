@@ -7,7 +7,7 @@ import Clickable from "../../../components/Clickable";
 import style from "./Transaction.module.css";
 
 const Transaction = ({ transaction, onClick }) => {
-  const { amount, date, type, comment } = transaction;
+  const { amount, date, type, comment, tags } = transaction;
   const dateStr = new Date(date).toLocaleString();
 
   return (
@@ -23,6 +23,11 @@ const Transaction = ({ transaction, onClick }) => {
         >
           {prettyCurrency(amount)}
         </div>
+      </div>
+      <div>
+        {tags.map(tag => (
+          <div>{tag}</div>
+        ))}
       </div>
     </Clickable>
   );

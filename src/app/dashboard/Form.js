@@ -12,6 +12,7 @@ import { dictionary } from "../../config";
 import { locationParams } from "../../utils/location";
 import { selectTransaction, selectAllTags } from "../../redux/selectors";
 import { transactionPropType } from "../../utils/propTypes";
+import Clickable from "../../components/Clickable";
 
 const amountId = "AMOUNT";
 const typeId = "TYPE";
@@ -94,6 +95,12 @@ class Form extends Component {
         tags: [...prevTags, tag],
         tagInputValue: ""
       }));
+
+    const handleRemoveTag = tag => {
+      this.setState(({ tags: prevTags }) => ({
+        tags: prevTags.filter(prevTag => prevTag !== tag)
+      }));
+    };
 
     const handleSubmit = ev => {
       ev.preventDefault();
@@ -200,7 +207,9 @@ class Form extends Component {
           </label>
 
           {tags.map(tag => (
-            <div key={tag}>{tag}</div>
+            <Clickable key={tag} onClick={() => handleRemoveTag(tag)}>
+              {tag}
+            </Clickable>
           ))}
           <input type="submit" hidden />
           <Button onClick={handleSubmit}>{dictionary.transaction.save}</Button>
