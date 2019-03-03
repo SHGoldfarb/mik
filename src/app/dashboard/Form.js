@@ -84,6 +84,7 @@ class Form extends Component {
       tags,
       tagInputValue
     } = this.state;
+
     const handleAmountChange = this.handleFieldChange("amount");
     const handleTypeChange = this.handleFieldChange("type");
     const handleCommentChange = this.handleFieldChange("comment");
@@ -120,6 +121,11 @@ class Form extends Component {
       handleDeleteTransaction(id);
       history.push("/");
     };
+
+    const choosableTags = existingTags.filter(
+      existingTag => !tags.includes(existingTag)
+    );
+
     return (
       <div>
         <form ref={this.formRef} className={style.form} onSubmit={handleSubmit}>
@@ -200,7 +206,7 @@ class Form extends Component {
               }}
             />
             <datalist id={tagsDatalistId}>
-              {existingTags.map(tag => (
+              {choosableTags.map(tag => (
                 <option key={tag} value={tag} />
               ))}
             </datalist>
