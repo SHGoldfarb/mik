@@ -1,8 +1,16 @@
+:root {
+    --sum-height: 35px;
+    --transactions-container-height: calc(100% - var(--sum-height));
+}
+
+
 .transactionsContainer {
     overflow-y: auto;
-    flex-grow: 1;
+    height: var(--transactions-container-height);
+    max-height: var(--transactions-container-height);
 }
 
 .total {
     font-size: 30px;
+    height: var(--sum-height);
 }

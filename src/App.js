@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Dashboard from "./app/Dashboard";
 import mockData from "./app/mockData";
 import "./App.css";
 import { setTransactions } from "./redux/actions";
 import { KEY } from "./utils/constants";
+import { AppContainer } from "./app";
 
 const initialTransactionsNumber = 5;
 
@@ -26,7 +26,7 @@ class App extends Component {
   }
 
   render() {
-    return <Dashboard />;
+    return <AppContainer />;
   }
 }
 

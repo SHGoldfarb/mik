@@ -1,28 +1,23 @@
 import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 import { Transactions, NavBar, Form } from "./dashboard";
-import style from "./Dashboard.module.css";
+import style from "./AppContainer.module.css";
 
-const Dashboard = () => (
+const AppContainer = () => (
   <BrowserRouter>
-    <div className={style.dashboard}>
-      <Route
-        path="/"
-        render={() => (
+    <Route
+      path="/"
+      render={({ history }) => (
+        <div className={style.container}>
           <div className={style.content}>
             <Route path="/" exact component={Transactions} />
             <Route path="/form" component={Form} />
           </div>
-        )}
-      />
-      <Route
-        path="/"
-        render={({ history }) => (
           <NavBar className={style.navBar} history={history} />
-        )}
-      />
-    </div>
+        </div>
+      )}
+    />
   </BrowserRouter>
 );
 
-export default Dashboard;
+export default AppContainer;
