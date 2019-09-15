@@ -1,3 +1,5 @@
 import Transaction from "./Transaction";
+import MonthCard from "./MonthCard";
+import DayCard from "./DayCard";
 
-export { Transaction }; // eslint-disable-line import/prefer-default-export
+export { Transaction, MonthCard, DayCard };

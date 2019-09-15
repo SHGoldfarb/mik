@@ -1,0 +1,15 @@
+@import "../utils/variables.css";
+
+.container {
+    display: flex;
+}
+
+.income {
+    color: var(--color-income);
+    margin: auto;
+}
+
+.expense {
+    color: var(--color-expense);
+    margin: auto;
+}

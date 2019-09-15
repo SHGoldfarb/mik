@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
-import { INCOME, EXPENSE } from "../utils/constants";
 import flatten from "../utils/flatten";
 import uniques from "../utils/uniques";
+import { getTotal, getIncomeExpense } from "../utils/stats";
 
 const parseTransaction = ({ amount, tags, ...rest }) => ({
   amount: amount || 0,
@@ -21,20 +21,82 @@ export const selectAllTransactions = state =>
         .sort((a, b) => -a.date + b.date)
     : [];
 
-export const selectTotal = createSelector(
+// Returns transactions in a dictionary with shape: (TODO: update)
+// {
+//   [monthStr]: {
+//     [day]: [transactions]
+//   }
+// }
+export const selectAllTransactionsByMonthByDay = createSelector(
   selectAllTransactions,
   transactions =>
-    transactions.reduce((total, transaction) => {
-      const { amount, type } = transaction;
-      switch (type) {
-        case INCOME:
-          return total + amount;
-        case EXPENSE:
-          return total - amount;
-        default:
-          throw Error(`Unsupported transaction type ${type}`);
-      }
-    }, 0)
+    transactions.reduce(
+      (accumulator, transaction) => {
+        const { date } = transaction;
+        const dateObject = new Date(date);
+        const day = dateObject.getDate();
+        const month = dateObject.getMonth() + 1;
+        const year = dateObject.getFullYear();
+        const monthStr = `${year}-${month}`;
+        const dayStr = `${monthStr}-${day}`;
+        const { income, expense } = getIncomeExpense(transaction);
+
+        // Optimally compute total, month and day stats
+        const {
+          byMonth,
+          income: totalIncome,
+          expense: totalExpense
+        } = accumulator;
+
+        const { income: monthIncome, expense: monthExpense, byDay } = byMonth[
+          monthStr
+        ] || {
+          income: 0,
+          expense: 0,
+          byDay: {}
+        };
+
+        const {
+          income: dayIncome,
+          expense: dayExpense,
+          transactions: dayTransactions
+        } = byDay[dayStr] || {
+          income: 0,
+          expense: 0,
+          transactions: []
+        };
+
+        return {
+          income: totalIncome + income,
+          expense: totalExpense + expense,
+          byMonth: {
+            ...byMonth,
+            [monthStr]: {
+              income: monthIncome + income,
+              expense: monthExpense + expense,
+              byDay: {
+                ...byDay,
+                [dayStr]: {
+                  income: dayIncome + income,
+                  expense: dayExpense + expense,
+                  transactions: [
+                    // No sorting because they already come sorted
+                    ...dayTransactions,
+                    transaction
+                  ]
+                }
+              }
+            }
+          }
+        };
+      },
+      { income: 0, expense: 0, byMonth: {} }
+    )
+);
+
+export const selectTotal = createSelector(
+  selectAllTransactions,
+  transactions => getTotal(transactions)
 );
 
 export const selectAllTags = createSelector(
