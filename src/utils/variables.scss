@@ -1,34 +1,25 @@
-:root {
-    --color-red: red;
-    --color-blue: blue;
-    --color-black: black;
-    --color-white: white;
-    --color-green: green;
+/* --- COLORS --- */
 
-    --color-expense: var(--color-red);
-    --color-income: var(--color-blue);
-    --color-neutral: var(--color-black);
-    --color-highlight: var(--color-green);
-}
-
-/* SASS */
-
-$color-red: red;
+$color-black: rgb(40, 40, 40);
 $color-blue: blue;
-$color-black: black;
-$color-white: white;
 $color-green: green;
-$color-grey: grey;
 $color-grey-superlight: rgb(240, 240, 240);
+$color-grey: grey;
+$color-red: red;
+$color-white: white;
 
-$color-expense: $color-red;
-$color-income: $color-blue;
-$color-neutral: $color-black;
-$color-neutral-light: $color-grey;
-$color-highlight: $color-green;
-$color-shadow: $color-grey;
-$color-background: $color-white;
 $color-background-secondary: $color-grey-superlight;
+$color-background: $color-white;
+$color-darken: $color-black;
+$color-expense: $color-red;
+$color-highlight: $color-green;
+$color-income: $color-blue;
+$color-neutral-light: $color-grey;
+$color-neutral-extralight: mix($color-neutral-light, $color-white);
+$color-neutral: $color-black;
+$color-shadow: $color-grey;
+
+/* --- SIZES --- */
 
 $font-size-normal: 16px;
 $font-size-big: 20px;

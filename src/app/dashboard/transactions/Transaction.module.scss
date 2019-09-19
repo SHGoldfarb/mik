@@ -1,15 +1,15 @@
 @import "../../../utils/variables.scss";
 
 .commentContainer {
-    color: var(--color-highlight);
+    color: $color-highlight;
 }
 
 .expense {
-    color: var(--color-expense);
+    color: $color-expense;
 }
 
 .income {
-    color: var(--color-income);
+    color: $color-income;
 }
 
 .transactionContainer {

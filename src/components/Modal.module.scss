@@ -3,7 +3,7 @@
 .overlay {
   width: 100%; /* Full width */
   height: 100%; /* Full height */
-  background-color: var(--color-black); /* Black w/ opacity */
+  background-color: $color-darken; /* Black w/ opacity */
   opacity: 0.4;
   position: fixed;
   top: 0;
@@ -12,7 +12,7 @@
 }
 
 .box {
-    background-color: var(--color-white);
+    background-color: $color-background;
     margin: auto;
     padding: 5px;
     z-index: 1;

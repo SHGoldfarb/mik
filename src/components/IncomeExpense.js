@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import style from "./IncomeExpense.module.css";
+import style from "./IncomeExpense.module.scss";
 import { prettyCurrency, classnames } from "../utils";
 
 const IncomeExpense = ({ income, expense, className }) => (

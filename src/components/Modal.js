@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Button from "./Button";
-import style from "./Modal.module.css";
+import style from "./Modal.module.scss";
 import { classnames } from "../utils";
 
 const Modal = ({ children, onOverlayClick, active }) => (

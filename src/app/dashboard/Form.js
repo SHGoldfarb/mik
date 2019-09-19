@@ -147,7 +147,7 @@ class Form extends Component {
           </label>
 
           <label className={style.label} htmlFor={dateId}>
-            {`${I18N.transaction.date}: ${date}`}
+            {`${I18N.transaction.date}:`}
             <input
               className={style.input}
               type="datetime-local"

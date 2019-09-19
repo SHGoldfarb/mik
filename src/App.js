@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import mockData from "./app/mockData";
-import "./App.css";
+import "./App.scss";
 import { setTransactions } from "./redux/actions";
 import { KEY } from "./utils/constants";
 import { AppContainer } from "./app";

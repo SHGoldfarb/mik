@@ -4,7 +4,7 @@ import { transactionPropType } from "../../../utils/propTypes";
 import { classnames, prettyCurrency } from "../../../utils";
 import { EXPENSE } from "../../../utils/constants";
 import Clickable from "../../../components/Clickable";
-import style from "./Transaction.module.css";
+import style from "./Transaction.module.scss";
 
 const Transaction = ({ transaction, onClick }) => {
   const { amount, type, comment, tags } = transaction;
