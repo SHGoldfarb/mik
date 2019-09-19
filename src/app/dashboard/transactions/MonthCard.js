@@ -2,16 +2,34 @@ import React from "react";
 import PropTypes from "prop-types";
 import Card from "../../../components/Card";
 import IncomeExpense from "../../../components/IncomeExpense";
-import { inCurrentTZ, prettyMonth } from "../../../utils/date";
+import { inCurrentTZ } from "../../../utils/date";
+import PrettyDate from "../../../components/PrettyDate";
+import I18N from "../../../config/I18N";
+import style from "./MonthCard.module.scss";
 
-const MonthCard = ({ monthStr, children, income, expense }) => (
-  <Card
-    leftHeader={prettyMonth(inCurrentTZ(monthStr))}
-    header={<IncomeExpense income={income} expense={expense} />}
-  >
-    {children}
-  </Card>
-);
+const MonthCard = ({ monthStr, children, income, expense }) => {
+  const date = inCurrentTZ(monthStr);
+  return (
+    <Card
+      leftHeader={
+        <PrettyDate
+          dateHighlight={I18N.date.months[date.getMonth()]}
+          dateNormal={date.getFullYear()}
+        />
+      }
+      header={
+        <IncomeExpense
+          income={income}
+          expense={expense}
+          className={style.incomeExpense}
+        />
+      }
+      className={style.cardBackground}
+    >
+      {children}
+    </Card>
+  );
+};
 
 MonthCard.defaultProps = {
   children: null

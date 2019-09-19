@@ -1,18 +1,19 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Button, Modal } from "../../components";
 import { INCOME, EXPENSE } from "../../utils/constants";
 import {
   createOrUpdateTransaction,
   deleteTransaction
 } from "../../redux/actions";
 import style from "./Form.module.css";
-import { dictionary } from "../../config";
+import { I18N } from "../../config";
 import { locationParams } from "../../utils/location";
 import { selectTransaction, selectAllTags } from "../../redux/selectors";
 import { transactionPropType } from "../../utils/propTypes";
 import Clickable from "../../components/Clickable";
+import Button from "../../components/Button";
+import Modal from "../../components/Modal";
 
 const amountId = "AMOUNT";
 const typeId = "TYPE";
@@ -130,7 +131,7 @@ class Form extends Component {
       <div>
         <form ref={this.formRef} className={style.form} onSubmit={handleSubmit}>
           <label className={style.label} htmlFor={typeId}>
-            {`${dictionary.transaction.type}:`}
+            {`${I18N.transaction.type}:`}
             <select
               className={style.input}
               id={typeId}
@@ -146,7 +147,7 @@ class Form extends Component {
           </label>
 
           <label className={style.label} htmlFor={dateId}>
-            {`${dictionary.transaction.date}: ${date}`}
+            {`${I18N.transaction.date}: ${date}`}
             <input
               className={style.input}
               type="datetime-local"
@@ -157,7 +158,7 @@ class Form extends Component {
           </label>
 
           <label className={style.label} htmlFor={amountId}>
-            {`${dictionary.transaction.amount}:`}
+            {`${I18N.transaction.amount}:`}
             <input
               className={style.input}
               type="number"
@@ -171,7 +172,7 @@ class Form extends Component {
           </label>
 
           <label className={style.label} htmlFor={commentId}>
-            {`${dictionary.transaction.comment}:`}
+            {`${I18N.transaction.comment}:`}
             <input
               className={style.input}
               type="text"
@@ -181,7 +182,7 @@ class Form extends Component {
             />
           </label>
           <label className={style.label} htmlFor={tagsId}>
-            {`${dictionary.transaction.tags}:`}
+            {`${I18N.transaction.tags}:`}
             <input
               autoComplete="off"
               className={style.input}
@@ -218,10 +219,10 @@ class Form extends Component {
             </Clickable>
           ))}
           <input type="submit" hidden />
-          <Button onClick={handleSubmit}>{dictionary.transaction.save}</Button>
+          <Button onClick={handleSubmit}>{I18N.transaction.save}</Button>
           {editing ? (
             <Button onClick={() => this.setState({ deleteModalActive: true })}>
-              {dictionary.transaction.delete}
+              {I18N.transaction.delete}
             </Button>
           ) : null}
         </form>
@@ -229,8 +230,8 @@ class Form extends Component {
           onOverlayClick={() => this.setState({ deleteModalActive: false })}
           active={deleteModalActive}
         >
-          {dictionary.transaction.confirmDelete}
-          <Button onClick={handleDelete}>{dictionary.yes}</Button>
+          {I18N.transaction.confirmDelete}
+          <Button onClick={handleDelete}>{I18N.yes}</Button>
         </Modal>
       </div>
     );

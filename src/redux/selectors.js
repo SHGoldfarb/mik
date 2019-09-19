@@ -21,7 +21,7 @@ export const selectAllTransactions = state =>
         .sort((a, b) => -a.date + b.date)
     : [];
 
-// Returns transactions in a dictionary with shape: (TODO: update)
+// Returns transactions in a I18N with shape: (TODO: update)
 // {
 //   [monthStr]: {
 //     [day]: [transactions]

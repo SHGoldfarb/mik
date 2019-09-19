@@ -7,12 +7,10 @@ import Clickable from "../../../components/Clickable";
 import style from "./Transaction.module.css";
 
 const Transaction = ({ transaction, onClick }) => {
-  const { amount, date, type, comment, tags } = transaction;
-  const dateStr = new Date(date).toLocaleString();
+  const { amount, type, comment, tags } = transaction;
 
   return (
     <Clickable className={style.transactionContainer} onClick={onClick}>
-      <div className={style.dateContainer}>{dateStr}</div>
       <div className={style.commentAmountContainer}>
         <div className={style.commentContainer}>{comment}</div>
         <div

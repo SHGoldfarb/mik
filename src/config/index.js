@@ -1,4 +1,4 @@
-import dictionary from "./dictionary";
+import I18N from "./I18N";
 
 // eslint-disable-next-line import/prefer-default-export
-export { dictionary };
+export { I18N };

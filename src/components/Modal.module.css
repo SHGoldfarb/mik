@@ -1,4 +1,4 @@
-@import "../utils/variables.css";
+@import "../utils/variables.scss";
 
 .overlay {
   width: 100%; /* Full width */

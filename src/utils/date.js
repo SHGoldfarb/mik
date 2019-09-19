@@ -1,4 +1,4 @@
-import I18N from "../config/dictionary";
+import I18N from "../config/I18N";
 
 // Returns a date object parsing the string in UTC-0
 

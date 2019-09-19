@@ -1,0 +1,16 @@
+@import "../utils/variables.scss";
+
+.container {
+    display: flex;
+    align-items: baseline;
+}
+
+.normal {
+    color: $color-neutral-light;
+    font-size: $font-size-small;;
+}
+
+.highlight {
+    font-size: $font-size-big;
+    margin-right: 3px;
+}
