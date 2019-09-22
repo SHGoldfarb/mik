@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
-import { Transactions, NavBar, Form } from "./dashboard";
+import { Transactions, NavBar, Form } from "./app-container";
 import style from "./AppContainer.module.css";
 
 const AppContainer = () => (
