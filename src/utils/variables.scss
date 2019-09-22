@@ -14,27 +14,27 @@ $color3: rgba(254, 215, 102, 1);
 $color4: rgba(15, 163, 177, 1);
 $color5: rgba(215, 38, 61, 1);
 
-// $color-background-secondary: $color-grey-superlight;
-// $color-background: $color-white;
-// $color-darken: $color-black;
-// $color-expense: $color-red;
-// $color-highlight: $color-green;
-// $color-income: $color-blue;
-// $color-neutral-light: $color-grey;
-// $color-neutral-extralight: mix($color-neutral-light, $color-white);
-// $color-neutral: $color-black;
-// $color-shadow: $color-grey;
+$color-background-secondary: $color-grey-superlight;
+$color-background: $color-white;
+$color-darken: $color-black;
+$color-expense: $color-red;
+$color-highlight: $color-green;
+$color-income: $color-blue;
+$color-neutral-light: $color-grey;
+$color-neutral-extralight: mix($color-neutral-light, $color-white);
+$color-neutral: $color-black;
+$color-shadow: $color-grey;
 
-$color-background-secondary: mix($color2, white, 30);
-$color-background: mix($color-background-secondary, white, 50);
-$color-darken: $color1;
-$color-expense: $color5;
-$color-highlight: darken(saturate($color3, 50), 30);
-$color-income: $color4;
-$color-neutral: $color1;
-$color-neutral-light: mix($color-neutral, white, 70);
-$color-neutral-extralight: mix($color-neutral-light, white);
-$color-shadow: mix($color-darken, white);
+// $color-background-secondary: mix($color2, white, 30);
+// $color-background: mix($color-background-secondary, white, 50);
+// $color-darken: $color1;
+// $color-expense: $color5;
+// $color-highlight: darken(saturate($color3, 50), 30);
+// $color-income: $color4;
+// $color-neutral: $color1;
+// $color-neutral-light: mix($color-neutral, white, 70);
+// $color-neutral-extralight: mix($color-neutral-light, white);
+// $color-shadow: mix($color-darken, white);
 
 /* --- SIZES --- */
 

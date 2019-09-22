@@ -14,10 +14,10 @@ import { transactionPropType } from "../../utils/propTypes";
 import Clickable from "../../components/Clickable";
 import Button from "../../components/Button";
 import Modal from "../../components/Modal";
-import Input from "../../components/Input";
+import Input from "../../components/inputs/Input";
 import { pushHome } from "../../utils/navigation";
+import SelectInput from "../../components/inputs/SelectInput";
 
-const typeId = "TYPE";
 const tagsDatalistId = "TAGSDATALIST";
 const types = [EXPENSE, INCOME];
 
@@ -128,7 +128,7 @@ class Form extends Component {
           {`\u2190 ${I18N.back}`}
         </Button>
         <form ref={this.formRef} className={style.form} onSubmit={handleSubmit}>
-          <label className={style.label} htmlFor={typeId}>
+          {/* <label className={style.label} htmlFor={typeId}>
             {`${I18N.transaction.type}:`}
             <select
               className={style.input}
@@ -142,7 +142,16 @@ class Form extends Component {
                 </option>
               ))}
             </select>
-          </label>
+          </label> */}
+
+          <SelectInput
+            className={style.label}
+            label={`${I18N.transaction.type}:`}
+            inputClassName={style.input}
+            onChange={handleTypeChange}
+            value={type}
+            options={types}
+          />
 
           <Input
             className={style.label}
