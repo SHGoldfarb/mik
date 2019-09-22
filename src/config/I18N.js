@@ -3,6 +3,7 @@ const I18N = {
   transactions: "Transactions",
   delete: "Delete",
   yes: "yes",
+  back: "Back",
   transaction: {
     type: "Type",
     amount: "Amount",

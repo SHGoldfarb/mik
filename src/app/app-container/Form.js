@@ -14,12 +14,10 @@ import { transactionPropType } from "../../utils/propTypes";
 import Clickable from "../../components/Clickable";
 import Button from "../../components/Button";
 import Modal from "../../components/Modal";
+import Input from "../../components/Input";
+import { pushHome } from "../../utils/navigation";
 
-const amountId = "AMOUNT";
 const typeId = "TYPE";
-const commentId = "COMMENT";
-const dateId = "DATE";
-const tagsId = "TAGS";
 const tagsDatalistId = "TAGSDATALIST";
 const types = [EXPENSE, INCOME];
 
@@ -39,10 +37,7 @@ class Form extends Component {
 
   formRef = React.createRef();
 
-  static getDerivedStateFromProps = (nextProps, prevState) => {
-    const { transaction } = nextProps;
-    const { editing } = prevState;
-
+  static getDerivedStateFromProps = ({ transaction }, { editing }) => {
     if (transaction && !editing) {
       return {
         ...transaction,
@@ -129,6 +124,9 @@ class Form extends Component {
 
     return (
       <div>
+        <Button className={style.backButton} onClick={() => pushHome(history)}>
+          {`\u2190 ${I18N.back}`}
+        </Button>
         <form ref={this.formRef} className={style.form} onSubmit={handleSubmit}>
           <label className={style.label} htmlFor={typeId}>
             {`${I18N.transaction.type}:`}
@@ -146,72 +144,66 @@ class Form extends Component {
             </select>
           </label>
 
-          <label className={style.label} htmlFor={dateId}>
-            {`${I18N.transaction.date}:`}
-            <input
-              className={style.input}
-              type="datetime-local"
-              id={dateId}
-              onChange={handleDateChange}
-              value={date}
-            />
-          </label>
+          <Input
+            className={style.label}
+            label={`${I18N.transaction.date}:`}
+            inputClassName={style.input}
+            type="datetime-local"
+            onChange={handleDateChange}
+            value={date}
+          />
 
-          <label className={style.label} htmlFor={amountId}>
-            {`${I18N.transaction.amount}:`}
-            <input
-              className={style.input}
-              type="number"
-              id={amountId}
-              onChange={handleAmountChange}
-              value={amount}
-              ref={element => {
-                this.firstInput = element;
-              }}
-            />
-          </label>
+          <Input
+            className={style.label}
+            label={`${I18N.transaction.amount}:`}
+            inputClassName={style.input}
+            type="number"
+            onChange={handleAmountChange}
+            value={amount}
+            ref={element => {
+              this.firstInput = element;
+            }}
+          />
 
-          <label className={style.label} htmlFor={commentId}>
-            {`${I18N.transaction.comment}:`}
-            <input
-              className={style.input}
-              type="text"
-              id={commentId}
-              onChange={handleCommentChange}
-              value={comment}
-            />
-          </label>
-          <label className={style.label} htmlFor={tagsId}>
-            {`${I18N.transaction.tags}:`}
-            <input
-              autoComplete="off"
-              className={style.input}
-              list={tagsDatalistId}
-              id={tagsId}
-              value={tagInputValue}
-              onKeyUp={ev => {
-                if (ev.which === undefined) {
-                  // One of the datalist options was clicked on
-                  ev.preventDefault();
-                  handleAddTag(ev.target.value);
-                }
-              }}
-              onChange={ev => {
-                handleTagInputValueChange(ev);
-              }}
-              onKeyPress={ev => {
-                if (ev.key === "Enter") {
-                  ev.preventDefault();
-                  handleAddTag(ev.target.value);
-                }
-              }}
-            />
+          <Input
+            className={style.label}
+            label={`${I18N.transaction.comment}:`}
+            inputClassName={style.input}
+            type="text"
+            onChange={handleCommentChange}
+            value={comment}
+          />
+
+          <Input
+            className={style.label}
+            label={`${I18N.transaction.tags}:`}
+            autoComplete="off"
+            inputClassName={style.input}
+            list={tagsDatalistId}
+            value={tagInputValue}
+            onKeyUp={ev => {
+              if (ev.which === undefined) {
+                // One of the datalist options was clicked on
+                ev.preventDefault();
+                handleAddTag(ev.target.value);
+              }
+            }}
+            onChange={ev => {
+              handleTagInputValueChange(ev);
+            }}
+            onKeyPress={ev => {
+              if (ev.key === "Enter") {
+                ev.preventDefault();
+                handleAddTag(ev.target.value);
+              }
+            }}
+          >
             <datalist id={tagsDatalistId}>
               {choosableTags.map(tag => (
                 <option key={tag} value={tag} />
               ))}
             </datalist>
-          </label>
+          </Input>
 
           {tags.map(tag => (
             <Clickable key={tag} onClick={() => handleRemoveTag(tag)}>

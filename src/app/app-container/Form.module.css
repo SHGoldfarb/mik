@@ -10,4 +10,9 @@
 
 .input {
     margin-left: auto;
+    width: 50%;
+}
+
+.backButton {
+    width: 30%;
 }

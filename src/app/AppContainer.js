@@ -7,13 +7,10 @@ const AppContainer = () => (
   <BrowserRouter>
     <Route
       path="/"
-      render={({ history }) => (
+      render={() => (
         <div className={style.container}>
-          <div className={style.content}>
-            <Route path="/" exact component={Transactions} />
-            <Route path="/form" component={Form} />
-          </div>
-          <NavBar className={style.navBar} history={history} />
+          <Route path="/" exact component={Transactions} />
+          <Route path="/form" component={Form} />
         </div>
       )}
     />
