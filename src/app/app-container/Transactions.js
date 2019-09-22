@@ -3,9 +3,11 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Transaction, MonthCard, DayCard } from "./transactions";
 import { selectAllTransactionsByMonthByDay } from "../../redux/selectors";
-import style from "./Transactions.module.css";
+import style from "./Transactions.module.scss";
 import { transactionPropType } from "../../utils/propTypes";
 import IncomeExpense from "../../components/IncomeExpense";
+import Button from "../../components/Button";
+import { pushForm } from "../../utils/navigation";
 
 const Transactions = ({
   transactions: { income, expense, byMonth },
@@ -14,10 +16,14 @@ const Transactions = ({
   <Fragment>
     <IncomeExpense income={income} expense={expense} className={style.total} />
     <div className={style.transactionsContainer}>
+      <Button className={style.createButton} onClick={() => pushForm(history)}>
+        +
+      </Button>
       {Object.keys(byMonth).map(monthStr => {
         const { income: monthIncome, expense: monthExpense, byDay } = byMonth[
           monthStr
         ];
+
         return (
           <MonthCard
             monthStr={monthStr}

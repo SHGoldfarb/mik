@@ -1,3 +1,5 @@
+@import "../../utils/variables.scss";
+
 :root {
     --sum-height: 35px;
     --transactions-container-height: calc(100% - var(--sum-height));
@@ -13,4 +15,11 @@
 .total {
     font-size: 20px;
     height: var(--sum-height);
+}
+
+.createButton {
+    position: sticky;
+    top: 0;
+    background-color: $color-background;
+    margin: 5px;
 }

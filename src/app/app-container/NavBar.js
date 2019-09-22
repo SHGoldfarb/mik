@@ -4,13 +4,14 @@ import style from "./NavBar.module.css";
 import { I18N } from "../../config";
 import { classnames } from "../../utils";
 import Button from "../../components/Button";
+import { pushHome, pushForm } from "../../utils/navigation";
 
 const NavBar = ({ className, history }) => (
   <div className={classnames(style.navBar, className)}>
-    <Button className={style.button} onClick={() => history.push("/")}>
+    <Button className={style.button} onClick={() => pushHome(history)}>
       {I18N.transactions}
     </Button>
-    <Button className={style.button} onClick={() => history.push("/form")}>
+    <Button className={style.button} onClick={() => pushForm(history)}>
       {I18N.form}
     </Button>
   </div>

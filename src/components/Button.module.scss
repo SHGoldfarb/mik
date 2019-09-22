@@ -1,0 +1,17 @@
+@import "../utils/variables.scss";
+
+.button {
+    $color: $color-highlight;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-style: solid;
+    border-width: 2px;
+    border-color: $color;
+    min-height: 20px;
+    border-radius: 5px;
+    padding: 3px;
+    color: $color;
+    margin: 3px;
+}

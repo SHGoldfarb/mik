@@ -29,7 +29,7 @@ $color-background-secondary: mix($color2, white, 30);
 $color-background: mix($color-background-secondary, white, 50);
 $color-darken: $color1;
 $color-expense: $color5;
-$color-highlight: darken(saturate($color3, 30), 30);
+$color-highlight: darken(saturate($color3, 50), 30);
 $color-income: $color4;
 $color-neutral: $color1;
 $color-neutral-light: mix($color-neutral, white, 70);
