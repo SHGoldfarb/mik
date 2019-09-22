@@ -17,6 +17,7 @@ import Modal from "../../components/Modal";
 import Input from "../../components/inputs/Input";
 import { pushHome } from "../../utils/navigation";
 import SelectInput from "../../components/inputs/SelectInput";
+import uniques from "../../utils/uniques";
 
 const tagsDatalistId = "TAGSDATALIST";
 const types = [EXPENSE, INCOME];
@@ -89,7 +90,7 @@ class Form extends Component {
 
     const handleAddTag = tag =>
       this.setState(({ tags: prevTags }) => ({
-        tags: [...prevTags, tag],
+        tags: uniques([...prevTags, tag]),
         tagInputValue: ""
       }));
 

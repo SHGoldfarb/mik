@@ -15,8 +15,8 @@ PrettyDate.defaultProps = {
 };
 
 PrettyDate.propTypes = {
-  dateHighlight: PropTypes.string,
-  dateNormal: PropTypes.string
+  dateHighlight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  dateNormal: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 export default PrettyDate;

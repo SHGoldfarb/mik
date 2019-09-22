@@ -24,7 +24,7 @@ const Transaction = ({ transaction, onClick }) => {
       </div>
       <div>
         {tags.map(tag => (
-          <div>{tag}</div>
+          <div key={tag}>{tag}</div>
         ))}
       </div>
     </Clickable>
