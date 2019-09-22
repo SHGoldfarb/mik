@@ -15,10 +15,10 @@ const Transactions = ({
 }) => (
   <Fragment>
     <IncomeExpense income={income} expense={expense} className={style.total} />
+    <Button className={style.createButton} onClick={() => pushForm(history)}>
+      +
+    </Button>
     <div className={style.transactionsContainer}>
-      <Button className={style.createButton} onClick={() => pushForm(history)}>
-        +
-      </Button>
       {Object.keys(byMonth).map(monthStr => {
         const { income: monthIncome, expense: monthExpense, byDay } = byMonth[
           monthStr

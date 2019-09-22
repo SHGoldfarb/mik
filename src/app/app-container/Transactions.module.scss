@@ -1,25 +1,33 @@
 @import "../../utils/variables.scss";
 
-:root {
-    --sum-height: 35px;
-    --transactions-container-height: calc(100% - var(--sum-height));
-}
+
+$stats-height: 30px;
+$create-button-height: 20px;
+$create-button-margin: 3px;
+$create-button-border: 2px;
+$create-button-padding: 3px;
+$transactions-container-height: calc(
+    100% - #{$stats-height} - #{$create-button-height} - 
+    2 * #{$create-button-border} - 2 * #{$create-button-margin} - 
+    2 * #{$create-button-padding}
+);
+
 
 
 .transactionsContainer {
     overflow-y: auto;
-    height: var(--transactions-container-height);
-    max-height: var(--transactions-container-height);
+    height: $transactions-container-height;
+    max-height: $transactions-container-height;
 }
 
 .total {
     font-size: 20px;
-    height: var(--sum-height);
+    height: $stats-height;
 }
 
-.createButton {
-    position: sticky;
-    top: 0;
-    background-color: $color-background;
-    margin: 5px;
+.createButton.createButton {
+    height: $create-button-height;
+    margin: $create-button-margin;
+    padding: $create-button-padding;
+    border-width: $create-button-border;
 }
