@@ -8,19 +8,40 @@ $color-grey: grey;
 $color-red: red;
 $color-white: white;
 
-$color-background-secondary: $color-grey-superlight;
-$color-background: $color-white;
-$color-darken: $color-black;
-$color-expense: $color-red;
-$color-highlight: $color-green;
-$color-income: $color-blue;
-$color-neutral-light: $color-grey;
-$color-neutral-extralight: mix($color-neutral-light, $color-white);
-$color-neutral: $color-black;
-$color-shadow: $color-grey;
+$color1: rgba(58, 46, 57, 1);
+$color2: rgba(170, 217, 34, 1);
+$color3: rgba(254, 215, 102, 1);
+$color4: rgba(15, 163, 177, 1);
+$color5: rgba(215, 38, 61, 1);
+
+// $color-background-secondary: $color-grey-superlight;
+// $color-background: $color-white;
+// $color-darken: $color-black;
+// $color-expense: $color-red;
+// $color-highlight: $color-green;
+// $color-income: $color-blue;
+// $color-neutral-light: $color-grey;
+// $color-neutral-extralight: mix($color-neutral-light, $color-white);
+// $color-neutral: $color-black;
+// $color-shadow: $color-grey;
+
+$color-background-secondary: mix($color2, white, 30);
+$color-background: mix($color-background-secondary, white, 50);
+$color-darken: $color1;
+$color-expense: $color5;
+$color-highlight: darken(saturate($color3, 30), 30);
+$color-income: $color4;
+$color-neutral: $color1;
+$color-neutral-light: mix($color-neutral, white, 70);
+$color-neutral-extralight: mix($color-neutral-light, white);
+$color-shadow: mix($color-darken, white);
 
 /* --- SIZES --- */
 
 $font-size-normal: 16px;
 $font-size-big: 20px;
 $font-size-small: 13px;
+
+/* --- FONTS --- */
+
+$font-family: arial, sans-serif;
