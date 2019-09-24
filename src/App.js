@@ -7,7 +7,7 @@ import { setTransactions } from "./redux/actions";
 import { KEY } from "./utils/constants";
 import { AppContainer } from "./app";
 
-const initialTransactionsNumber = 500;
+const initialTransactionsNumber = 5000;
 
 const setInitialTransactions = setTransactionsAction => {
   const storeData = localStorage.getItem(KEY);

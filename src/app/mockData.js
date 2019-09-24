@@ -51,6 +51,8 @@ const randomAmount = (max = 1, min = 0, multiplier = MULTIPLIER) => {
   return amount;
 };
 
+const hour = 1000 * 60 * 60;
+
 const generateTransactions = number => {
   let currentId = 0;
   const transactions = {};
@@ -59,7 +61,8 @@ const generateTransactions = number => {
   for (let i = 0; i < number; i += 1) {
     const tooMuch = 1 / Math.random() < Math.abs(total);
     const doExpense = randBool();
-    currentDate += (1 / Math.random()) * 1000 * 60 * 60 * 5;
+
+    currentDate += (1 / Math.random()) * hour * 3;
     if ((tooMuch && total > 0) || doExpense) {
       // Expense
       const amount = randomAmount(QUANTITY);
