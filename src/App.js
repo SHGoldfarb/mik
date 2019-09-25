@@ -20,10 +20,10 @@ const setInitialTransactions = setTransactionsAction => {
 };
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    setInitialTransactions(props.setTransactions);
-  }
+  componentDidMount = () => {
+    const { writeTransactions } = this.props;
+    setInitialTransactions(writeTransactions);
+  };
 
   render() {
     return <AppContainer />;
@@ -31,11 +31,11 @@ class App extends Component {
 }
 
 App.propTypes = {
-  setTransactions: PropTypes.func.isRequired
+  writeTransactions: PropTypes.func.isRequired
 };
 
 const mapDispatchToProps = dispatch => ({
-  setTransactions: transactions => dispatch(setTransactions(transactions))
+  writeTransactions: transactions => dispatch(setTransactions(transactions))
 });
 
 export default connect(

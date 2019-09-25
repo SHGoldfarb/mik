@@ -14,14 +14,40 @@ export const selectTransaction = (state, id) =>
     ? { ...parseTransaction(state.transactions[id]), id }
     : null;
 
-export const selectAllTransactions = state =>
+const selectAllTransactionsUnordered = state =>
   state.transactions
-    ? Object.keys(state.transactions)
-        .map(id => ({ ...parseTransaction(state.transactions[id]), id }))
-        .sort((a, b) => -a.date + b.date)
+    ? Object.keys(state.transactions).map(id => ({
+        ...parseTransaction(state.transactions[id]),
+        id
+      }))
     : [];
 
-// Returns transactions in a I18N with shape: (TODO: update)
+export const selectAllTransactions = createSelector(
+  selectAllTransactionsUnordered,
+  transactions => transactions.sort((a, b) => -a.date + b.date)
+);
+
+const getDateStrings = date => {
+  const dateObject = new Date(date);
+  const day = dateObject.getDate();
+  const month = dateObject.getMonth() + 1;
+  const year = dateObject.getFullYear();
+  const monthStr = `${year}-${month}`;
+  const dayStr = `${monthStr}-${day}`;
+  return { monthStr, dayStr };
+};
+
+export const selectAllMonths = createSelector(
+  selectAllTransactionsUnordered,
+  transactions => [
+    ...transactions.reduce((acc, transaction) => {
+      const { monthStr } = getDateStrings(transaction.date);
+      return acc.add(monthStr);
+    }, new Set())
+  ]
+);
+
+// Returns transactions in a dictionary with shape: (TODO: update)
 // {
 //   [monthStr]: {
 //     [day]: [transactions]
@@ -32,13 +58,8 @@ export const selectAllTransactionsByMonthByDay = createSelector(
   transactions =>
     transactions.reduce(
       (accumulator, transaction) => {
-        const { date } = transaction;
-        const dateObject = new Date(date);
-        const day = dateObject.getDate();
-        const month = dateObject.getMonth() + 1;
-        const year = dateObject.getFullYear();
-        const monthStr = `${year}-${month}`;
-        const dayStr = `${monthStr}-${day}`;
+        const { monthStr, dayStr } = getDateStrings(transaction.date);
+
         const { income, expense } = getIncomeExpense(transaction);
 
         // Optimally compute total, month and day stats
