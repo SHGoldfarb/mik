@@ -55,12 +55,6 @@ export const selectDayStats = (state, dayStr) =>
 export const selectDayTransactions = (state, dayStr) =>
   state[selectDayTransactionsQuery][dayStr] || {};
 
-// Returns transactions in a dictionary with shape: (TODO: update)
-// {
-//   [monthStr]: {
-//     [day]: [transactions]
-//   }
-// }
 export const selectAllTransactionsByMonthByDay = createSelector(
   selectAllTransactions,
   transactions =>

@@ -14,7 +14,14 @@ import { compose } from "../../../utils";
 import { withFetch } from "../../../components/Fetch";
 import { fetchMonthStats, fetchMonthDays } from "../../../redux/actionCreators";
 
-const MonthCard = ({ monthStr, children, statsData, daysData, active }) => {
+const MonthCard = ({
+  monthStr,
+  children,
+  statsData,
+  daysData,
+  active,
+  onClick
+}) => {
   const days = daysData.loading || !daysData.data ? [] : daysData.data;
 
   const date = inCurrentTZ(monthStr);
@@ -22,6 +29,7 @@ const MonthCard = ({ monthStr, children, statsData, daysData, active }) => {
     statsData.loading || !statsData.data
       ? { income: null, expense: null }
       : statsData.data;
+
   return (
     <Card
       leftHeader={
@@ -42,6 +50,7 @@ const MonthCard = ({ monthStr, children, statsData, daysData, active }) => {
         )
       }
       className={style.cardBackground}
+      onHeaderClick={onClick}
     >
       {(active && (daysData.loading ? <Spinner /> : children(days))) || null}
     </Card>
@@ -62,7 +71,8 @@ MonthCard.propTypes = {
     PropTypes.shape({ income: PropTypes.number, expense: PropTypes.number })
   ).isRequired,
   daysData: dataPropType(PropTypes.arrayOf(PropTypes.string)).isRequired,
-  active: PropTypes.bool.isRequired
+  active: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired
 };
 
 export default compose(

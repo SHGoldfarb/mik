@@ -14,9 +14,14 @@ import Spinner from "../../components/Spinner";
 class Transactions extends Component {
   state = { activeIndex: 0 };
 
+  handleSetActive = index => {
+    this.setState({ activeIndex: index });
+  };
+
   render = () => {
     const { monthsData, history } = this.props;
     const { activeIndex } = this.state;
+
     const months =
       monthsData.loading || !monthsData.data ? [] : monthsData.data;
     return (
@@ -36,6 +41,7 @@ class Transactions extends Component {
                 monthStr={monthStr}
                 key={monthStr}
                 active={index === activeIndex}
+                onClick={() => this.handleSetActive(index)}
               >
                 {days =>
                   days.map(dayStr => (
