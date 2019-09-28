@@ -72,7 +72,7 @@ DayCard.propTypes = {
 export default compose(
   connect(mapStateToProps),
   withFetch(({ dayStr, statsData, transactionsData }) => [
-    !statsData.loaded && fetchDayStats(dayStr),
-    !transactionsData.loaded && fetchDayTransactions(dayStr)
+    !statsData.queried && fetchDayStats(dayStr),
+    !transactionsData.queried && fetchDayTransactions(dayStr)
   ])
 )(DayCard);

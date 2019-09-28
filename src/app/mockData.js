@@ -1,4 +1,5 @@
 import { EXPENSE, INCOME, CASH } from "../utils/constants";
+import uniques from "../utils/uniques";
 
 const QUANTITY = 10000000;
 const MULTIPLIER = 100;
@@ -39,7 +40,7 @@ const createTransaction = (amount, date, type) => ({
   account: CASH,
   type,
   comment: mockComment(),
-  tags: [...Array(randInt(4))].map(() => mockTag())
+  tags: uniques([...Array(randInt(4))].map(() => mockTag()))
 });
 
 const income = (amount, date) => createTransaction(amount, date, INCOME);

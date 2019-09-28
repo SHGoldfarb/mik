@@ -59,10 +59,11 @@ const monthsReducer = (state = {}, action) => {
   const { type, payload } = action;
   switch (type) {
     case ALL_MONTHS_PENDING: {
-      return { loading: true };
+      return { ...state, loading: true, queried: true };
     }
     case ALL_MONTHS_SET: {
       return {
+        ...state,
         loading: false,
         loaded: true,
         data: payload
@@ -78,6 +79,7 @@ const monthsReducer = (state = {}, action) => {
         };
       }
       return {
+        ...state,
         loading: false,
         loaded: true,
         data: [...prevMonths, payload]
@@ -94,12 +96,13 @@ const monthStatsReducer = (state = {}, action) => {
     case MONTH_STATS_PENDING:
       return {
         ...state,
-        [payload]: { loading: true }
+        [payload]: { ...state[payload], loading: true, queried: true }
       };
     case MONTH_STATS_SET:
       return {
         ...state,
         [payload.monthStr]: {
+          ...state[payload.monthStr],
           loading: false,
           loaded: true,
           data: payload.stats
@@ -116,12 +119,17 @@ const monthDaysReducer = (state = {}, action) => {
     case MONTH_DAYS_PENDING:
       return {
         ...state,
-        [payload]: { loading: true }
+        [payload]: { ...state[payload], loading: true, queried: true }
       };
     case MONTH_DAYS_SET:
       return {
         ...state,
-        [payload.monthStr]: { loading: false, loaded: true, data: payload.days }
+        [payload.monthStr]: {
+          ...state[payload.monthStr],
+          loading: false,
+          loaded: true,
+          data: payload.days
+        }
       };
     default:
       return state;
@@ -134,12 +142,13 @@ const monthTransactionsReducer = (state = {}, action) => {
     case MONTH_TRANSACTIONS_PENDING:
       return {
         ...state,
-        [payload]: { loading: true }
+        [payload]: { ...state[payload], loading: true, queried: true }
       };
     case MONTH_TRANSACTIONS_SET:
       return {
         ...state,
         [payload.monthStr]: {
+          ...state[payload.monthStr],
           loading: false,
           loaded: true,
           data: payload.transactions
@@ -156,12 +165,17 @@ const dayStatsReducer = (state = {}, action) => {
     case DAY_STATS_PENDING:
       return {
         ...state,
-        [payload]: { loading: true }
+        [payload]: { ...state[payload], loading: true, queried: true }
       };
     case DAY_STATS_SET:
       return {
         ...state,
-        [payload.dayStr]: { loading: false, loaded: true, data: payload.stats }
+        [payload.dayStr]: {
+          ...state[payload.dayStr],
+          loading: false,
+          loaded: true,
+          data: payload.stats
+        }
       };
     default:
       return state;
@@ -174,12 +188,13 @@ const dayTransactionsReducer = (state = {}, action) => {
     case DAY_TRANSACTIONS_PENDING:
       return {
         ...state,
-        [payload]: { loading: true }
+        [payload]: { ...state[payload], loading: true, queried: true }
       };
     case DAY_TRANSACTIONS_SET:
       return {
         ...state,
         [payload.dayStr]: {
+          ...state[payload.dayStr],
           loading: false,
           loaded: true,
           data: payload.transactions

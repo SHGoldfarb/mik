@@ -78,7 +78,7 @@ MonthCard.propTypes = {
 export default compose(
   connect(mapStateToProps),
   withFetch(({ monthStr, active, statsData, daysData }) => [
-    !statsData.loaded && fetchMonthStats(monthStr),
-    !daysData.loaded && active && fetchMonthDays(monthStr)
+    !statsData.queried && fetchMonthStats(monthStr),
+    !daysData.queried && active && fetchMonthDays(monthStr)
   ])
 )(MonthCard);
