@@ -5,57 +5,16 @@ import { Transaction, MonthCard, DayCard } from "./transactions";
 import { selectAllMonths } from "../../redux/selectors";
 import style from "./Transactions.module.scss";
 import Button from "../../components/Button";
-import { pushForm } from "../../utils/navigation";
+import {
+  pushForm,
+  getUrlParam,
+  upsertReplaceUrlParams
+} from "../../utils/navigation";
 import { compose } from "../../utils";
 import { withFetch } from "../../components/Fetch";
 import { fetchAllMonths } from "../../redux/actionCreators";
 import Spinner from "../../components/Spinner";
 import OnRender from "../../components/OnRender";
-
-const getSearchFromParams = params => {
-  const searchStr = Object.keys(params).reduce((acc, key) => {
-    let s = "";
-    if (acc.length === 0) {
-      s += "?";
-    } else {
-      s += "&";
-    }
-    s += `${key}=${params[key]}`;
-
-    return `${acc}${s}`;
-  }, "");
-
-  return searchStr;
-};
-
-const getParamsFromSearch = searchStr => {
-  if (searchStr.length === 0) {
-    return {};
-  }
-  const params = searchStr.split("?")[1].split("&");
-  return params.reduce((acc, param) => {
-    const [key, value] = param.split("=");
-    return { ...acc, [key]: value };
-  }, {});
-};
-
-const getUrlParams = history => getParamsFromSearch(history.location.search);
-
-const getUrlParam = (history, field) => getUrlParams(history)[field];
-
-const replaceUrlParams = (history, params) => {
-  const searchStr = getSearchFromParams(params);
-
-  history.replace(`${history.location.pathname}${searchStr}`);
-};
-
-const upsertUrlParams = (history, params) => {
-  const oldParams = getUrlParams(history);
-  Object.keys(params).forEach(key => {
-    oldParams[key] = params[key];
-  });
-  replaceUrlParams(history, oldParams);
-};
 
 const activeParam = "active";
 
@@ -63,7 +22,7 @@ const Transactions = ({ monthsData, history }) => {
   const activeMonthStr = getUrlParam(history, activeParam);
 
   const handleActiveMonthStrChange = monthStr =>
-    upsertUrlParams(history, { [activeParam]: monthStr });
+    upsertReplaceUrlParams(history, { [activeParam]: monthStr });
 
   const months = monthsData.loading || !monthsData.data ? [] : monthsData.data;
   return (
