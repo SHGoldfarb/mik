@@ -21,3 +21,6 @@ export const prettyCurrency = amount => {
   }
   return `$${s.slice(0, s.length - 1)}`;
 };
+
+export const compose = (...funcs) => value =>
+  funcs.reduce((val, f) => f(val), value);

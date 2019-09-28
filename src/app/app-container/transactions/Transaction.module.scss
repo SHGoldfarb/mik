@@ -1,7 +1,7 @@
 @import "../../../utils/variables.scss";
 
 .commentContainer {
-    color: $color-highlight;
+    color: $color-neutral;
 }
 
 .expense {
@@ -31,4 +31,15 @@
 
 .dateContainer {
     display: flex;
+}
+
+.tagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.tag {    
+    margin: 2px 7px 2px 0px;
+    color: $color-neutral-light;
+    font-size: 13px;
 }

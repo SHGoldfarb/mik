@@ -22,9 +22,11 @@ const Transaction = ({ transaction, onClick }) => {
           {prettyCurrency(amount)}
         </div>
       </div>
-      <div>
+      <div className={style.tagsContainer}>
         {tags.map(tag => (
-          <div key={tag}>{tag}</div>
+          <div key={tag} className={style.tag}>
+            {tag}
+          </div>
         ))}
       </div>
     </Clickable>

@@ -14,6 +14,12 @@ const msYear2000 = msDay * (365 * 30 + 7) + msTimezone;
 
 const randBool = () => Math.random() < 0.5;
 
+const randInt = (max = 10000) => Math.floor(Math.random() * max);
+
+const randChoice = array => array[Math.floor(Math.random() * array.length)];
+
+const mockTag = () => randChoice(mockText.split(" "));
+
 const mockComment = () => {
   // select length of comment
   const nChars = Math.round(Math.random() * 25) + 5;
@@ -32,7 +38,8 @@ const createTransaction = (amount, date, type) => ({
   date,
   account: CASH,
   type,
-  comment: mockComment()
+  comment: mockComment(),
+  tags: [...Array(randInt(4))].map(() => mockTag())
 });
 
 const income = (amount, date) => createTransaction(amount, date, INCOME);
@@ -77,6 +84,11 @@ const generateTransactions = number => {
     currentId += 1;
   }
   return transactions;
+};
+
+export const generateTransactionsArray = number => {
+  const transactions = generateTransactions(number);
+  return Object.keys(transactions).map(id => ({ ...transactions[id], id }));
 };
 
 export default generateTransactions;

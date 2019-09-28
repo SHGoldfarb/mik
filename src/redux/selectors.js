@@ -1,7 +1,15 @@
+import PropTypes from "prop-types";
 import { createSelector } from "reselect";
 import flatten from "../utils/flatten";
 import uniques from "../utils/uniques";
 import { getTotal, getIncomeExpense } from "../utils/stats";
+import { transactionPropType } from "../utils/propTypes";
+import {
+  selectAllMonthsQuery,
+  selectMonthStatsQuery,
+  selectMonthTransactionsQuery
+} from "../database/queries";
+import { getDateStrings } from "../utils/date";
 
 const parseTransaction = ({ amount, tags, ...rest }) => ({
   amount: amount || 0,
@@ -27,25 +35,13 @@ export const selectAllTransactions = createSelector(
   transactions => transactions.sort((a, b) => -a.date + b.date)
 );
 
-const getDateStrings = date => {
-  const dateObject = new Date(date);
-  const day = dateObject.getDate();
-  const month = dateObject.getMonth() + 1;
-  const year = dateObject.getFullYear();
-  const monthStr = `${year}-${month}`;
-  const dayStr = `${monthStr}-${day}`;
-  return { monthStr, dayStr };
-};
+export const selectAllMonths = state => state[selectAllMonthsQuery] || {};
 
-export const selectAllMonths = createSelector(
-  selectAllTransactionsUnordered,
-  transactions => [
-    ...transactions.reduce((acc, transaction) => {
-      const { monthStr } = getDateStrings(transaction.date);
-      return acc.add(monthStr);
-    }, new Set())
-  ]
-);
+export const selectMonthStats = (state, monthStr) =>
+  state[selectMonthStatsQuery][monthStr] || {};
+
+export const selectMonthTransactions = (state, monthStr) =>
+  state[selectMonthTransactionsQuery][monthStr] || {};
 
 // Returns transactions in a dictionary with shape: (TODO: update)
 // {
@@ -114,6 +110,24 @@ export const selectAllTransactionsByMonthByDay = createSelector(
       { income: 0, expense: 0, byMonth: {} }
     )
 );
+
+export const selectAllTransactionsByMonthByDayPropType = PropTypes.shape({
+  income: PropTypes.number.isRequired,
+  expense: PropTypes.number.isRequired,
+  byMonth: PropTypes.objectOf(
+    PropTypes.shape({
+      income: PropTypes.number.isRequired,
+      expense: PropTypes.number.isRequired,
+      byDay: PropTypes.objectOf(
+        PropTypes.shape({
+          income: PropTypes.number.isRequired,
+          expense: PropTypes.number.isRequired,
+          transactions: PropTypes.arrayOf(transactionPropType).isRequired
+        })
+      ).isRequired
+    })
+  ).isRequired
+});
 
 export const selectTotal = createSelector(
   selectAllTransactions,

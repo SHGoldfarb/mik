@@ -8,3 +8,6 @@ export const transactionPropType = PropTypes.shape({
   type: PropTypes.string.isRequired,
   comment: PropTypes.string.isRequired
 });
+
+export const dataPropType = dataValidator =>
+  PropTypes.shape({ loading: PropTypes.bool, data: dataValidator });

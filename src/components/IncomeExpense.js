@@ -5,18 +5,24 @@ import { prettyCurrency, classnames } from "../utils";
 
 const IncomeExpense = ({ income, expense, className }) => (
   <div className={classnames(style.container, className)}>
-    <div className={style.income}>{prettyCurrency(income)}</div>
-    <div className={style.expense}>{prettyCurrency(expense)}</div>
+    {income !== null && (
+      <div className={style.income}>{prettyCurrency(income)}</div>
+    )}
+    {expense !== null && (
+      <div className={style.expense}>{prettyCurrency(expense)}</div>
+    )}
   </div>
 );
 
 IncomeExpense.defaultProps = {
-  className: ""
+  className: "",
+  income: null,
+  expense: null
 };
 
 IncomeExpense.propTypes = {
-  income: PropTypes.number.isRequired,
-  expense: PropTypes.number.isRequired,
+  income: PropTypes.number,
+  expense: PropTypes.number,
   className: PropTypes.string
 };
 
