@@ -97,19 +97,50 @@ export const dbFetchAllMonths = async () => {
   return uniques(monthStrings).sort((a, b) => (a < b ? -1 : 1));
 };
 
-export const dbFetchMonthTransactions = async monthStr => {
+const getTransactionsInDateRange = async (start, end) => {
   const db = await openDatabase();
-
-  const start = inCurrentTZ(`${monthStr}-01`);
-  const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
 
   const range = IDBKeyRange.bound(start.getTime(), end.getTime());
 
   return db.getAllFromIndex(TRANSACTIONS_OBJECT_STORE, "date", range);
 };
 
+export const dbFetchMonthTransactions = monthStr => {
+  const start = inCurrentTZ(`${monthStr}-01`);
+  const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+
+  return getTransactionsInDateRange(start, end);
+};
+
+export const dbFetchDayTransactions = dayStr => {
+  const start = inCurrentTZ(dayStr);
+
+  const end = new Date(start.getTime() + 1000 * 60 * 60 * 24 - 1);
+
+  return getTransactionsInDateRange(start, end);
+};
+
 export const dbFetchMonthStats = async monthStr => {
   const transactions = await dbFetchMonthTransactions(monthStr);
 
   return getIncomeExpenses(transactions);
+};
+
+export const dbFetchDayStats = async dayStr => {
+  const transactions = await dbFetchDayTransactions(dayStr);
+
+  return getIncomeExpenses(transactions);
+};
+
+export const dbFetchMonthDays = async monthStr => {
+  const transactions = await dbFetchMonthTransactions(monthStr);
+
+  const days = [
+    ...transactions.reduce((acc, transaction) => {
+      const { dayStr } = getDateStrings(transaction.date);
+      return !acc.has(dayStr) ? acc.add(dayStr) : acc;
+    }, new Set())
+  ];
+
+  return days;
 };

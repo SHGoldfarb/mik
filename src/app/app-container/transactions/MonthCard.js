@@ -7,30 +7,16 @@ import { inCurrentTZ } from "../../../utils/date";
 import PrettyDate from "../../../components/PrettyDate";
 import I18N from "../../../config/I18N";
 import style from "./MonthCard.module.scss";
-import { dataPropType, transactionPropType } from "../../../utils/propTypes";
+import { dataPropType } from "../../../utils/propTypes";
 import Spinner from "../../../components/Spinner";
-import {
-  selectMonthStats,
-  selectMonthTransactions
-} from "../../../redux/selectors";
+import { selectMonthStats, selectMonthDays } from "../../../redux/selectors";
 import { compose } from "../../../utils";
 import { withFetch } from "../../../components/Fetch";
-import {
-  fetchMonthStats,
-  fetchMonthTransactions
-} from "../../../redux/actionCreators";
+import { fetchMonthStats, fetchMonthDays } from "../../../redux/actionCreators";
 
-const MonthCard = ({
-  monthStr,
-  children,
-  statsData,
-  transactionsData,
-  active
-}) => {
-  const transactions =
-    transactionsData.loading || !transactionsData.data
-      ? []
-      : transactionsData.data;
+const MonthCard = ({ monthStr, children, statsData, daysData, active }) => {
+  const days = daysData.loading || !daysData.data ? [] : daysData.data;
+
   const date = inCurrentTZ(monthStr);
   const { income, expense } =
     statsData.loading || !statsData.data
@@ -57,14 +43,14 @@ const MonthCard = ({
       }
       className={style.cardBackground}
     >
-      {active ? children(transactions) : null}
+      {(active && (daysData.loading ? <Spinner /> : children(days))) || null}
     </Card>
   );
 };
 
 const mapStateToProps = (state, { monthStr }) => ({
   statsData: selectMonthStats(state, monthStr),
-  transactionsData: selectMonthTransactions(state, monthStr)
+  daysData: selectMonthDays(state, monthStr)
 });
 
 MonthCard.defaultProps = {};
@@ -75,15 +61,14 @@ MonthCard.propTypes = {
   statsData: dataPropType(
     PropTypes.shape({ income: PropTypes.number, expense: PropTypes.number })
   ).isRequired,
-  transactionsData: dataPropType(PropTypes.arrayOf(transactionPropType))
-    .isRequired,
+  daysData: dataPropType(PropTypes.arrayOf(PropTypes.string)).isRequired,
   active: PropTypes.bool.isRequired
 };
 
 export default compose(
-  withFetch(({ monthStr, active }) => [
-    fetchMonthStats(monthStr),
-    active ? fetchMonthTransactions(monthStr) : () => {}
-  ]),
-  connect(mapStateToProps)
+  connect(mapStateToProps),
+  withFetch(({ monthStr, active, statsData, daysData }) => [
+    !statsData.loaded && fetchMonthStats(monthStr),
+    !daysData.loaded && active && fetchMonthDays(monthStr)
+  ])
 )(MonthCard);

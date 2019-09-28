@@ -37,7 +37,7 @@ class Transactions extends Component {
                 key={monthStr}
                 active={index === activeIndex}
               >
-                {days => {
+                {days =>
                   days.map(dayStr => (
                     <DayCard dayStr={dayStr} key={dayStr}>
                       {dayTransactions =>
@@ -52,8 +52,8 @@ class Transactions extends Component {
                         ))
                       }
                     </DayCard>
-                  ));
-                }}
+                  ))
+                }
               </MonthCard>
             ))
           )}
@@ -77,5 +77,5 @@ Transactions.propTypes = {
 
 export default compose(
   connect(mapStateToProps),
-  withFetch(() => [fetchAllMonths])
+  withFetch(({ monthsData }) => [!monthsData.loaded && fetchAllMonths])
 )(Transactions);

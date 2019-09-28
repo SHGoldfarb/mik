@@ -7,7 +7,10 @@ import { transactionPropType } from "../utils/propTypes";
 import {
   selectAllMonthsQuery,
   selectMonthStatsQuery,
-  selectMonthTransactionsQuery
+  selectMonthTransactionsQuery,
+  selectMonthDaysQuery,
+  selectDayStatsQuery,
+  selectDayTransactionsQuery
 } from "../database/queries";
 import { getDateStrings } from "../utils/date";
 
@@ -40,8 +43,17 @@ export const selectAllMonths = state => state[selectAllMonthsQuery] || {};
 export const selectMonthStats = (state, monthStr) =>
   state[selectMonthStatsQuery][monthStr] || {};
 
+export const selectMonthDays = (state, monthStr) =>
+  state[selectMonthDaysQuery][monthStr] || {};
+
 export const selectMonthTransactions = (state, monthStr) =>
   state[selectMonthTransactionsQuery][monthStr] || {};
+
+export const selectDayStats = (state, dayStr) =>
+  state[selectDayStatsQuery][dayStr] || {};
+
+export const selectDayTransactions = (state, dayStr) =>
+  state[selectDayTransactionsQuery][dayStr] || {};
 
 // Returns transactions in a dictionary with shape: (TODO: update)
 // {

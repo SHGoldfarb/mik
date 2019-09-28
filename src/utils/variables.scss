@@ -3,16 +3,24 @@
 $color-black: rgb(40, 40, 40);
 $color-blue: blue;
 $color-green: green;
-$color-grey-superlight: rgb(240, 240, 240);
-$color-grey: grey;
 $color-red: red;
 $color-white: white;
 
-$color1: rgba(58, 46, 57, 1);
-$color2: rgba(170, 217, 34, 1);
-$color3: rgba(254, 215, 102, 1);
-$color4: rgba(15, 163, 177, 1);
-$color5: rgba(215, 38, 61, 1);
+$color1: rgba(255, 255, 255, 1);
+$color2: rgba(61, 61, 61, 1);
+$color3: rgba(211, 63, 73, 1);
+$color4: rgba(46, 134, 171, 1);
+$color5: rgba(56, 134, 89, 1);
+
+$color-black: $color2;
+$color-blue: darken($color4, 10);
+$color-green: saturate($color5, 20);
+$color-red: $color3;
+$color-white: $color1;
+
+$color-grey: mix($color-white, $color-black);
+$color-grey-superlight: rgb(240, 240, 240);
+$color-grey-superlight: mix($color-grey, $color-white, 10);
 
 $color-background-secondary: $color-grey-superlight;
 $color-background: $color-white;
@@ -26,16 +34,6 @@ $color-neutral-extraextralight: mix($color-neutral-extralight, $color-white);
 $color-neutral: $color-black;
 $color-shadow: $color-grey;
 
-// $color-background-secondary: mix($color2, white, 30);
-// $color-background: mix($color-background-secondary, white, 50);
-// $color-darken: $color1;
-// $color-expense: $color5;
-// $color-highlight: darken(saturate($color3, 50), 30);
-// $color-income: $color4;
-// $color-neutral: $color1;
-// $color-neutral-light: mix($color-neutral, white, 70);
-// $color-neutral-extralight: mix($color-neutral-light, white);
-// $color-shadow: mix($color-darken, white);
 
 /* --- SIZES --- */
 

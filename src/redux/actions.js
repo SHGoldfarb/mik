@@ -9,7 +9,13 @@ import {
   MONTH_STATS_SET,
   ALL_MONTHS_ADD,
   MONTH_TRANSACTIONS_PENDING,
-  MONTH_TRANSACTIONS_SET
+  MONTH_TRANSACTIONS_SET,
+  MONTH_DAYS_PENDING,
+  MONTH_DAYS_SET,
+  DAY_STATS_PENDING,
+  DAY_STATS_SET,
+  DAY_TRANSACTIONS_PENDING,
+  DAY_TRANSACTIONS_SET
 } from "./actionTypes";
 
 export const setTransactions = transactions => ({
@@ -59,6 +65,19 @@ export const monthStatsSet = (monthStr, stats) => ({
   }
 });
 
+export const monthDaysPending = monthStr => ({
+  type: MONTH_DAYS_PENDING,
+  payload: monthStr
+});
+
+export const monthDaysSet = (monthStr, days) => ({
+  type: MONTH_DAYS_SET,
+  payload: {
+    monthStr,
+    days
+  }
+});
+
 export const monthTransactionsPending = monthStr => ({
   type: MONTH_TRANSACTIONS_PENDING,
   payload: monthStr
@@ -68,6 +87,32 @@ export const monthTransactionsSet = (monthStr, transactions) => ({
   type: MONTH_TRANSACTIONS_SET,
   payload: {
     monthStr,
+    transactions
+  }
+});
+
+export const dayStatsPending = dayStr => ({
+  type: DAY_STATS_PENDING,
+  payload: dayStr
+});
+
+export const dayStatsSet = (dayStr, stats) => ({
+  type: DAY_STATS_SET,
+  payload: {
+    dayStr,
+    stats
+  }
+});
+
+export const dayTransactionsPending = dayStr => ({
+  type: DAY_TRANSACTIONS_PENDING,
+  payload: dayStr
+});
+
+export const dayTransactionsSet = (dayStr, transactions) => ({
+  type: DAY_TRANSACTIONS_SET,
+  payload: {
+    dayStr,
     transactions
   }
 });

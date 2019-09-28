@@ -10,13 +10,22 @@ import {
   MONTH_STATS_SET,
   ALL_MONTHS_ADD,
   MONTH_TRANSACTIONS_PENDING,
-  MONTH_TRANSACTIONS_SET
+  MONTH_TRANSACTIONS_SET,
+  MONTH_DAYS_PENDING,
+  MONTH_DAYS_SET,
+  DAY_STATS_PENDING,
+  DAY_STATS_SET,
+  DAY_TRANSACTIONS_PENDING,
+  DAY_TRANSACTIONS_SET
 } from "./actionTypes";
 import { CASH } from "../utils/constants";
 import {
   selectAllMonthsQuery,
   selectMonthStatsQuery,
-  selectMonthTransactionsQuery
+  selectMonthTransactionsQuery,
+  selectMonthDaysQuery,
+  selectDayStatsQuery,
+  selectDayTransactionsQuery
 } from "../database/queries";
 
 const createTransaction = ({
@@ -55,13 +64,23 @@ const monthsReducer = (state = {}, action) => {
     case ALL_MONTHS_SET: {
       return {
         loading: false,
+        loaded: true,
         data: payload
       };
     }
     case ALL_MONTHS_ADD: {
+      const prevMonths = state.data || [];
+      if (prevMonths.includes(payload)) {
+        return {
+          ...state,
+          loading: false,
+          loaded: true
+        };
+      }
       return {
         loading: false,
-        data: [...(state.data || []), payload]
+        loaded: true,
+        data: [...prevMonths, payload]
       };
     }
     default:
@@ -80,7 +99,29 @@ const monthStatsReducer = (state = {}, action) => {
     case MONTH_STATS_SET:
       return {
         ...state,
-        [payload.monthStr]: { loading: false, data: payload.stats }
+        [payload.monthStr]: {
+          loading: false,
+          loaded: true,
+          data: payload.stats
+        }
+      };
+    default:
+      return state;
+  }
+};
+
+const monthDaysReducer = (state = {}, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case MONTH_DAYS_PENDING:
+      return {
+        ...state,
+        [payload]: { loading: true }
+      };
+    case MONTH_DAYS_SET:
+      return {
+        ...state,
+        [payload.monthStr]: { loading: false, loaded: true, data: payload.days }
       };
     default:
       return state;
@@ -98,7 +139,51 @@ const monthTransactionsReducer = (state = {}, action) => {
     case MONTH_TRANSACTIONS_SET:
       return {
         ...state,
-        [payload.monthStr]: { loading: false, data: payload.transactions }
+        [payload.monthStr]: {
+          loading: false,
+          loaded: true,
+          data: payload.transactions
+        }
+      };
+    default:
+      return state;
+  }
+};
+
+const dayStatsReducer = (state = {}, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case DAY_STATS_PENDING:
+      return {
+        ...state,
+        [payload]: { loading: true }
+      };
+    case DAY_STATS_SET:
+      return {
+        ...state,
+        [payload.dayStr]: { loading: false, loaded: true, data: payload.stats }
+      };
+    default:
+      return state;
+  }
+};
+
+const dayTransactionsReducer = (state = {}, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case DAY_TRANSACTIONS_PENDING:
+      return {
+        ...state,
+        [payload]: { loading: true }
+      };
+    case DAY_TRANSACTIONS_SET:
+      return {
+        ...state,
+        [payload.dayStr]: {
+          loading: false,
+          loaded: true,
+          data: payload.transactions
+        }
       };
     default:
       return state;
@@ -143,5 +228,8 @@ export const rootReducer = combineReducers({
   [selectMonthStatsQuery]: monthStatsReducer,
   [selectMonthTransactionsQuery]: monthTransactionsReducer,
   transactions: transactionsReducer,
-  [selectAllMonthsQuery]: monthsReducer
+  [selectAllMonthsQuery]: monthsReducer,
+  [selectMonthDaysQuery]: monthDaysReducer,
+  [selectDayStatsQuery]: dayStatsReducer,
+  [selectDayTransactionsQuery]: dayTransactionsReducer
 });

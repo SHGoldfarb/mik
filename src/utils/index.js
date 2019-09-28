@@ -23,4 +23,4 @@ export const prettyCurrency = amount => {
 };
 
 export const compose = (...funcs) => value =>
-  funcs.reduce((val, f) => f(val), value);
+  funcs.reduceRight((val, f) => f(val), value);
