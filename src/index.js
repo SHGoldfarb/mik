@@ -3,15 +3,15 @@ import ReactDOM from "react-dom";
 import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import { rootReducer } from "./redux/reducers";
-import { KEY } from "./utils/constants";
+// import { KEY } from "./utils/constants";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
 const persister = store => next => action => {
   const result = next(action);
-  const state = store.getState();
-  localStorage.setItem(KEY, JSON.stringify(state));
+  // const state = store.getState();
+  // localStorage.setItem(KEY, JSON.stringify(state));
   return result;
 };
 

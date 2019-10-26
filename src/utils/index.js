@@ -24,3 +24,6 @@ export const prettyCurrency = amount => {
 
 export const compose = (...funcs) => value =>
   funcs.reduceRight((val, f) => f(val), value);
+
+export const parseObjectData = data =>
+  !data || data.loading || data.error || !data.data ? null : data.data;

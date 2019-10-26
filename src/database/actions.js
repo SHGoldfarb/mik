@@ -9,13 +9,13 @@ const TRANSACTIONS_OBJECT_STORE = "transactions";
 const safe = action => (...args) => {
   if (!("indexedDB" in window)) {
     // eslint-disable-next-line no-console
-    console.log("This browser doesn't support IndexedDB");
+    console.error("This browser doesn't support IndexedDB");
     return undefined;
   }
   return action(...args);
 };
 
-const openDatabase = () =>
+const openDatabase = safe(() =>
   openDB(DB_NAME, 1, {
     upgrade(db, oldVersion) {
       // eslint-disable-next-line no-console
@@ -39,9 +39,10 @@ const openDatabase = () =>
     blocking() {
       // …
     }
-  });
+  })
+);
 
-export const dbSetTransactions = safe(async transactions => {
+export const dbSetTransactions = async transactions => {
   const db = await openDatabase();
 
   const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");
@@ -53,31 +54,114 @@ export const dbSetTransactions = safe(async transactions => {
   }
 
   return tx.done;
-});
-
-export const dbFetchAllTransactions = async () => {
-  const db = await openDatabase();
-  return db.getAllFromIndex(TRANSACTIONS_OBJECT_STORE, "date");
 };
 
-export const dbGenerateAllMonths = async () => {
+export const dbCreateTransaction = async transaction => {
+  const db = await openDatabase();
+  const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");
+  tx.store.add(transaction);
+  await tx.done;
+  return transaction;
+};
+
+export const dbDeleteTransaction = async id => {
+  const db = await openDatabase();
+  const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");
+  const transaction = await tx.store.get(id);
+  tx.store.delete(id);
+  await tx.done;
+  return transaction;
+};
+
+export const dbFetchTransaction = async id => {
+  const db = await openDatabase();
+  const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readonly");
+  const transaction = await tx.store.get(id);
+  await tx.done;
+  return transaction;
+};
+
+export const dbGenerateAllTransactions = async () => {
   const db = await openDatabase();
 
   const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readonly");
   const index = tx.store.index("date");
 
-  const cursor = await index.openCursor();
+  const cursor = await index.openCursor(undefined, "prev");
 
-  const months = new Set();
-
-  const nextMonth = async () => {
+  const nextTransaction = async () => {
     try {
       await cursor.continue();
     } catch {
       return undefined;
     }
 
-    const transaction = { ...cursor.value };
+    return { ...cursor.value };
+  };
+
+  return nextTransaction;
+};
+
+export const dbFetchAllTransactions = async () => {
+  const db = await openDatabase();
+  return db.getAllFromIndex(TRANSACTIONS_OBJECT_STORE, "date");
+};
+
+export const dbGenerateAllTags = async () => {
+  const nextTransaction = await dbGenerateAllTransactions();
+
+  const sentTags = new Set();
+
+  const unsentTags = new Set();
+  const nextTag = async () => {
+    while (unsentTags.size === 0) {
+      // eslint-disable-next-line no-await-in-loop
+      const transaction = await nextTransaction();
+      if (transaction === undefined) {
+        return undefined;
+      }
+      transaction.tags.forEach(tag => {
+        if (!sentTags.has(tag)) {
+          unsentTags.add(tag);
+        }
+      });
+    }
+
+    const tagToSend = [...unsentTags][0];
+    unsentTags.delete(tagToSend);
+    sentTags.add(tagToSend);
+    return tagToSend;
+  };
+
+  return nextTag;
+};
+
+export const dbFetchAllTags = async () => {
+  const tags = [];
+  const nextTag = await dbGenerateAllTags();
+
+  let tag = await nextTag();
+
+  while (tag !== undefined) {
+    tags.push(tag);
+    // eslint-disable-next-line no-await-in-loop
+    tag = await nextTag();
+  }
+  return tags;
+};
+
+export const dbGenerateAllMonths = async () => {
+  const nextTransaction = await dbGenerateAllTransactions();
+
+  const months = new Set();
+
+  const nextMonth = async () => {
+    const transaction = await nextTransaction();
+
+    if (transaction === undefined) {
+      return undefined;
+    }
+
     const { monthStr } = getDateStrings(transaction.date);
     if (!months.has(monthStr)) {
       months.add(monthStr);
@@ -99,10 +183,13 @@ export const dbFetchAllMonths = async () => {
 
 const getTransactionsInDateRange = async (start, end) => {
   const db = await openDatabase();
-
   const range = IDBKeyRange.bound(start.getTime(), end.getTime());
 
-  return db.getAllFromIndex(TRANSACTIONS_OBJECT_STORE, "date", range);
+  return (await db.getAllFromIndex(
+    TRANSACTIONS_OBJECT_STORE,
+    "date",
+    range
+  )).reverse();
 };
 
 export const dbFetchMonthTransactions = monthStr => {
@@ -114,7 +201,6 @@ export const dbFetchMonthTransactions = monthStr => {
 
 export const dbFetchDayTransactions = dayStr => {
   const start = inCurrentTZ(dayStr);
-
   const end = new Date(start.getTime() + 1000 * 60 * 60 * 24 - 1);
 
   return getTransactionsInDateRange(start, end);

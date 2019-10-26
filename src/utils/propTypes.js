@@ -10,4 +10,9 @@ export const transactionPropType = PropTypes.shape({
 });
 
 export const dataPropType = dataValidator =>
-  PropTypes.shape({ loading: PropTypes.bool, data: dataValidator });
+  PropTypes.shape({
+    loading: PropTypes.bool,
+    loaded: PropTypes.bool,
+    queried: PropTypes.bool,
+    data: dataValidator
+  });

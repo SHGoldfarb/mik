@@ -15,7 +15,11 @@ import {
   DAY_STATS_PENDING,
   DAY_STATS_SET,
   DAY_TRANSACTIONS_PENDING,
-  DAY_TRANSACTIONS_SET
+  DAY_TRANSACTIONS_SET,
+  TRANSACTION_PENDING,
+  TRANSACTION_SET,
+  ALL_TAGS_PENDING,
+  ALL_TAGS_SET
 } from "./actionTypes";
 
 export const setTransactions = transactions => ({
@@ -28,12 +32,12 @@ export const addTransaction = transaction => ({
   payload: transaction
 });
 
-export const createOrUpdateTransaction = transaction => ({
+export const oldCreateOrUpdateTransaction = transaction => ({
   type: CREATE_OR_UPDATE_TRANSACTION,
-  payload: transaction
+  payload: { transaction }
 });
 
-export const deleteTransaction = id => ({
+export const oldDeleteTransaction = id => ({
   type: DELETE_TRANSACTION,
   payload: id
 });
@@ -115,4 +119,23 @@ export const dayTransactionsSet = (dayStr, transactions) => ({
     dayStr,
     transactions
   }
+});
+
+export const transactionPending = id => ({
+  type: TRANSACTION_PENDING,
+  payload: id
+});
+
+export const transactionSet = transaction => ({
+  type: TRANSACTION_SET,
+  payload: transaction
+});
+
+export const allTagsPending = () => ({
+  type: ALL_TAGS_PENDING
+});
+
+export const allTagsSet = tags => ({
+  type: ALL_TAGS_SET,
+  payload: tags
 });

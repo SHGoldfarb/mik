@@ -1,23 +1,27 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { INCOME, EXPENSE } from "../../utils/constants";
-import {
-  createOrUpdateTransaction,
-  deleteTransaction
-} from "../../redux/actions";
+import { INCOME, EXPENSE, CASH } from "../../utils/constants";
 import style from "./Form.module.css";
 import { I18N } from "../../config";
-import { locationParams } from "../../utils/location";
-import { selectTransaction, selectAllTags } from "../../redux/selectors";
-import { transactionPropType } from "../../utils/propTypes";
+import { transactionPropType, dataPropType } from "../../utils/propTypes";
 import Clickable from "../../components/Clickable";
 import Button from "../../components/Button";
 import Modal from "../../components/Modal";
 import Input from "../../components/inputs/Input";
-import { pushHome } from "../../utils/navigation";
+import { getUrlParam } from "../../utils/navigation";
 import SelectInput from "../../components/inputs/SelectInput";
 import uniques from "../../utils/uniques";
+import {
+  upsertTransaction,
+  deleteTransaction,
+  fetchTransaction,
+  fetchAllTags
+} from "../../redux/actionCreators";
+import { compose, parseObjectData } from "../../utils";
+import { withFetch } from "../../components/Fetch";
+import { selectTransaction, selectAllTags } from "../../redux/selectors";
+import Spinner from "../../components/Spinner";
 
 const tagsDatalistId = "TAGSDATALIST";
 const types = [EXPENSE, INCOME];
@@ -38,7 +42,8 @@ class Form extends Component {
 
   formRef = React.createRef();
 
-  static getDerivedStateFromProps = ({ transaction }, { editing }) => {
+  static getDerivedStateFromProps = ({ transactionData }, { editing }) => {
+    const transaction = parseObjectData(transactionData);
     if (transaction && !editing) {
       return {
         ...transaction,
@@ -67,8 +72,16 @@ class Form extends Component {
       handleSaveTransaction,
       history,
       handleDeleteTransaction,
-      existingTags
+      tagsData,
+      transactionData
     } = this.props;
+
+    if (transactionData.loading) {
+      return <Spinner />;
+    }
+
+    const existingTags =
+      tagsData.loading || tagsData.error || !tagsData.data ? [] : tagsData.data;
 
     const {
       amount,
@@ -102,14 +115,18 @@ class Form extends Component {
 
     const handleSubmit = ev => {
       ev.preventDefault();
-      handleSaveTransaction({
+      const transaction = {
         amount: parseInt(amount, 10),
         type,
         comment,
-        date,
-        id,
-        tags
-      });
+        date: new Date(date).getTime(),
+        tags,
+        account: CASH
+      };
+      if (id) {
+        transaction.id = id;
+      }
+      handleSaveTransaction(transaction);
       history.push("/");
     };
 
@@ -125,26 +142,10 @@ class Form extends Component {
 
     return (
       <div>
-        <Button className={style.backButton} onClick={() => pushHome(history)}>
+        <Button className={style.backButton} onClick={() => history.goBack()}>
           {`\u2190 ${I18N.back}`}
         </Button>
         <form ref={this.formRef} className={style.form} onSubmit={handleSubmit}>
-          {/* <label className={style.label} htmlFor={typeId}>
-            {`${I18N.transaction.type}:`}
-            <select
-              className={style.input}
-              id={typeId}
-              onChange={handleTypeChange}
-              value={type}
-            >
-              {types.map(value => (
-                <option value={value} key={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label> */}
-
           <SelectInput
             className={style.label}
             label={`${I18N.transaction.type}:`}
@@ -240,33 +241,40 @@ class Form extends Component {
   };
 }
 
-Form.defaultProps = {
-  transaction: null
-};
-
 Form.propTypes = {
   handleSaveTransaction: PropTypes.func.isRequired,
   handleDeleteTransaction: PropTypes.func.isRequired,
-  history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
-  transaction: transactionPropType,
-  existingTags: PropTypes.arrayOf(PropTypes.string).isRequired
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired
+  }).isRequired,
+  transactionData: dataPropType(transactionPropType).isRequired,
+  tagsData: dataPropType(PropTypes.arrayOf(PropTypes.string)).isRequired
 };
+const getId = history => getUrlParam(history, "id");
 
 const mapDispatchToProps = dispatch => ({
-  handleSaveTransaction: transaction =>
-    dispatch(createOrUpdateTransaction(transaction)),
-  handleDeleteTransaction: id => dispatch(deleteTransaction(id))
+  handleSaveTransaction: upsertTransaction(dispatch),
+  handleDeleteTransaction: deleteTransaction(dispatch)
 });
 
 const mapStateToProps = (state, { history }) => {
-  const { id } = locationParams(history);
+  const id = getId(history);
   return {
-    transaction: selectTransaction(state, id),
-    existingTags: selectAllTags(state)
+    transactionData: selectTransaction(state, id),
+    tagsData: selectAllTags(state)
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+export default compose(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
+  withFetch(({ transactionData, tagsData, history }) => [
+    !transactionData.queried &&
+      getId(history) &&
+      fetchTransaction(getId(history)),
+    !tagsData.queried && fetchAllTags
+  ])
 )(Form);

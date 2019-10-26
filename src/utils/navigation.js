@@ -1,9 +1,6 @@
 export const home = "/";
 export const form = `${home}form/`;
 
-export const pushHome = history => history.push(home);
-export const pushForm = history => history.push(form);
-
 const getSearchFromParams = params => {
   const searchStr = Object.keys(params).reduce((acc, key) => {
     let s = "";
@@ -19,6 +16,11 @@ const getSearchFromParams = params => {
 
   return searchStr;
 };
+
+export const pushHome = (history, params = {}) =>
+  history.push(`${home}${getSearchFromParams(params)}`);
+export const pushForm = (history, params = {}) =>
+  history.push(`${form}${getSearchFromParams(params)}`);
 
 const getParamsFromSearch = searchStr => {
   if (searchStr.length === 0) {

@@ -16,7 +16,11 @@ import {
   DAY_STATS_PENDING,
   DAY_STATS_SET,
   DAY_TRANSACTIONS_PENDING,
-  DAY_TRANSACTIONS_SET
+  DAY_TRANSACTIONS_SET,
+  TRANSACTION_PENDING,
+  TRANSACTION_SET,
+  ALL_TAGS_PENDING,
+  ALL_TAGS_SET
 } from "./actionTypes";
 import { CASH } from "../utils/constants";
 import {
@@ -25,7 +29,9 @@ import {
   selectMonthTransactionsQuery,
   selectMonthDaysQuery,
   selectDayStatsQuery,
-  selectDayTransactionsQuery
+  selectDayTransactionsQuery,
+  selectTransactionQuery,
+  selectAllTagsQuery
 } from "../database/queries";
 
 const createTransaction = ({
@@ -205,7 +211,7 @@ const dayTransactionsReducer = (state = {}, action) => {
   }
 };
 
-const transactionsReducer = (state = {}, action) => {
+const oldTransactionsReducer = (state = {}, action) => {
   const { type, payload } = action;
   switch (type) {
     case SET_TRANSACTIONS:
@@ -239,12 +245,57 @@ const transactionsReducer = (state = {}, action) => {
   }
 };
 
+const transactionsReducer = (state = {}, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case TRANSACTION_PENDING: {
+      const id = payload;
+      return {
+        [id]: { ...state[id], loading: true, queried: true }
+      };
+    }
+    case TRANSACTION_SET: {
+      const transaction = payload;
+      const { id } = transaction;
+      return {
+        ...state,
+        [id]: { ...state[id], loading: false, loaded: true, data: transaction }
+      };
+    }
+    default:
+      return state;
+  }
+};
+
+const tagsReducer = (state = {}, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case ALL_TAGS_PENDING: {
+      return { ...state, loading: true, queried: true };
+    }
+    case ALL_TAGS_SET: {
+      const tags = payload;
+
+      return {
+        ...state,
+        loading: false,
+        loaded: true,
+        data: tags
+      };
+    }
+    default:
+      return state;
+  }
+};
+
 export const rootReducer = combineReducers({
   [selectMonthStatsQuery]: monthStatsReducer,
   [selectMonthTransactionsQuery]: monthTransactionsReducer,
-  transactions: transactionsReducer,
+  transactions: oldTransactionsReducer,
   [selectAllMonthsQuery]: monthsReducer,
   [selectMonthDaysQuery]: monthDaysReducer,
   [selectDayStatsQuery]: dayStatsReducer,
-  [selectDayTransactionsQuery]: dayTransactionsReducer
+  [selectDayTransactionsQuery]: dayTransactionsReducer,
+  [selectTransactionQuery]: transactionsReducer,
+  [selectAllTagsQuery]: tagsReducer
 });

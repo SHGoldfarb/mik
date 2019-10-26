@@ -10,7 +10,9 @@ import {
   selectMonthTransactionsQuery,
   selectMonthDaysQuery,
   selectDayStatsQuery,
-  selectDayTransactionsQuery
+  selectDayTransactionsQuery,
+  selectTransactionQuery,
+  selectAllTagsQuery
 } from "../database/queries";
 import { getDateStrings } from "../utils/date";
 
@@ -20,7 +22,7 @@ const parseTransaction = ({ amount, tags, ...rest }) => ({
   ...rest
 });
 
-export const selectTransaction = (state, id) =>
+export const oldSelectTransaction = (state, id) =>
   state.transactions && state.transactions[id]
     ? { ...parseTransaction(state.transactions[id]), id }
     : null;
@@ -54,6 +56,11 @@ export const selectDayStats = (state, dayStr) =>
 
 export const selectDayTransactions = (state, dayStr) =>
   state[selectDayTransactionsQuery][dayStr] || {};
+
+export const selectTransaction = (state, id) =>
+  state[selectTransactionQuery][id] || {};
+
+export const selectAllTags = state => state[selectAllTagsQuery] || {};
 
 export const selectAllTransactionsByMonthByDay = createSelector(
   selectAllTransactions,
@@ -140,7 +147,7 @@ export const selectTotal = createSelector(
   transactions => getTotal(transactions)
 );
 
-export const selectAllTags = createSelector(
+export const oldSelectAllTags = createSelector(
   selectAllTransactions,
   transactions =>
     uniques(flatten(transactions.map(transaction => transaction.tags || [])))
