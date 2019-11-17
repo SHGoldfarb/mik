@@ -123,16 +123,12 @@ const updateEverythingAboutTransaction = dispatch => async transaction => {
 };
 
 export const upsertTransaction = dispatch => async transaction => {
-  console.log(transaction);
   if (transaction.id !== undefined) {
     const oldTransaction = await dbDeleteTransaction(transaction.id);
     await updateEverythingAboutTransaction(dispatch)(oldTransaction);
   }
-  console.log(transaction);
   const newTransaction = await dbCreateTransaction(transaction);
-  console.log(newTransaction);
   await updateEverythingAboutTransaction(dispatch)(newTransaction);
-  console.log(newTransaction);
   return newTransaction;
 };
 
