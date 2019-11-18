@@ -23,7 +23,11 @@ const Transactions = ({ history, monthsQueryData }) => {
   const handleActiveMonthStrChange = monthStr =>
     upsertReplaceUrlParams(history, { [activeParam]: monthStr });
 
-  const months = (monthsQueryData && monthsQueryData.data) || [];
+  const monthsStats = (monthsQueryData && monthsQueryData.data) || {};
+
+  const months = Object.keys(monthsStats).sort((month1, month2) =>
+    month1 < month2 ? 1 : -1
+  );
   return (
     <Fragment>
       <OnRender
@@ -40,35 +44,33 @@ const Transactions = ({ history, monthsQueryData }) => {
         {monthsQueryData.loading ? (
           <Spinner />
         ) : (
-          Object.keys(months)
-            .sort((month1, month2) => (month1 < month2 ? 1 : -1))
-            .map(monthStr => (
-              <MonthCard
-                monthStr={monthStr}
-                stats={months[monthStr]}
-                key={monthStr}
-                active={monthStr === activeMonthStr}
-                onClick={() => handleActiveMonthStrChange(monthStr)}
-              >
-                {days =>
-                  days.map(dayStr => (
-                    <DayCard dayStr={dayStr} key={dayStr}>
-                      {dayTransactions =>
-                        dayTransactions.map(transaction => (
-                          <Transaction
-                            transaction={transaction}
-                            key={transaction.id}
-                            onClick={() =>
-                              history.push(`/form?id=${transaction.id}`)
-                            }
-                          />
-                        ))
-                      }
-                    </DayCard>
-                  ))
-                }
-              </MonthCard>
-            ))
+          months.map(monthStr => (
+            <MonthCard
+              monthStr={monthStr}
+              stats={monthsStats[monthStr]}
+              key={monthStr}
+              active={monthStr === activeMonthStr}
+              onClick={() => handleActiveMonthStrChange(monthStr)}
+            >
+              {days =>
+                days.map(dayStr => (
+                  <DayCard dayStr={dayStr} key={dayStr}>
+                    {dayTransactions =>
+                      dayTransactions.map(transaction => (
+                        <Transaction
+                          transaction={transaction}
+                          key={transaction.id}
+                          onClick={() =>
+                            history.push(`/form?id=${transaction.id}`)
+                          }
+                        />
+                      ))
+                    }
+                  </DayCard>
+                ))
+              }
+            </MonthCard>
+          ))
         )}
       </div>
     </Fragment>
