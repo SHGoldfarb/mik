@@ -1,7 +1,7 @@
 import { openDB } from "idb";
 import { getDateStrings, inCurrentTZ } from "../utils/date";
 import uniques from "../utils/uniques";
-import { getIncomeExpenses } from "../utils/stats";
+import { getIncomeExpenses, getIncomeExpense } from "../utils/stats";
 
 const DB_NAME = "mik_dabatabase";
 const TRANSACTIONS_OBJECT_STORE = "transactions";
@@ -229,4 +229,19 @@ export const dbFetchMonthDays = async monthStr => {
   ];
 
   return days;
+};
+
+export const dbApiFetchMonths = async () => {
+  const transactions = await dbFetchAllTransactions();
+  const months = transactions.reduce((acc, transaction) => {
+    const { monthStr } = getDateStrings(transaction.date);
+    if (!acc[monthStr]) {
+      acc[monthStr] = { income: 0, expense: 0 };
+    }
+    const { income, expense } = getIncomeExpense(transaction);
+    acc[monthStr].income += income;
+    acc[monthStr].expense += expense;
+    return acc;
+  }, {});
+  return months;
 };

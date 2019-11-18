@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
+import PropTypes, { shape, number } from "prop-types";
 import { connect } from "react-redux";
 import Card from "../../../components/Card";
 import IncomeExpense from "../../../components/IncomeExpense";
@@ -9,26 +9,23 @@ import I18N from "../../../config/I18N";
 import style from "./MonthCard.module.scss";
 import { dataPropType } from "../../../utils/propTypes";
 import Spinner from "../../../components/Spinner";
-import { selectMonthStats, selectMonthDays } from "../../../redux/selectors";
+import { selectMonthDays } from "../../../redux/selectors";
 import { compose } from "../../../utils";
 import { withFetch } from "../../../components/Fetch";
-import { fetchMonthStats, fetchMonthDays } from "../../../redux/actionCreators";
+import { fetchMonthDays } from "../../../redux/actionCreators";
 
 const MonthCard = ({
   monthStr,
   children,
-  statsData,
   daysData,
   active,
-  onClick
+  onClick,
+  stats
 }) => {
   const days = daysData.loading || !daysData.data ? [] : daysData.data;
 
   const date = inCurrentTZ(monthStr);
-  const { income, expense } =
-    statsData.loading || !statsData.data
-      ? { income: null, expense: null }
-      : statsData.data;
+  const { income, expense } = stats;
 
   return (
     <Card
@@ -39,15 +36,11 @@ const MonthCard = ({
         />
       }
       header={
-        statsData.loading ? (
-          <Spinner />
-        ) : (
-          <IncomeExpense
-            income={income}
-            expense={expense}
-            className={style.incomeExpense}
-          />
-        )
+        <IncomeExpense
+          income={income}
+          expense={expense}
+          className={style.incomeExpense}
+        />
       }
       className={style.cardBackground}
       onHeaderClick={onClick}
@@ -58,7 +51,6 @@ const MonthCard = ({
 };
 
 const mapStateToProps = (state, { monthStr }) => ({
-  statsData: selectMonthStats(state, monthStr),
   daysData: selectMonthDays(state, monthStr)
 });
 
@@ -67,18 +59,15 @@ MonthCard.defaultProps = {};
 MonthCard.propTypes = {
   monthStr: PropTypes.string.isRequired,
   children: PropTypes.func.isRequired,
-  statsData: dataPropType(
-    PropTypes.shape({ income: PropTypes.number, expense: PropTypes.number })
-  ).isRequired,
   daysData: dataPropType(PropTypes.arrayOf(PropTypes.string)).isRequired,
   active: PropTypes.bool.isRequired,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
+  stats: shape({ income: number, expense: number }).isRequired
 };
 
 export default compose(
   connect(mapStateToProps),
-  withFetch(({ monthStr, active, statsData, daysData }) => [
-    !statsData.queried && fetchMonthStats(monthStr),
+  withFetch(({ monthStr, active, daysData }) => [
     !daysData.queried && active && fetchMonthDays(monthStr)
   ])
 )(MonthCard);

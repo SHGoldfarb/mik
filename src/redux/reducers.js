@@ -20,7 +20,9 @@ import {
   TRANSACTION_PENDING,
   TRANSACTION_SET,
   ALL_TAGS_PENDING,
-  ALL_TAGS_SET
+  ALL_TAGS_SET,
+  SET_FETCHING,
+  SET_FETCHED
 } from "./actionTypes";
 import { CASH } from "../utils/constants";
 import {
@@ -288,6 +290,24 @@ const tagsReducer = (state = {}, action) => {
   }
 };
 
+const dbApiReducer = (state = {}, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case SET_FETCHING: {
+      const query = payload;
+      return { ...state, [query]: { loading: true, fetched: true } };
+    }
+    case SET_FETCHED: {
+      const { query, data } = payload;
+      return { ...state, [query]: { loading: false, fetched: true, data } };
+    }
+    default:
+      return state;
+  }
+};
+
+export const dbApiStoreKey = "dbApiStoreKey";
+
 export const rootReducer = combineReducers({
   [selectMonthStatsQuery]: monthStatsReducer,
   [selectMonthTransactionsQuery]: monthTransactionsReducer,
@@ -297,5 +317,6 @@ export const rootReducer = combineReducers({
   [selectDayStatsQuery]: dayStatsReducer,
   [selectDayTransactionsQuery]: dayTransactionsReducer,
   [selectTransactionQuery]: transactionsReducer,
-  [selectAllTagsQuery]: tagsReducer
+  [selectAllTagsQuery]: tagsReducer,
+  [dbApiStoreKey]: dbApiReducer
 });

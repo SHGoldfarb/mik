@@ -19,7 +19,9 @@ import {
   TRANSACTION_PENDING,
   TRANSACTION_SET,
   ALL_TAGS_PENDING,
-  ALL_TAGS_SET
+  ALL_TAGS_SET,
+  SET_FETCHING,
+  SET_FETCHED
 } from "./actionTypes";
 
 export const setTransactions = transactions => ({
@@ -138,4 +140,14 @@ export const allTagsPending = () => ({
 export const allTagsSet = tags => ({
   type: ALL_TAGS_SET,
   payload: tags
+});
+
+export const setFetching = query => ({
+  type: SET_FETCHING,
+  payload: query
+});
+
+export const setFetched = (query, data) => ({
+  type: SET_FETCHED,
+  payload: { query, data }
 });

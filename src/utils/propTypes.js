@@ -15,3 +15,10 @@ export const dataPropType = dataValidator =>
     queried: PropTypes.bool,
     data: dataValidator
   });
+
+export const dbApiDataPropType = dataValidator =>
+  PropTypes.shape({
+    loading: PropTypes.bool,
+    fetched: PropTypes.bool,
+    data: dataValidator
+  });

@@ -1,8 +1,7 @@
 import React, { Fragment } from "react";
-import PropTypes from "prop-types";
+import { shape, objectOf, func, number } from "prop-types";
 import { connect } from "react-redux";
 import { Transaction, MonthCard, DayCard } from "./transactions";
-import { selectAllMonths } from "../../redux/selectors";
 import style from "./Transactions.module.scss";
 import Button from "../../components/Button";
 import {
@@ -11,20 +10,20 @@ import {
   upsertReplaceUrlParams
 } from "../../utils/navigation";
 import { compose } from "../../utils";
-import { withFetch } from "../../components/Fetch";
-import { fetchAllMonths } from "../../redux/actionCreators";
 import Spinner from "../../components/Spinner";
 import OnRender from "../../components/OnRender";
+import { withDBApi, fetchMonthsQueryName } from "../../components/DBApi";
+import { dbApiDataPropType } from "../../utils/propTypes";
 
 const activeParam = "active";
 
-const Transactions = ({ monthsData, history }) => {
+const Transactions = ({ history, monthsQueryData }) => {
   const activeMonthStr = getUrlParam(history, activeParam);
 
   const handleActiveMonthStrChange = monthStr =>
     upsertReplaceUrlParams(history, { [activeParam]: monthStr });
 
-  const months = monthsData.loading || !monthsData.data ? [] : monthsData.data;
+  const months = (monthsQueryData && monthsQueryData.data) || [];
   return (
     <Fragment>
       <OnRender
@@ -38,54 +37,56 @@ const Transactions = ({ monthsData, history }) => {
         +
       </Button>
       <div className={style.transactionsContainer}>
-        {monthsData.loading ? (
+        {monthsQueryData.loading ? (
           <Spinner />
         ) : (
-          months.map(monthStr => (
-            <MonthCard
-              monthStr={monthStr}
-              key={monthStr}
-              active={monthStr === activeMonthStr}
-              onClick={() => handleActiveMonthStrChange(monthStr)}
-            >
-              {days =>
-                days.map(dayStr => (
-                  <DayCard dayStr={dayStr} key={dayStr}>
-                    {dayTransactions =>
-                      dayTransactions.map(transaction => (
-                        <Transaction
-                          transaction={transaction}
-                          key={transaction.id}
-                          onClick={() =>
-                            history.push(`/form?id=${transaction.id}`)
-                          }
-                        />
-                      ))
-                    }
-                  </DayCard>
-                ))
-              }
-            </MonthCard>
-          ))
+          Object.keys(months)
+            .sort((month1, month2) => (month1 < month2 ? 1 : -1))
+            .map(monthStr => (
+              <MonthCard
+                monthStr={monthStr}
+                stats={months[monthStr]}
+                key={monthStr}
+                active={monthStr === activeMonthStr}
+                onClick={() => handleActiveMonthStrChange(monthStr)}
+              >
+                {days =>
+                  days.map(dayStr => (
+                    <DayCard dayStr={dayStr} key={dayStr}>
+                      {dayTransactions =>
+                        dayTransactions.map(transaction => (
+                          <Transaction
+                            transaction={transaction}
+                            key={transaction.id}
+                            onClick={() =>
+                              history.push(`/form?id=${transaction.id}`)
+                            }
+                          />
+                        ))
+                      }
+                    </DayCard>
+                  ))
+                }
+              </MonthCard>
+            ))
         )}
       </div>
     </Fragment>
   );
 };
 
-const mapStateToProps = state => ({
-  monthsData: selectAllMonths(state)
-});
+const mapStateToProps = state => ({});
 
 Transactions.propTypes = {
-  monthsData: PropTypes.shape({
-    data: PropTypes.arrayOf(PropTypes.string),
-    loading: PropTypes.bool
-  }).isRequired,
-  history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired
+  history: shape({ push: func.isRequired }).isRequired,
+  monthsQueryData: dbApiDataPropType(
+    objectOf(shape({ income: number, expense: number }))
+  ).isRequired
 };
 
 export default compose(
   connect(mapStateToProps),
-  withFetch(({ monthsData }) => [!monthsData.queried && fetchAllMonths])
+  withDBApi(fetchMonthsQueryName, () => ({
+    name: "monthsQueryData"
+  }))
 )(Transactions);
