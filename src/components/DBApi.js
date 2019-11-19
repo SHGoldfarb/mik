@@ -1,28 +1,38 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { dbApiStoreKey } from "../redux/reducers";
+import { dbApiStoreKey, makeStoreKey } from "../redux/reducers";
 import { setFetching, setFetched } from "../redux/actions";
-import { dbApiFetchMonths } from "../database/actions";
+import { dbApiFetchMonths, dbApiFetchDays } from "../database/actions";
 
 export const fetchMonthsQueryName = "FETCH_MONTHS";
+export const fetchDaysQueryName = "FETCH_DAYS";
 
 const dbActions = {
-  [fetchMonthsQueryName]: dbApiFetchMonths
+  [fetchMonthsQueryName]: dbApiFetchMonths,
+  [fetchDaysQueryName]: dbApiFetchDays
 };
 
-const UnconnectedDBApi = ({ query, children, store, dispatch, name }) => {
+const UnconnectedDBApi = ({
+  query,
+  children,
+  store,
+  dispatch,
+  name,
+  variables = {},
+  skip = false
+}) => {
   const [hasFetched, setHasFetched] = useState(false);
 
-  const data = store[dbApiStoreKey][query] || {};
+  const data = store[dbApiStoreKey][makeStoreKey(query, variables)] || {};
 
   const { fetched } = data;
 
-  if (!fetched && !hasFetched) {
-    dispatch(setFetching(query));
+  if (!fetched && !hasFetched && !skip) {
+    dispatch(setFetching(query, variables));
     setHasFetched(true);
     (async () => {
-      const fetchedData = await dbActions[query]();
-      dispatch(setFetched(fetchMonthsQueryName, fetchedData));
+      const fetchedData = await dbActions[query](variables);
+      dispatch(setFetched(query, variables, fetchedData));
     })();
   }
 

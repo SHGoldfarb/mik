@@ -290,16 +290,29 @@ const tagsReducer = (state = {}, action) => {
   }
 };
 
+export const makeStoreKey = (query, variables) =>
+  `${query} ${JSON.stringify(variables)}`;
+
 const dbApiReducer = (state = {}, action) => {
   const { type, payload } = action;
   switch (type) {
     case SET_FETCHING: {
-      const query = payload;
-      return { ...state, [query]: { loading: true, fetched: true } };
+      const { query, variables } = payload;
+      return {
+        ...state,
+        [makeStoreKey(query, variables)]: { loading: true, fetched: true }
+      };
     }
     case SET_FETCHED: {
-      const { query, data } = payload;
-      return { ...state, [query]: { loading: false, fetched: true, data } };
+      const { query, variables, data } = payload;
+      return {
+        ...state,
+        [makeStoreKey(query, variables)]: {
+          loading: false,
+          fetched: true,
+          data
+        }
+      };
     }
     default:
       return state;

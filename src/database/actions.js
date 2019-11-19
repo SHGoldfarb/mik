@@ -233,7 +233,7 @@ export const dbFetchMonthDays = async monthStr => {
 
 export const dbApiFetchMonths = async () => {
   const transactions = await dbFetchAllTransactions();
-  const months = transactions.reduce((acc, transaction) => {
+  return transactions.reduce((acc, transaction) => {
     const { monthStr } = getDateStrings(transaction.date);
     if (!acc[monthStr]) {
       acc[monthStr] = { income: 0, expense: 0 };
@@ -243,5 +243,19 @@ export const dbApiFetchMonths = async () => {
     acc[monthStr].expense += expense;
     return acc;
   }, {});
-  return months;
+};
+
+export const dbApiFetchDays = async ({ monthStr = null } = {}) => {
+  const transactions = monthStr
+    ? await dbFetchMonthTransactions(monthStr)
+    : await dbFetchAllTransactions();
+
+  const days = [
+    ...transactions.reduce((acc, transaction) => {
+      const { dayStr } = getDateStrings(transaction.date);
+      return !acc.has(dayStr) ? acc.add(dayStr) : acc;
+    }, new Set())
+  ];
+
+  return days;
 };
