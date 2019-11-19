@@ -12,7 +12,7 @@ const dbActions = {
   [fetchDaysQueryName]: dbApiFetchDays
 };
 
-const useDBApi = (query, { variables = {}, skip = false } = {}) => {
+export const useDBApi = (query, { variables = {}, skip = false } = {}) => {
   // Mapping the whole store leads to performance issues
   // TODO: only map query to props
   const store = useSelector(state => state);

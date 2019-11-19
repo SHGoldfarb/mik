@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
-import { shape, objectOf, func, number } from "prop-types";
-import { connect } from "react-redux";
+import { shape, func } from "prop-types";
 import { Transaction, MonthCard, DayCard } from "./transactions";
 import style from "./Transactions.module.scss";
 import Button from "../../components/Button";
@@ -9,15 +8,15 @@ import {
   getUrlParam,
   upsertReplaceUrlParams
 } from "../../utils/navigation";
-import { compose } from "../../utils";
 import Spinner from "../../components/Spinner";
 import OnRender from "../../components/OnRender";
-import { withDBApi, fetchMonthsQueryName } from "../../components/DBApi";
-import { dbApiDataPropType } from "../../utils/propTypes";
+import { fetchMonthsQueryName, useDBApi } from "../../components/DBApi";
 
 const activeParam = "active";
 
-const Transactions = ({ history, monthsQueryData }) => {
+const Transactions = ({ history }) => {
+  const monthsQueryData = useDBApi(fetchMonthsQueryName);
+
   const activeMonthStr = getUrlParam(history, activeParam);
 
   const handleActiveMonthStrChange = monthStr =>
@@ -77,18 +76,8 @@ const Transactions = ({ history, monthsQueryData }) => {
   );
 };
 
-const mapStateToProps = state => ({});
-
 Transactions.propTypes = {
-  history: shape({ push: func.isRequired }).isRequired,
-  monthsQueryData: dbApiDataPropType(
-    objectOf(shape({ income: number, expense: number }))
-  ).isRequired
+  history: shape({ push: func.isRequired }).isRequired
 };
 
-export default compose(
-  connect(mapStateToProps),
-  withDBApi(fetchMonthsQueryName, () => ({
-    name: "monthsQueryData"
-  }))
-)(Transactions);
+export default Transactions;
