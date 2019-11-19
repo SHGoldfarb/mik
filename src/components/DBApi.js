@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { dbApiStoreKey, makeStoreKey } from "../redux/reducers";
 import { setFetching, setFetched } from "../redux/actions";
 import { dbApiFetchMonths, dbApiFetchDays } from "../database/actions";
@@ -12,15 +12,12 @@ const dbActions = {
   [fetchDaysQueryName]: dbApiFetchDays
 };
 
-const UnconnectedDBApi = ({
-  query,
-  children,
-  store,
-  dispatch,
-  name,
-  variables = {},
-  skip = false
-}) => {
+const useDBApi = (query, { variables = {}, skip = false } = {}) => {
+  // Mapping the whole store leads to performance issues
+  // TODO: only map query to props
+  const store = useSelector(state => state);
+  const dispatch = useDispatch();
+
   const [hasFetched, setHasFetched] = useState(false);
 
   const data = store[dbApiStoreKey][makeStoreKey(query, variables)] || {};
@@ -36,14 +33,14 @@ const UnconnectedDBApi = ({
     })();
   }
 
-  return children({ [name]: data });
+  return data;
 };
 
-// Mapping the whole store leads to performance issues
-// TODO: only map query to props
-const mapStateToProps = state => ({ store: state });
+const DBApi = ({ children, name, query, ...rest }) => {
+  const data = useDBApi(query, { ...rest });
 
-export const DBApi = connect(mapStateToProps)(UnconnectedDBApi);
+  return children({ [name]: data });
+};
 
 export const withDBApi = (query, options = () => ({})) => Target => props => (
   <DBApi query={query} {...options(props)}>
