@@ -1,34 +1,28 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import Card from "../../../components/Card";
 import IncomeExpense from "../../../components/IncomeExpense";
 import { inCurrentTZ } from "../../../utils/date";
 import PrettyDate from "../../../components/PrettyDate";
 import I18N from "../../../config/I18N";
-import { dataPropType, transactionPropType } from "../../../utils/propTypes";
-import { compose } from "../../../utils";
-import { withFetch } from "../../../components/Fetch";
-import {
-  selectDayStats,
-  selectDayTransactions
-} from "../../../redux/selectors";
-import {
-  fetchDayStats,
-  fetchDayTransactions
-} from "../../../redux/actionCreators";
 import Spinner from "../../../components/Spinner";
+import {
+  useDBApi,
+  fetchTransactionsQueryName
+} from "../../../components/DBApi";
+import { getIncomeExpenses } from "../../../utils/stats";
 
-const DayCard = ({ dayStr, children, statsData, transactionsData }) => {
-  const { income, expense } =
-    statsData.loading || !statsData.data
-      ? { income: null, expense: null }
-      : statsData.data;
+const DayCard = ({ dayStr, children }) => {
+  const { loading, data: transactions = [] } = useDBApi(
+    fetchTransactionsQueryName,
+    {
+      variables: { dayStr }
+    }
+  );
 
-  const transactions =
-    transactionsData.loading || !transactionsData.data
-      ? []
-      : transactionsData.data;
+  const { income, expense } = loading
+    ? { income: null, expense: null }
+    : getIncomeExpenses(transactions);
 
   const date = inCurrentTZ(dayStr);
   return (
@@ -40,39 +34,23 @@ const DayCard = ({ dayStr, children, statsData, transactionsData }) => {
         />
       }
       header={
-        statsData.loading ? (
+        loading ? (
           <Spinner />
         ) : (
           <IncomeExpense income={income} expense={expense} />
         )
       }
     >
-      {transactionsData.loading ? <Spinner /> : children(transactions)}
+      {loading ? <Spinner /> : children(transactions)}
     </Card>
   );
 };
-
-const mapStateToProps = (state, { dayStr }) => ({
-  statsData: selectDayStats(state, dayStr),
-  transactionsData: selectDayTransactions(state, dayStr)
-});
 
 DayCard.defaultProps = {};
 
 DayCard.propTypes = {
   dayStr: PropTypes.string.isRequired,
-  children: PropTypes.func.isRequired,
-  statsData: dataPropType(
-    PropTypes.shape({ income: PropTypes.number, expense: PropTypes.number })
-  ).isRequired,
-  transactionsData: dataPropType(PropTypes.arrayOf(transactionPropType))
-    .isRequired
+  children: PropTypes.func.isRequired
 };
 
-export default compose(
-  connect(mapStateToProps),
-  withFetch(({ dayStr, statsData, transactionsData }) => [
-    !statsData.queried && fetchDayStats(dayStr),
-    !transactionsData.queried && fetchDayTransactions(dayStr)
-  ])
-)(DayCard);
+export default DayCard;

@@ -2,14 +2,20 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { dbApiStoreKey, makeStoreKey } from "../redux/reducers";
 import { setFetching, setFetched } from "../redux/actions";
-import { dbApiFetchMonths, dbApiFetchDays } from "../database/actions";
+import {
+  dbApiFetchMonths,
+  dbApiFetchDays,
+  dbApiFetchTransactions
+} from "../database/actions";
 
 export const fetchMonthsQueryName = "FETCH_MONTHS";
 export const fetchDaysQueryName = "FETCH_DAYS";
+export const fetchTransactionsQueryName = "FETCH_TRANSACTIONS";
 
 const dbActions = {
   [fetchMonthsQueryName]: dbApiFetchMonths,
-  [fetchDaysQueryName]: dbApiFetchDays
+  [fetchDaysQueryName]: dbApiFetchDays,
+  [fetchTransactionsQueryName]: dbApiFetchTransactions
 };
 
 export const useDBApi = (query, { variables = {}, skip = false } = {}) => {
@@ -36,7 +42,9 @@ export const useDBApi = (query, { variables = {}, skip = false } = {}) => {
   return data;
 };
 
-const DBApi = ({ children, name, query, ...rest }) => {
+export const DBApi = ({ children, name, query, ...rest }) => {
+  // eslint-disable-next-line no-console
+  console.warn('DBApi is deprecated. Use the hook "withDBApi"');
   const data = useDBApi(query, { ...rest });
 
   return children({ [name]: data });

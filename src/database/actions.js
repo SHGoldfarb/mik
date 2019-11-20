@@ -259,3 +259,12 @@ export const dbApiFetchDays = async ({ monthStr = null } = {}) => {
 
   return days;
 };
+
+export const dbApiFetchTransactions = ({
+  monthStr = null,
+  dayStr = null
+} = {}) =>
+  // TODO: ensure this is fetched in order
+  (monthStr && dbFetchMonthTransactions(monthStr)) ||
+  (dayStr && dbFetchDayTransactions(dayStr)) ||
+  dbFetchAllTransactions();
