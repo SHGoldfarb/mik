@@ -42,7 +42,7 @@ const openDatabase = safe(() =>
   })
 );
 
-export const dbSetTransactions = async transactions => {
+export const dbSetTransactions = async generateTransactions => {
   const db = await openDatabase();
 
   const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");
@@ -50,7 +50,7 @@ export const dbSetTransactions = async transactions => {
   if ((await tx.store.getAllKeys()).length === 0) {
     // eslint-disable-next-line no-console
     console.log("Adding mock data");
-    transactions.forEach(transaction => tx.store.add(transaction));
+    generateTransactions().forEach(transaction => tx.store.add(transaction));
   }
 
   return tx.done;
@@ -264,7 +264,18 @@ export const dbApiFetchTransactions = ({
   monthStr = null,
   dayStr = null
 } = {}) =>
-  // TODO: ensure this is fetched in order
+  // TODO: ensure this is fetched in order: by date descending
   (monthStr && dbFetchMonthTransactions(monthStr)) ||
   (dayStr && dbFetchDayTransactions(dayStr)) ||
   dbFetchAllTransactions();
+
+export const dbApiFetchTransaction = async ({ id }) => {
+  if (!id) {
+    return undefined;
+  }
+  const db = await openDatabase();
+  const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readonly");
+  const transaction = await tx.store.get(id);
+  await tx.done;
+  return transaction;
+};

@@ -15,13 +15,13 @@ import uniques from "../../utils/uniques";
 import {
   upsertTransaction,
   deleteTransaction,
-  fetchTransaction,
   fetchAllTags
 } from "../../redux/actionCreators";
 import { compose, parseObjectData } from "../../utils";
 import { withFetch } from "../../components/Fetch";
-import { selectTransaction, selectAllTags } from "../../redux/selectors";
+import { selectAllTags } from "../../redux/selectors";
 import Spinner from "../../components/Spinner";
+import { withDBApi, fetchTransactionQueryName } from "../../components/DBApi";
 
 const tagsDatalistId = "TAGSDATALIST";
 const types = [EXPENSE, INCOME];
@@ -59,8 +59,20 @@ class Form extends Component {
     return null;
   };
 
+  focusOnFirstInputWhenMounted = () => {
+    const { focusedOnFirstInput } = this.state;
+    if (this.firstInput && !focusedOnFirstInput) {
+      this.firstInput.focus();
+      this.setState({ focusedOnFirstInput: true });
+    }
+  };
+
   componentDidMount = () => {
-    this.firstInput.focus();
+    this.focusOnFirstInputWhenMounted();
+  };
+
+  componentDidUpdate = () => {
+    this.focusOnFirstInputWhenMounted();
   };
 
   handleFieldChange = field => ev => {
@@ -258,23 +270,21 @@ const mapDispatchToProps = dispatch => ({
   handleDeleteTransaction: deleteTransaction(dispatch)
 });
 
-const mapStateToProps = (state, { history }) => {
-  const id = getId(history);
-  return {
-    transactionData: selectTransaction(state, id),
-    tagsData: selectAllTags(state)
-  };
-};
+const mapStateToProps = state => ({
+  tagsData: selectAllTags(state)
+});
 
 export default compose(
   connect(
     mapStateToProps,
     mapDispatchToProps
   ),
-  withFetch(({ transactionData, tagsData, history }) => [
-    !transactionData.queried &&
-      getId(history) &&
-      fetchTransaction(getId(history)),
-    !tagsData.queried && fetchAllTags
-  ])
+  withFetch(({ tagsData }) => [!tagsData.queried && fetchAllTags]),
+  withDBApi(fetchTransactionQueryName, ({ history }) => ({
+    variables: {
+      id: parseInt(getId(history), 10)
+    },
+    skip: !getId(history),
+    name: "transactionData"
+  }))
 )(Form);

@@ -89,7 +89,10 @@ const generateTransactions = number => {
 
 export const generateTransactionsArray = number => {
   const transactions = generateTransactions(number);
-  return Object.keys(transactions).map(id => ({ ...transactions[id], id }));
+  return Object.keys(transactions).map(id => ({
+    ...transactions[id],
+    id: parseInt(id, 10)
+  }));
 };
 
 export default generateTransactions;

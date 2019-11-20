@@ -7,11 +7,8 @@ import Spinner from "./components/Spinner";
 
 const initialTransactionsNumber = 5000;
 
-const saveInitialTransactions = async () => {
-  const data = generateTransactionsArray(initialTransactionsNumber);
-  await dbSetTransactions(data);
-};
-
+const saveInitialTransactions = () =>
+  dbSetTransactions(() => generateTransactionsArray(initialTransactionsNumber));
 class App extends Component {
   state = { loading: true };
 
