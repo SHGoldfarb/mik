@@ -2,6 +2,7 @@ import { openDB } from "idb";
 import { getDateStrings, inCurrentTZ } from "../utils/date";
 import uniques from "../utils/uniques";
 import { getIncomeExpenses, getIncomeExpense } from "../utils/stats";
+import flatten from "../utils/flatten";
 
 const DB_NAME = "mik_dabatabase";
 const TRANSACTIONS_OBJECT_STORE = "transactions";
@@ -87,11 +88,15 @@ export const dbGenerateAllTransactions = async () => {
   const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readonly");
   const index = tx.store.index("date");
 
-  const cursor = await index.openCursor(undefined, "prev");
+  let cursor;
 
   const nextTransaction = async () => {
     try {
-      await cursor.continue();
+      if (cursor) {
+        await cursor.continue();
+      } else {
+        cursor = await index.openCursor(undefined, "prev");
+      }
     } catch {
       return undefined;
     }
@@ -278,4 +283,23 @@ export const dbApiFetchTransaction = async ({ id }) => {
   const transaction = await tx.store.get(id);
   await tx.done;
   return transaction;
+};
+
+export const dbApiFetchTagsInstantly = async () => {
+  const transactions = await dbApiFetchTransactions();
+  return uniques(flatten(transactions.map(transaction => transaction.tags)));
+};
+
+export const dbApiFetchTags = async () => {
+  const tags = [];
+  const nextTag = await dbGenerateAllTags();
+
+  let tag = await nextTag();
+
+  while (tag !== undefined) {
+    tags.push(tag);
+    // eslint-disable-next-line no-await-in-loop
+    tag = await nextTag();
+  }
+  return tags;
 };

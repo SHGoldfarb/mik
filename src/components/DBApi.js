@@ -6,19 +6,22 @@ import {
   dbApiFetchMonths,
   dbApiFetchDays,
   dbApiFetchTransactions,
-  dbApiFetchTransaction
+  dbApiFetchTransaction,
+  dbApiFetchTags
 } from "../database/actions";
 
 export const fetchMonthsQueryName = "FETCH_MONTHS";
 export const fetchDaysQueryName = "FETCH_DAYS";
 export const fetchTransactionsQueryName = "FETCH_TRANSACTIONS";
 export const fetchTransactionQueryName = "FETCH_TRANSACTION";
+export const fetchTagsQueryName = "FETCH_TAGS";
 
 const dbActions = {
   [fetchMonthsQueryName]: dbApiFetchMonths,
   [fetchDaysQueryName]: dbApiFetchDays,
   [fetchTransactionsQueryName]: dbApiFetchTransactions,
-  [fetchTransactionQueryName]: dbApiFetchTransaction
+  [fetchTransactionQueryName]: dbApiFetchTransaction,
+  [fetchTagsQueryName]: dbApiFetchTags
 };
 
 export const useDBApi = (query, { variables = {}, skip = false } = {}) => {

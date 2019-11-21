@@ -14,14 +14,15 @@ import SelectInput from "../../components/inputs/SelectInput";
 import uniques from "../../utils/uniques";
 import {
   upsertTransaction,
-  deleteTransaction,
-  fetchAllTags
+  deleteTransaction
 } from "../../redux/actionCreators";
 import { compose, parseObjectData } from "../../utils";
-import { withFetch } from "../../components/Fetch";
-import { selectAllTags } from "../../redux/selectors";
 import Spinner from "../../components/Spinner";
-import { withDBApi, fetchTransactionQueryName } from "../../components/DBApi";
+import {
+  withDBApi,
+  fetchTransactionQueryName,
+  fetchTagsQueryName
+} from "../../components/DBApi";
 
 const tagsDatalistId = "TAGSDATALIST";
 const types = [EXPENSE, INCOME];
@@ -220,6 +221,8 @@ class Form extends Component {
                 handleAddTag(ev.target.value);
               }
             }}
+            placeholder={tagsData.loading ? I18N.placeholders.loading_dots : ""}
+            disabled={tagsData.loading}
           >
             <datalist id={tagsDatalistId}>
               {choosableTags.map(tag => (
@@ -227,7 +230,6 @@ class Form extends Component {
               ))}
             </datalist>
           </Input>
-
           {tags.map(tag => (
             <Clickable key={tag} onClick={() => handleRemoveTag(tag)}>
               {tag}
@@ -270,21 +272,19 @@ const mapDispatchToProps = dispatch => ({
   handleDeleteTransaction: deleteTransaction(dispatch)
 });
 
-const mapStateToProps = state => ({
-  tagsData: selectAllTags(state)
-});
+const mapStateToProps = state => ({});
 
 export default compose(
   connect(
     mapStateToProps,
     mapDispatchToProps
   ),
-  withFetch(({ tagsData }) => [!tagsData.queried && fetchAllTags]),
   withDBApi(fetchTransactionQueryName, ({ history }) => ({
     variables: {
       id: parseInt(getId(history), 10)
     },
     skip: !getId(history),
     name: "transactionData"
-  }))
+  })),
+  withDBApi(fetchTagsQueryName, () => ({ name: "tagsData" }))
 )(Form);

@@ -4,6 +4,9 @@ const I18N = {
   delete: "Delete",
   yes: "yes",
   back: "Back",
+  placeholders: {
+    loading_dots: "Cargando..."
+  },
   transaction: {
     type: "Type",
     amount: "Amount",
