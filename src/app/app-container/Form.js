@@ -186,6 +186,8 @@ class Form extends Component {
       }));
     };
 
+    // TODO: dry the submit and delete updates
+
     const handleSubmit = async ev => {
       ev.preventDefault();
       const transaction = {
@@ -307,6 +309,24 @@ class Form extends Component {
             months = removeTransactionFromMonths(months, deletedTransaction);
             store.setData(fetchMonthsQueryName, {
               data: months
+            });
+          }
+
+          // Remove old from day transactions
+          let storedTransactions;
+          const { dayStr } = getDateStrings(deletedTransaction.date);
+          if (
+            (storedTransactions = store.getData(fetchTransactionsQueryName, {
+              dayStr
+            }))
+          ) {
+            storedTransactions = removeTransactionFromTransactions(
+              storedTransactions,
+              deletedTransaction
+            );
+            store.setData(fetchTransactionsQueryName, {
+              variables: { dayStr },
+              data: storedTransactions
             });
           }
         }
