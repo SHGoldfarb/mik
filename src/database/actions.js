@@ -44,7 +44,15 @@ const openDatabase = safe(() =>
   })
 );
 
-const validate = ({ id, amount, date, account, type, comment, tags }) => {
+export const validate = ({
+  id,
+  amount,
+  date,
+  account,
+  type,
+  comment,
+  tags
+}) => {
   const transaction = {
     amount: amount || 0,
     date: date || new Date().getTime(),
@@ -125,7 +133,9 @@ export const dbGenerateAllTransactions = async () => {
 
 export const dbFetchAllTransactions = async () => {
   const db = await openDatabase();
-  return db.getAllFromIndex(TRANSACTIONS_OBJECT_STORE, "date");
+  return (await db.getAllFromIndex(TRANSACTIONS_OBJECT_STORE, "date")).map(
+    transaction => validate(transaction)
+  );
 };
 
 export const dbGenerateAllTags = async () => {
@@ -206,11 +216,9 @@ const getTransactionsInDateRange = async (start, end) => {
   const db = await openDatabase();
   const range = IDBKeyRange.bound(start.getTime(), end.getTime());
 
-  return (await db.getAllFromIndex(
-    TRANSACTIONS_OBJECT_STORE,
-    "date",
-    range
-  )).reverse();
+  return (await db.getAllFromIndex(TRANSACTIONS_OBJECT_STORE, "date", range))
+    .reverse()
+    .map(transaction => validate(transaction));
 };
 
 export const dbFetchMonthTransactions = monthStr => {
@@ -298,7 +306,7 @@ export const dbApiFetchTransaction = async ({ id }) => {
   const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readonly");
   const transaction = await tx.store.get(id);
   await tx.done;
-  return transaction;
+  return validate(transaction);
 };
 
 export const dbApiFetchTagsInstantly = async () => {

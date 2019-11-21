@@ -19,10 +19,13 @@ import {
   fetchTagsQueryName,
   upsertTransactionMutationName,
   deleteTransactionMutationName,
-  fetchMonthsQueryName
+  fetchMonthsQueryName,
+  fetchTransactionsQueryName,
+  fetchDaysQueryName
 } from "../../components/DBApi";
 import { getIncomeExpense } from "../../utils/stats";
 import { getDateStrings } from "../../utils/date";
+import { validate } from "../../database/actions";
 
 const tagsDatalistId = "TAGSDATALIST";
 const types = [EXPENSE, INCOME];
@@ -66,6 +69,22 @@ const addTransactionToMonths = (months, transaction) => {
       expense: oldExpense + newTransactionExpense
     }
   };
+};
+
+const addTransactionToTags = (tags, transaction) =>
+  uniques([...tags, ...transaction.tags]);
+
+const removeTransactionFromTransactions = (transactions, transaction) =>
+  transactions.filter(({ id }) => id !== transaction.id);
+
+const addTransactionToTransactions = (transactions, transaction) =>
+  [...transactions, transaction].sort((t1, t2) => (t1.date < t2.date ? 1 : -1));
+
+const addTransactionToDays = (days, transaction) => {
+  const { dayStr } = getDateStrings(transaction.date);
+  return uniques([...days, dayStr]).sort((day1, day2) =>
+    day1 < day2 ? 1 : -1
+  );
 };
 
 class Form extends Component {
@@ -185,7 +204,9 @@ class Form extends Component {
 
       const mutationResult = await upsertMutation({
         variables: { transaction },
-        update: (newTransaction, store) => {
+        update: async (returnedTransaction, store) => {
+          const newTransaction = validate(returnedTransaction);
+          // Update month stats
           let months;
           if ((months = store.getData(fetchMonthsQueryName))) {
             if (id) {
@@ -194,6 +215,79 @@ class Form extends Component {
             months = addTransactionToMonths(months, newTransaction);
             store.setData(fetchMonthsQueryName, {
               data: months
+            });
+          }
+
+          // Add new tags
+          let storedTags;
+          if ((storedTags = store.getData(fetchTagsQueryName))) {
+            storedTags = addTransactionToTags(storedTags, newTransaction);
+            store.setData(fetchTagsQueryName, { data: storedTags });
+          }
+
+          // Remove old from day transactions
+          let storedTransactions;
+          let dayStr;
+          if (id) {
+            ({ dayStr } = getDateStrings(oldTransaction.date));
+            if (
+              (storedTransactions = store.getData(fetchTransactionsQueryName, {
+                dayStr
+              }))
+            ) {
+              storedTransactions = removeTransactionFromTransactions(
+                storedTransactions,
+                oldTransaction
+              );
+
+              store.setData(fetchTransactionsQueryName, {
+                variables: { dayStr },
+                data: storedTransactions
+              });
+            }
+          }
+
+          // Add new to day transactions
+          // If the day is the same, use the transactions already retrieved
+          if (
+            !(
+              storedTransactions &&
+              dayStr === getDateStrings(newTransaction.date).dayStr
+            )
+          ) {
+            storedTransactions = store.getData(fetchTransactionsQueryName, {
+              dayStr: getDateStrings(newTransaction.date).dayStr
+            });
+          }
+          ({ dayStr } = getDateStrings(newTransaction.date));
+          if (storedTransactions) {
+            storedTransactions = addTransactionToTransactions(
+              storedTransactions,
+              newTransaction
+            );
+
+            store.setData(fetchTransactionsQueryName, {
+              variables: { dayStr },
+              data: storedTransactions
+            });
+          }
+
+          // Add new single transaction
+
+          store.setData(fetchTransactionQueryName, {
+            variables: { id: newTransaction.id },
+            data: newTransaction
+          });
+
+          // Add new day to month
+
+          let days;
+          const { monthStr } = getDateStrings(newTransaction.date);
+          if ((days = store.getData(fetchDaysQueryName, { monthStr }))) {
+            days = addTransactionToDays(days, newTransaction);
+            store.setData(fetchDaysQueryName, {
+              variables: { monthStr },
+              data: days
             });
           }
         }
