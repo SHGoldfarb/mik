@@ -3,6 +3,7 @@ import { getDateStrings, inCurrentTZ } from "../utils/date";
 import uniques from "../utils/uniques";
 import { getIncomeExpenses, getIncomeExpense } from "../utils/stats";
 import flatten from "../utils/flatten";
+import { CASH, INCOME } from "../utils/constants";
 
 const DB_NAME = "mik_dabatabase";
 const TRANSACTIONS_OBJECT_STORE = "transactions";
@@ -42,6 +43,21 @@ const openDatabase = safe(() =>
     }
   })
 );
+
+const validate = ({ id, amount, date, account, type, comment, tags }) => {
+  const transaction = {
+    amount: amount || 0,
+    date: date || new Date().getTime(),
+    account: account || CASH,
+    type: type || INCOME,
+    comment: comment || "",
+    tags: tags || []
+  };
+  if (id !== undefined) {
+    transaction.id = id;
+  }
+  return transaction;
+};
 
 export const dbSetTransactions = async generateTransactions => {
   const db = await openDatabase();
@@ -302,4 +318,21 @@ export const dbApiFetchTags = async () => {
     tag = await nextTag();
   }
   return tags;
+};
+
+export const dbApiUpsertTransaction = async ({ transaction }) => {
+  const db = await openDatabase();
+  const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");
+  const transactionId = tx.store.put(validate(transaction));
+  await tx.done;
+  return transactionId;
+};
+
+export const dbApiDeleteTransaction = async ({ id }) => {
+  const db = await openDatabase();
+  const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");
+  const transaction = await tx.store.get(id);
+  await tx.store.delete(id);
+  await tx.done;
+  return transaction;
 };

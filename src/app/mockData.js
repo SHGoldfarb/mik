@@ -17,9 +17,9 @@ const randBool = () => Math.random() < 0.5;
 
 const randInt = (max = 10000) => Math.floor(Math.random() * max);
 
-const randChoice = array => array[Math.floor(Math.random() * array.length)];
+const sample = items => items[Math.floor(Math.random() * items.length)];
 
-const mockTag = () => randChoice(mockText.split(" "));
+const mockTag = () => sample(mockText.split(" "));
 
 const mockComment = () => {
   // select length of comment

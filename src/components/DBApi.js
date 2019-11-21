@@ -7,7 +7,9 @@ import {
   dbApiFetchDays,
   dbApiFetchTransactions,
   dbApiFetchTransaction,
-  dbApiFetchTags
+  dbApiFetchTags,
+  dbApiUpsertTransaction,
+  dbApiDeleteTransaction
 } from "../database/actions";
 
 export const fetchMonthsQueryName = "FETCH_MONTHS";
@@ -15,8 +17,10 @@ export const fetchDaysQueryName = "FETCH_DAYS";
 export const fetchTransactionsQueryName = "FETCH_TRANSACTIONS";
 export const fetchTransactionQueryName = "FETCH_TRANSACTION";
 export const fetchTagsQueryName = "FETCH_TAGS";
+export const upsertTransactionMutationName = "UPSERT_TRANSACTION_MUTATION";
+export const deleteTransactionMutationName = "DELETE_TRANSACTION_MUTATION";
 
-const dbActions = {
+const dbQuerys = {
   [fetchMonthsQueryName]: dbApiFetchMonths,
   [fetchDaysQueryName]: dbApiFetchDays,
   [fetchTransactionsQueryName]: dbApiFetchTransactions,
@@ -24,7 +28,14 @@ const dbActions = {
   [fetchTagsQueryName]: dbApiFetchTags
 };
 
-export const useDBApi = (query, { variables = {}, skip = false } = {}) => {
+const dbMutations = {
+  [upsertTransactionMutationName]: dbApiUpsertTransaction,
+  [deleteTransactionMutationName]: dbApiDeleteTransaction
+};
+
+const useDBApiQuery = (query, { variables = {}, skip = false } = {}) => {
+  // Use hooks unconditionally
+
   const data =
     useSelector(
       state => state[dbApiStoreKey][makeStoreKey(query, variables)]
@@ -34,18 +45,41 @@ export const useDBApi = (query, { variables = {}, skip = false } = {}) => {
 
   const [hasFetched, setHasFetched] = useState(false);
 
+  // Return if query is a mutation
+
+  if (!Object.keys(dbQuerys).includes(query)) {
+    return undefined;
+  }
+
   const { fetched } = data;
 
   if (!fetched && !hasFetched && !skip) {
     dispatch(setFetching(query, variables));
     setHasFetched(true);
     (async () => {
-      const fetchedData = await dbActions[query](variables);
+      const fetchedData = await dbQuerys[query](variables);
       dispatch(setFetched(query, variables, fetchedData));
     })();
   }
 
   return data;
+};
+
+const useDBApiMutation = query => {
+  if (!Object.keys(dbMutations).includes(query)) {
+    return undefined;
+  }
+  const mutate = ({ variables = {} } = {}) =>
+    // Should return a promise that resolves to the mutated object once
+    // the transaction is complete.
+    dbMutations[query](variables);
+  return mutate;
+};
+
+export const useDBApi = (...args) => {
+  const queryData = useDBApiQuery(...args);
+  const mutationData = useDBApiMutation(...args);
+  return queryData || mutationData;
 };
 
 const defaultDataPropName = "data";

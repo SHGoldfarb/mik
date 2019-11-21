@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { INCOME, EXPENSE, CASH } from "../../utils/constants";
 import style from "./Form.module.css";
 import { I18N } from "../../config";
@@ -12,16 +11,14 @@ import Input from "../../components/inputs/Input";
 import { getUrlParam } from "../../utils/navigation";
 import SelectInput from "../../components/inputs/SelectInput";
 import uniques from "../../utils/uniques";
-import {
-  upsertTransaction,
-  deleteTransaction
-} from "../../redux/actionCreators";
 import { compose, parseObjectData } from "../../utils";
 import Spinner from "../../components/Spinner";
 import {
   withDBApi,
   fetchTransactionQueryName,
-  fetchTagsQueryName
+  fetchTagsQueryName,
+  upsertTransactionMutationName,
+  deleteTransactionMutationName
 } from "../../components/DBApi";
 
 const tagsDatalistId = "TAGSDATALIST";
@@ -82,11 +79,11 @@ class Form extends Component {
 
   render = () => {
     const {
-      handleSaveTransaction,
       history,
-      handleDeleteTransaction,
+      deleteMutation,
       tagsData,
-      transactionData
+      transactionData,
+      upsertMutation
     } = this.props;
 
     if (transactionData.loading) {
@@ -126,7 +123,7 @@ class Form extends Component {
       }));
     };
 
-    const handleSubmit = ev => {
+    const handleSubmit = async ev => {
       ev.preventDefault();
       const transaction = {
         amount: parseInt(amount, 10),
@@ -139,14 +136,20 @@ class Form extends Component {
       if (id) {
         transaction.id = id;
       }
-      handleSaveTransaction(transaction);
+
+      const transactionId = await upsertMutation({
+        variables: { transaction }
+      });
+
       history.push("/");
+      return transactionId;
     };
 
-    const handleDelete = ev => {
+    const handleDelete = async ev => {
       ev.preventDefault();
-      handleDeleteTransaction(id);
+      const deletedTransaction = await deleteMutation({ variables: { id } });
       history.push("/");
+      return deletedTransaction;
     };
 
     const choosableTags = existingTags.filter(
@@ -256,8 +259,8 @@ class Form extends Component {
 }
 
 Form.propTypes = {
-  handleSaveTransaction: PropTypes.func.isRequired,
-  handleDeleteTransaction: PropTypes.func.isRequired,
+  upsertMutation: PropTypes.func.isRequired,
+  deleteMutation: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired
@@ -267,18 +270,7 @@ Form.propTypes = {
 };
 const getId = history => getUrlParam(history, "id");
 
-const mapDispatchToProps = dispatch => ({
-  handleSaveTransaction: upsertTransaction(dispatch),
-  handleDeleteTransaction: deleteTransaction(dispatch)
-});
-
-const mapStateToProps = state => ({});
-
 export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
   withDBApi(fetchTransactionQueryName, ({ history }) => ({
     variables: {
       id: parseInt(getId(history), 10)
@@ -286,5 +278,7 @@ export default compose(
     skip: !getId(history),
     name: "transactionData"
   })),
-  withDBApi(fetchTagsQueryName, () => ({ name: "tagsData" }))
+  withDBApi(fetchTagsQueryName, () => ({ name: "tagsData" })),
+  withDBApi(upsertTransactionMutationName, () => ({ name: "upsertMutation" })),
+  withDBApi(deleteTransactionMutationName, () => ({ name: "deleteMutation" }))
 )(Form);
