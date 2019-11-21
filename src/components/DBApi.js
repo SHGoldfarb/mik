@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { dbApiStoreKey, makeStoreKey } from "../redux/reducers";
 import { setFetching, setFetched } from "../redux/actions";
 import {
   dbApiFetchMonths,
@@ -11,6 +10,11 @@ import {
   dbApiUpsertTransaction,
   dbApiDeleteTransaction
 } from "../database/actions";
+import {
+  selectDBApiQuery,
+  selectDBApiStore,
+  getQueryFromStore
+} from "../redux/selectors";
 
 export const fetchMonthsQueryName = "FETCH_MONTHS";
 export const fetchDaysQueryName = "FETCH_DAYS";
@@ -36,10 +40,7 @@ const dbMutations = {
 const useDBApiQuery = (query, { variables = {}, skip = false } = {}) => {
   // Use hooks unconditionally
 
-  const data =
-    useSelector(
-      state => state[dbApiStoreKey][makeStoreKey(query, variables)]
-    ) || {};
+  const data = useSelector(selectDBApiQuery(query, variables)) || {};
 
   const dispatch = useDispatch();
 
@@ -65,14 +66,37 @@ const useDBApiQuery = (query, { variables = {}, skip = false } = {}) => {
   return data;
 };
 
+const useStore = () => {
+  // TODO: find a way to not bring the whole store
+  const storeState = useSelector(selectDBApiStore);
+
+  // TODO: maybe it's better to use dispatch hook only once
+  // for query and mutation?
+  const dispatch = useDispatch();
+  const store = {
+    getData: (query, variables = {}) =>
+      (getQueryFromStore(query, variables)(storeState) || {}).data,
+    setData: (query, { variables = {}, data = {} } = {}) =>
+      dispatch(setFetched(query, variables, data))
+  };
+  return store;
+};
+
 const useDBApiMutation = query => {
+  const store = useStore();
+
   if (!Object.keys(dbMutations).includes(query)) {
     return undefined;
   }
-  const mutate = ({ variables = {} } = {}) =>
+
+  const mutate = async ({ variables = {}, update = () => {} } = {}) => {
     // Should return a promise that resolves to the mutated object once
     // the transaction is complete.
-    dbMutations[query](variables);
+
+    const mutationResult = await dbMutations[query](variables);
+    update(mutationResult, store);
+    return mutationResult;
+  };
   return mutate;
 };
 

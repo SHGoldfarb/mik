@@ -15,6 +15,7 @@ import {
   selectAllTagsQuery
 } from "../database/queries";
 import { getDateStrings } from "../utils/date";
+import { dbApiStoreKey, makeStoreKey } from "./reducers";
 
 const parseTransaction = ({ amount, tags, ...rest }) => ({
   amount: amount || 0,
@@ -152,3 +153,14 @@ export const oldSelectAllTags = createSelector(
   transactions =>
     uniques(flatten(transactions.map(transaction => transaction.tags || [])))
 );
+
+export const selectDBApiStore = state => state[dbApiStoreKey];
+
+export const getQueryFromStore = (query, variables) => dbApiStore =>
+  dbApiStore[makeStoreKey(query, variables)];
+
+export const selectDBApiQuery = (query, variables) =>
+  createSelector(
+    selectDBApiStore,
+    getQueryFromStore(query, variables)
+  );

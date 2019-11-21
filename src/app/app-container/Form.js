@@ -18,11 +18,55 @@ import {
   fetchTransactionQueryName,
   fetchTagsQueryName,
   upsertTransactionMutationName,
-  deleteTransactionMutationName
+  deleteTransactionMutationName,
+  fetchMonthsQueryName
 } from "../../components/DBApi";
+import { getIncomeExpense } from "../../utils/stats";
+import { getDateStrings } from "../../utils/date";
 
 const tagsDatalistId = "TAGSDATALIST";
 const types = [EXPENSE, INCOME];
+
+const removeTransactionFromMonths = (months, transaction) => {
+  // Remove amount from old month
+  const { monthStr: oldMonth } = getDateStrings(transaction.date);
+
+  const {
+    income: oldTransactionIncome,
+    expense: oldTransactionExpense
+  } = getIncomeExpense(transaction);
+  const { income: oldIncome, expense: oldExpense } = months[oldMonth] || {
+    income: 0,
+    expense: 0
+  };
+  return {
+    ...months,
+    [oldMonth]: {
+      income: oldIncome - oldTransactionIncome,
+      expense: oldExpense - oldTransactionExpense
+    }
+  };
+};
+
+const addTransactionToMonths = (months, transaction) => {
+  // Add amount to new month
+  const { monthStr: newMonth } = getDateStrings(transaction.date);
+  const {
+    income: newTransactionIncome,
+    expense: newTransactionExpense
+  } = getIncomeExpense(transaction);
+  const { income: oldIncome, expense: oldExpense } = months[newMonth] || {
+    income: 0,
+    expense: 0
+  };
+  return {
+    ...months,
+    [newMonth]: {
+      income: oldIncome + newTransactionIncome,
+      expense: oldExpense + newTransactionExpense
+    }
+  };
+};
 
 class Form extends Component {
   state = {
@@ -137,19 +181,44 @@ class Form extends Component {
         transaction.id = id;
       }
 
-      const transactionId = await upsertMutation({
-        variables: { transaction }
+      const oldTransaction = parseObjectData(transactionData);
+
+      const mutationResult = await upsertMutation({
+        variables: { transaction },
+        update: (newTransaction, store) => {
+          let months;
+          if ((months = store.getData(fetchMonthsQueryName))) {
+            if (id) {
+              months = removeTransactionFromMonths(months, oldTransaction);
+            }
+            months = addTransactionToMonths(months, newTransaction);
+            store.setData(fetchMonthsQueryName, {
+              data: months
+            });
+          }
+        }
       });
 
       history.push("/");
-      return transactionId;
+      return mutationResult;
     };
 
     const handleDelete = async ev => {
       ev.preventDefault();
-      const deletedTransaction = await deleteMutation({ variables: { id } });
+      const mutationResult = await deleteMutation({
+        variables: { id },
+        update: (deletedTransaction, store) => {
+          let months;
+          if ((months = store.getData(fetchMonthsQueryName))) {
+            months = removeTransactionFromMonths(months, deletedTransaction);
+            store.setData(fetchMonthsQueryName, {
+              data: months
+            });
+          }
+        }
+      });
       history.push("/");
-      return deletedTransaction;
+      return mutationResult;
     };
 
     const choosableTags = existingTags.filter(

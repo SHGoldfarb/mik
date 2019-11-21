@@ -323,15 +323,16 @@ export const dbApiFetchTags = async () => {
 export const dbApiUpsertTransaction = async ({ transaction }) => {
   const db = await openDatabase();
   const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");
-  const transactionId = tx.store.put(validate(transaction));
+  const transactionId = await tx.store.put(validate(transaction));
+  const newTransaction = tx.store.get(transactionId);
   await tx.done;
-  return transactionId;
+  return newTransaction;
 };
 
 export const dbApiDeleteTransaction = async ({ id }) => {
   const db = await openDatabase();
   const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");
-  const transaction = await tx.store.get(id);
+  const transaction = tx.store.get(id);
   await tx.store.delete(id);
   await tx.done;
   return transaction;
