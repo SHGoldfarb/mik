@@ -186,6 +186,9 @@ class Form extends Component {
       }));
     };
 
+    const goToTransactionsView = () =>
+      history.push(`/?active=${getDateStrings(date).monthStr}`);
+
     // TODO: dry the submit and delete updates
 
     const handleSubmit = async ev => {
@@ -295,7 +298,7 @@ class Form extends Component {
         }
       });
 
-      history.push("/");
+      goToTransactionsView();
       return mutationResult;
     };
 
@@ -331,7 +334,7 @@ class Form extends Component {
           }
         }
       });
-      history.push("/");
+      goToTransactionsView();
       return mutationResult;
     };
 
