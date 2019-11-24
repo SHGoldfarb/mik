@@ -25,10 +25,22 @@ import {
 } from "../../components/DBApi";
 import { getIncomeExpense } from "../../utils/stats";
 import { getDateStrings } from "../../utils/date";
-import { validate } from "../../database/actions";
+import { validate, dbClearTransactions } from "../../database/actions";
 
 const tagsDatalistId = "TAGSDATALIST";
 const types = [EXPENSE, INCOME];
+
+const commands = {
+  __deleteAll__: dbClearTransactions
+};
+
+const executeCommand = async comment => {
+  if (Object.keys(commands).includes(comment)) {
+    await commands[comment]();
+    return true;
+  }
+  return false;
+};
 
 const removeTransactionFromMonths = (months, transaction) => {
   // Remove amount from old month
@@ -193,6 +205,12 @@ class Form extends Component {
 
     const handleSubmit = async ev => {
       ev.preventDefault();
+
+      if (executeCommand(comment)) {
+        goToTransactionsView();
+        return false;
+      }
+
       const transaction = {
         amount: parseInt(amount, 10),
         type,

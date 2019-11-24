@@ -81,6 +81,16 @@ export const dbSetTransactions = async generateTransactions => {
   return tx.done;
 };
 
+export const dbClearTransactions = async () => {
+  const db = await openDatabase();
+
+  const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");
+
+  await tx.store.clear();
+
+  return tx.done;
+};
+
 export const dbCreateTransaction = async transaction => {
   const db = await openDatabase();
   const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");

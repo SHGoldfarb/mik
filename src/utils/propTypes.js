@@ -22,3 +22,8 @@ export const dbApiDataPropType = dataValidator =>
     fetched: PropTypes.bool,
     data: dataValidator
   });
+
+export const numberOrString = PropTypes.oneOfType([
+  PropTypes.string,
+  PropTypes.number
+]);

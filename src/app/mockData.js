@@ -4,8 +4,21 @@ import uniques from "../utils/uniques";
 const QUANTITY = 10000000;
 const MULTIPLIER = 100;
 
-const mockText =
-  "Cookies for birthday. Coca-cola. Health insurance. Christmas gift. I was hungry. Food for the week. Monthly groceries. Going out with friends. A table for the dining room.";
+const comments = [
+  "Cookies for birthday.",
+  "Coca-cola.",
+  "Health insurance.",
+  "Christmas gift.",
+  "I was hungry.",
+  "Food for the week.",
+  "Monthly groceries.",
+  "Going out with friends.",
+  "A table for the dining room.",
+  "Computer",
+  "Holydays",
+  "Dentist",
+  "Yeah need more of these"
+];
 
 const msTimezone = 1000 * 60 * 60 * 3;
 
@@ -26,18 +39,7 @@ const mockTag = () =>
     )
   );
 
-const mockComment = () => {
-  // select length of comment
-  const nChars = Math.round(Math.random() * 25) + 5;
-
-  // select start position
-  let startIndex = Math.random() * (mockText.length - 2 - nChars);
-  while (mockText[startIndex] === " ") {
-    startIndex = Math.random() * (mockText.length - 2 - nChars);
-  }
-
-  return mockText.slice(startIndex, startIndex + nChars);
-};
+const mockComment = () => sample(comments);
 
 const createTransaction = (amount, date, type) => ({
   amount,
