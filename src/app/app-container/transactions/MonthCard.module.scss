@@ -2,8 +2,16 @@
 
 .cardBackground {
     background-color: $color-background-secondary;
+    padding-top: 0px;
 }
 
-.incomeExpense {
-    
+.header {
+    padding-right: 8px;
+}
+
+.headerContainer {
+    position: sticky;
+    top: 0px;
+    background-color: $color-background-secondary;
+    padding-top: 10px;
 }

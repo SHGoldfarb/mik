@@ -7,7 +7,7 @@ $create-button-margin: 3px;
 $create-button-border: 2px;
 $create-button-padding: 3px;
 $transactions-container-height: calc(
-    100% - #{$stats-height} - #{$create-button-height} - 
+    100% - #{$create-button-height} - 
     2 * #{$create-button-border} - 2 * #{$create-button-margin} - 
     2 * #{$create-button-padding}
 );

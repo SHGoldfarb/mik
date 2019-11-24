@@ -8,13 +8,7 @@
 }
 
 .headers {
-    display: flex;
-    align-items: baseline;
     border-bottom: 1px solid $color-neutral-extralight;
     padding-bottom: 2px;
     margin-bottom: 2px;
-}
-
-.leftHeader, .header {
-    flex-grow: 1;
 }

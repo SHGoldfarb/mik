@@ -1,9 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Card from "../../../components/Card";
-import IncomeExpense from "../../../components/IncomeExpense";
 import { inCurrentTZ } from "../../../utils/date";
-import PrettyDate from "../../../components/PrettyDate";
 import I18N from "../../../config/I18N";
 import Spinner from "../../../components/Spinner";
 import {
@@ -11,6 +9,8 @@ import {
   fetchTransactionsQueryName
 } from "../../../components/DBApi";
 import { getIncomeExpenses } from "../../../utils/stats";
+import CardHeader from "./components/CardHeader";
+import style from "./DayCard.module.css";
 
 const DayCard = ({ dayStr, children }) => {
   const { loading, data: transactions = [] } = useDBApi(
@@ -27,18 +27,15 @@ const DayCard = ({ dayStr, children }) => {
   const date = inCurrentTZ(dayStr);
   return (
     <Card
-      leftHeader={
-        <PrettyDate
+      header={
+        <CardHeader
           dateHighlight={date.getDate()}
           dateNormal={I18N.date.days[date.getDay()]}
+          income={income}
+          expense={expense}
+          numbersLoading={loading}
+          className={style.header}
         />
-      }
-      header={
-        loading ? (
-          <Spinner />
-        ) : (
-          <IncomeExpense income={income} expense={expense} />
-        )
       }
     >
       {loading ? <Spinner /> : children(transactions)}

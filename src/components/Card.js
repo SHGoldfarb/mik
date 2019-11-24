@@ -4,30 +4,32 @@ import style from "./Card.module.scss";
 import { classnames } from "../utils";
 import Clickable from "./Clickable";
 
-const Card = ({ children, header, leftHeader, className, onHeaderClick }) => (
+const Card = ({ children, header, className, onHeaderClick, theme }) => (
   <div className={classnames(style.container, className)}>
-    <Clickable className={style.headers} onClick={onHeaderClick}>
-      {leftHeader && <div className={style.leftHeader}>{leftHeader}</div>}
-      {header && <div className={style.header}>{header}</div>}
+    <Clickable
+      className={classnames(style.headers, theme.header)}
+      onClick={onHeaderClick}
+    >
+      {header}
     </Clickable>
-    <div>{children}</div>
+    {children}
   </div>
 );
 
 Card.defaultProps = {
   header: null,
   children: null,
-  leftHeader: null,
   className: "",
-  onHeaderClick: () => {}
+  onHeaderClick: () => {},
+  theme: { header: "" }
 };
 
 Card.propTypes = {
   children: PropTypes.node,
   header: PropTypes.node,
-  leftHeader: PropTypes.node,
   className: PropTypes.string,
-  onHeaderClick: PropTypes.func
+  onHeaderClick: PropTypes.func,
+  theme: PropTypes.shape({ header: PropTypes.string })
 };
 
 export default Card;

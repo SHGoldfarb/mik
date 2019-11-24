@@ -6,10 +6,12 @@
 
 .income {
     color: $color-income;
-    margin: auto;
+    width: 50%;
+    text-align: end;
 }
 
 .expense {
     color: $color-expense;
-    margin: auto;
+    width: 50%;
+    text-align: end;
 }
