@@ -206,7 +206,7 @@ class Form extends Component {
     const handleSubmit = async ev => {
       ev.preventDefault();
 
-      if (executeCommand(comment)) {
+      if (await executeCommand(comment)) {
         goToTransactionsView();
         return false;
       }
