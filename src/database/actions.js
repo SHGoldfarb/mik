@@ -1,7 +1,7 @@
 import { openDB } from "idb";
 import { getDateStrings, inCurrentTZ } from "../utils/date";
 import uniques from "../utils/uniques";
-import { getIncomeExpenses, getIncomeExpense } from "../utils/stats";
+import { getIncomeExpense } from "../utils/stats";
 import flatten from "../utils/flatten";
 import { CASH, INCOME } from "../utils/constants";
 
@@ -91,32 +91,7 @@ export const dbClearTransactions = async () => {
   return tx.done;
 };
 
-export const dbCreateTransaction = async transaction => {
-  const db = await openDatabase();
-  const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");
-  tx.store.add(transaction);
-  await tx.done;
-  return transaction;
-};
-
-export const dbDeleteTransaction = async id => {
-  const db = await openDatabase();
-  const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");
-  const transaction = await tx.store.get(id);
-  tx.store.delete(id);
-  await tx.done;
-  return transaction;
-};
-
-export const dbFetchTransaction = async id => {
-  const db = await openDatabase();
-  const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readonly");
-  const transaction = await tx.store.get(id);
-  await tx.done;
-  return transaction;
-};
-
-export const dbGenerateAllTransactions = async () => {
+const dbGenerateAllTransactions = async () => {
   const db = await openDatabase();
 
   const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readonly");
@@ -141,14 +116,14 @@ export const dbGenerateAllTransactions = async () => {
   return nextTransaction;
 };
 
-export const dbFetchAllTransactions = async () => {
+const dbFetchAllTransactions = async () => {
   const db = await openDatabase();
   return (await db.getAllFromIndex(TRANSACTIONS_OBJECT_STORE, "date")).map(
     transaction => validate(transaction)
   );
 };
 
-export const dbGenerateAllTags = async () => {
+const dbGenerateAllTags = async () => {
   const nextTransaction = await dbGenerateAllTransactions();
 
   const sentTags = new Set();
@@ -177,51 +152,6 @@ export const dbGenerateAllTags = async () => {
   return nextTag;
 };
 
-export const dbFetchAllTags = async () => {
-  const tags = [];
-  const nextTag = await dbGenerateAllTags();
-
-  let tag = await nextTag();
-
-  while (tag !== undefined) {
-    tags.push(tag);
-    // eslint-disable-next-line no-await-in-loop
-    tag = await nextTag();
-  }
-  return tags;
-};
-
-export const dbGenerateAllMonths = async () => {
-  const nextTransaction = await dbGenerateAllTransactions();
-
-  const months = new Set();
-
-  const nextMonth = async () => {
-    const transaction = await nextTransaction();
-
-    if (transaction === undefined) {
-      return undefined;
-    }
-
-    const { monthStr } = getDateStrings(transaction.date);
-    if (!months.has(monthStr)) {
-      months.add(monthStr);
-      return monthStr;
-    }
-    return nextMonth();
-  };
-
-  return nextMonth;
-};
-
-export const dbFetchAllMonths = async () => {
-  const transactions = await dbFetchAllTransactions();
-  const monthStrings = transactions.map(
-    transaction => getDateStrings(transaction.date).monthStr
-  );
-  return uniques(monthStrings).sort((a, b) => (a < b ? -1 : 1));
-};
-
 const getTransactionsInDateRange = async (start, end) => {
   const db = await openDatabase();
   const range = IDBKeyRange.bound(start.getTime(), end.getTime());
@@ -231,43 +161,18 @@ const getTransactionsInDateRange = async (start, end) => {
     .map(transaction => validate(transaction));
 };
 
-export const dbFetchMonthTransactions = monthStr => {
+const dbFetchMonthTransactions = monthStr => {
   const start = inCurrentTZ(`${monthStr}-01`);
   const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
 
   return getTransactionsInDateRange(start, end);
 };
 
-export const dbFetchDayTransactions = dayStr => {
+const dbFetchDayTransactions = dayStr => {
   const start = inCurrentTZ(dayStr);
   const end = new Date(start.getTime() + 1000 * 60 * 60 * 24 - 1);
 
   return getTransactionsInDateRange(start, end);
-};
-
-export const dbFetchMonthStats = async monthStr => {
-  const transactions = await dbFetchMonthTransactions(monthStr);
-
-  return getIncomeExpenses(transactions);
-};
-
-export const dbFetchDayStats = async dayStr => {
-  const transactions = await dbFetchDayTransactions(dayStr);
-
-  return getIncomeExpenses(transactions);
-};
-
-export const dbFetchMonthDays = async monthStr => {
-  const transactions = await dbFetchMonthTransactions(monthStr);
-
-  const days = [
-    ...transactions.reduce((acc, transaction) => {
-      const { dayStr } = getDateStrings(transaction.date);
-      return !acc.has(dayStr) ? acc.add(dayStr) : acc;
-    }, new Set())
-  ];
-
-  return days;
 };
 
 export const dbApiFetchMonths = async () => {
