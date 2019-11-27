@@ -110,7 +110,7 @@ const dbGenerateAllTransactions = async () => {
       return undefined;
     }
 
-    return { ...cursor.value };
+    return validate({ ...cursor.value });
   };
 
   return nextTransaction;
@@ -119,7 +119,7 @@ const dbGenerateAllTransactions = async () => {
 const dbFetchAllTransactions = async () => {
   const db = await openDatabase();
   return (await db.getAllFromIndex(TRANSACTIONS_OBJECT_STORE, "date")).map(
-    transaction => validate(transaction)
+    validate
   );
 };
 
@@ -158,7 +158,7 @@ const getTransactionsInDateRange = async (start, end) => {
 
   return (await db.getAllFromIndex(TRANSACTIONS_OBJECT_STORE, "date", range))
     .reverse()
-    .map(transaction => validate(transaction));
+    .map(validate);
 };
 
 const dbFetchMonthTransactions = monthStr => {
