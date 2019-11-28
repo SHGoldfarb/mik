@@ -6,11 +6,9 @@ import { useDBApi, fetchTransactionQueryName } from "../../components/DBApi";
 import Spinner from "../../components/Spinner";
 import State from "../../components/State";
 import BackButton from "../../components/BackButton";
-import { TypeInput, DateInput } from "./form";
+import { TypeInput, DateInput, AmountInput, CommentInput } from "./form";
 import style from "./Form.module.scss";
 
-const AmountInput = () => <div>AmountInput</div>;
-const CommentInput = () => <div>CommentInput</div>;
 const TagsInput = () => <div>TagsInput</div>;
 const SaveButton = () => <div>SaveButton</div>;
 const DeleteButton = () => <div>DeleteButton</div>;
