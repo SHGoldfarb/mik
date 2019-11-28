@@ -148,8 +148,8 @@ class FormOld extends Component {
     this.focusOnFirstInputWhenMounted();
   };
 
-  handleFieldChange = field => ev => {
-    this.setState({ [field]: ev.target.value });
+  handleFieldChange = field => value => {
+    this.setState({ [field]: value });
   };
 
   render = () => {
@@ -419,9 +419,7 @@ class FormOld extends Component {
                 handleAddTag(ev.target.value);
               }
             }}
-            onChange={ev => {
-              handleTagInputValueChange(ev);
-            }}
+            onChange={handleTagInputValueChange}
             onKeyPress={ev => {
               if (ev.key === "Enter") {
                 ev.preventDefault();

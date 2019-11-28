@@ -1,3 +1,4 @@
 import TypeInput from "./TypeInput";
+import DateInput from "./DateInput";
 
-export { TypeInput };
+export { TypeInput, DateInput };

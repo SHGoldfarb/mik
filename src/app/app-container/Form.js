@@ -1,14 +1,14 @@
 import React, { Fragment } from "react";
 import { getUrlParam } from "../../utils/navigation";
+import { EXPENSE } from "../../utils/constants";
+import { historyPropType } from "../../utils/propTypes";
 import { useDBApi, fetchTransactionQueryName } from "../../components/DBApi";
 import Spinner from "../../components/Spinner";
 import State from "../../components/State";
-import { historyPropType } from "../../utils/propTypes";
 import BackButton from "../../components/BackButton";
-import { TypeInput } from "./form";
-import { EXPENSE } from "../../utils/constants";
+import { TypeInput, DateInput } from "./form";
+import style from "./Form.module.scss";
 
-const DateInput = () => <div>DateInput</div>;
 const AmountInput = () => <div>AmountInput</div>;
 const CommentInput = () => <div>CommentInput</div>;
 const TagsInput = () => <div>TagsInput</div>;
@@ -30,7 +30,14 @@ const Form = ({ history }) => {
   }
 
   return (
-    <State initialState={transactionData.data || { type: EXPENSE }}>
+    <State
+      initialState={
+        transactionData.data || {
+          type: EXPENSE,
+          date: new Date()
+        }
+      }
+    >
       {({ type, date, amount, comment, tags }, setValue) => {
         const handleChange = valueName => value =>
           setValue(prevValues => ({ ...prevValues, [valueName]: value }));
@@ -38,10 +45,26 @@ const Form = ({ history }) => {
           <Fragment>
             <BackButton history={history} />
             <TypeInput value={type} onChange={handleChange("type")} />
-            <DateInput value={date} onChange={handleChange("date")} />
-            <AmountInput value={amount} onChange={handleChange("amount")} />
-            <CommentInput value={comment} onChange={handleChange("comment")} />
-            <TagsInput value={tags} onChange={handleChange("tags")} />
+            <DateInput
+              value={date}
+              onChange={handleChange("date")}
+              className={style.field}
+            />
+            <AmountInput
+              value={amount}
+              onChange={handleChange("amount")}
+              className={style.field}
+            />
+            <CommentInput
+              value={comment}
+              onChange={handleChange("comment")}
+              className={style.field}
+            />
+            <TagsInput
+              value={tags}
+              onChange={handleChange("tags")}
+              className={style.field}
+            />
             <SaveButton
               values={{ id: transactionId, type, date, amount, comment, tags }}
               history={history}

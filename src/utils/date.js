@@ -21,3 +21,6 @@ export const getDateStrings = date => {
   const dayStr = `${monthStr}-${day}`;
   return { monthStr, dayStr };
 };
+
+export const toISOStringInCurrentTZ = (date = new Date()) =>
+  new Date(date - new Date().getTimezoneOffset() * 60 * 1000).toISOString();

@@ -1,8 +1,8 @@
 import React, { forwardRef } from "react";
 import PropTypes from "prop-types";
+import { classnames } from "../../utils";
 import style from "./SelectInput.module.scss";
 import inputStyle from "./style.module.scss";
-import { classnames } from "../../utils";
 
 const SelectInput = forwardRef(
   (
@@ -10,10 +10,10 @@ const SelectInput = forwardRef(
     ref
   ) => (
     <label
-      className={classnames(inputStyle.label, style.label, className)}
+      className={classnames(inputStyle.container, style.label, className)}
       htmlFor={id}
     >
-      {label}
+      {label && <div className={inputStyle.label}>{label}</div>}
       <select
         className={classnames(inputStyle.input, style.input, inputClassName)}
         id={id}

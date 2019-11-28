@@ -5,16 +5,20 @@ import inputStyle from "./style.module.scss";
 import { classnames } from "../../utils";
 
 const Input = forwardRef(
-  ({ id, label, className, inputClassName, children, ...rest }, ref) => (
+  (
+    { id, label, className, inputClassName, children, onChange, ...rest },
+    ref
+  ) => (
     <label
-      className={classnames(inputStyle.label, style.label, className)}
+      className={classnames(inputStyle.container, style.label, className)}
       htmlFor={id}
     >
-      {label}
+      {label && <div className={inputStyle.label}>{label}</div>}
       <input
         className={classnames(inputStyle.input, style.input, inputClassName)}
         id={id}
         ref={ref}
+        onChange={ev => onChange(ev.target.value)}
         {...rest}
       />
       {children}
@@ -27,7 +31,8 @@ Input.defaultProps = {
   label: "",
   className: "",
   inputClassName: "",
-  children: null
+  children: null,
+  onChange: () => {}
 };
 
 Input.propTypes = {
@@ -35,7 +40,8 @@ Input.propTypes = {
   label: PropTypes.string,
   className: PropTypes.string,
   inputClassName: PropTypes.string,
-  children: PropTypes.node
+  children: PropTypes.node,
+  onChange: PropTypes.func
 };
 
 export default Input;
