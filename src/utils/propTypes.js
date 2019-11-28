@@ -27,3 +27,10 @@ export const numberOrString = PropTypes.oneOfType([
   PropTypes.string,
   PropTypes.number
 ]);
+
+export const historyPropType = PropTypes.shape({
+  goBack: PropTypes.func.isRequired,
+  location: PropTypes.shape({
+    search: PropTypes.string.isRequired
+  }).isRequired
+});

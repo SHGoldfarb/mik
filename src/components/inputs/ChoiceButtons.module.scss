@@ -1,0 +1,21 @@
+@import '../../utils/variables.scss';
+
+$color: $color-highlight;
+
+.active.active {
+    background-color: $color;
+    color: $color-white;
+}
+
+.container {
+    display: flex
+}
+
+.button {
+    padding: 5px;
+    border-color: $color;
+    border-style: solid;
+    border-width: 2px;
+    color: $color;
+    flex-grow: 1;
+}
