@@ -1,8 +1,5 @@
 import { useState } from "react";
 
-const State = ({ initialState, children }) => {
-  const [state, setState] = useState(initialState);
-  return children(state, setState);
-};
+const State = ({ initialState, children }) => children(useState(initialState));
 
 export default State;

@@ -3,10 +3,22 @@ import PropTypes from "prop-types";
 import style from "./Input.module.scss";
 import inputStyle from "./style.module.scss";
 import { classnames } from "../../utils";
+import { randInt } from "../../utils/radom";
+
+const datalistId = `${randInt(10000000000)} datalistId`;
 
 const Input = forwardRef(
   (
-    { id, label, className, inputClassName, children, onChange, ...rest },
+    {
+      id,
+      label,
+      className,
+      inputClassName,
+      children,
+      onChange,
+      datalist,
+      ...rest
+    },
     ref
   ) => (
     <label
@@ -19,8 +31,16 @@ const Input = forwardRef(
         id={id}
         ref={ref}
         onChange={ev => onChange(ev.target.value)}
+        list={datalist ? datalistId : undefined}
         {...rest}
       />
+      {datalist && (
+        <datalist id={datalistId}>
+          {datalist.map(tag => (
+            <option key={tag} value={tag} />
+          ))}
+        </datalist>
+      )}
       {children}
     </label>
   )
@@ -32,7 +52,8 @@ Input.defaultProps = {
   className: "",
   inputClassName: "",
   children: null,
-  onChange: () => {}
+  onChange: () => {},
+  datalist: null
 };
 
 Input.propTypes = {
@@ -41,7 +62,8 @@ Input.propTypes = {
   className: PropTypes.string,
   inputClassName: PropTypes.string,
   children: PropTypes.node,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  datalist: PropTypes.arrayOf(PropTypes.string)
 };
 
 export default Input;

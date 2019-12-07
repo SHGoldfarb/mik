@@ -1,7 +1,7 @@
 import React from "react";
 import { arrayOf, string, func } from "prop-types";
-import { classnames } from "../../utils";
-import UnstyledButton from "../UnstyledButton";
+import { classnames } from "../utils";
+import UnstyledButton from "./UnstyledButton";
 import style from "./ChoiceButtons.module.scss";
 
 const ChoiceButtons = ({ source, value, onChange, className }) => (

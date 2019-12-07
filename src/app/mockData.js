@@ -1,5 +1,6 @@
 import { EXPENSE, INCOME, CASH } from "../utils/constants";
 import uniques from "../utils/uniques";
+import { sample, randInt, randBool } from "../utils/radom";
 
 const QUANTITY = 10000000;
 const MULTIPLIER = 100;
@@ -25,12 +26,6 @@ const msTimezone = 1000 * 60 * 60 * 3;
 const msDay = 1000 * 60 * 60 * 24;
 
 const msYear2000 = msDay * (365 * 30 + 7) + msTimezone;
-
-const randBool = () => Math.random() < 0.5;
-
-const randInt = (max = 10000) => Math.floor(Math.random() * max);
-
-const sample = items => items[Math.floor(Math.random() * items.length)];
 
 const mockTag = () =>
   sample(

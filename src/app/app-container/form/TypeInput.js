@@ -1,7 +1,7 @@
 import React from "react";
 import { string, func } from "prop-types";
 import { EXPENSE, INCOME } from "../../../utils/constants";
-import ChoiceButtons from "../../../components/inputs/ChoiceButtons";
+import ChoiceButtons from "../../../components/ChoiceButtons";
 
 const TYPES = [EXPENSE, INCOME];
 

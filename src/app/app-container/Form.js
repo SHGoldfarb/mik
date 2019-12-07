@@ -1,19 +1,25 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import { getUrlParam } from "../../utils/navigation";
 import { EXPENSE } from "../../utils/constants";
-import { historyPropType } from "../../utils/propTypes";
 import { useDBApi, fetchTransactionQueryName } from "../../components/DBApi";
 import Spinner from "../../components/Spinner";
-import State from "../../components/State";
 import BackButton from "../../components/BackButton";
-import { TypeInput, DateInput, AmountInput, CommentInput } from "./form";
+import { AppContainerContext } from "../utils";
+import {
+  TypeInput,
+  DateInput,
+  AmountInput,
+  CommentInput,
+  TagsInput
+} from "./form";
 import style from "./Form.module.scss";
+import State from "../../components/State";
 
-const TagsInput = () => <div>TagsInput</div>;
 const SaveButton = () => <div>SaveButton</div>;
 const DeleteButton = () => <div>DeleteButton</div>;
 
-const Form = ({ history }) => {
+const Form = () => {
+  const { history } = useContext(AppContainerContext);
   const transactionId = getUrlParam(history, "id");
   const isEditing = !!transactionId;
   const transactionData = useDBApi(fetchTransactionQueryName, {
@@ -32,16 +38,17 @@ const Form = ({ history }) => {
       initialState={
         transactionData.data || {
           type: EXPENSE,
-          date: new Date()
+          date: new Date(),
+          tags: []
         }
       }
     >
-      {({ type, date, amount, comment, tags }, setValue) => {
+      {([{ type, date, amount, comment, tags }, setValue]) => {
         const handleChange = valueName => value =>
           setValue(prevValues => ({ ...prevValues, [valueName]: value }));
         return (
           <Fragment>
-            <BackButton history={history} />
+            <BackButton />
             <TypeInput value={type} onChange={handleChange("type")} />
             <DateInput
               value={date}
@@ -65,18 +72,13 @@ const Form = ({ history }) => {
             />
             <SaveButton
               values={{ id: transactionId, type, date, amount, comment, tags }}
-              history={history}
             />
-            {isEditing && <DeleteButton id={transactionId} history={history} />}
+            {isEditing && <DeleteButton id={transactionId} />}
           </Fragment>
         );
       }}
     </State>
   );
-};
-
-Form.propTypes = {
-  history: historyPropType.isRequired
 };
 
 export default Form;

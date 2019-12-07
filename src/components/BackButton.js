@@ -1,16 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import Button from "./Button";
 import { I18N } from "../config";
-import { historyPropType } from "../utils/propTypes";
+import { AppContainerContext } from "../app/utils";
 
-const BackButton = ({ history, ...rest }) => (
-  <Button onClick={() => history.goBack()} {...rest}>
-    {`\u2190 ${I18N.back}`}
-  </Button>
-);
-
-BackButton.propTypes = {
-  history: historyPropType.isRequired
+const BackButton = props => {
+  const { history } = useContext(AppContainerContext);
+  return (
+    <Button onClick={() => history.goBack()} {...props}>
+      {`\u2190 ${I18N.back}`}
+    </Button>
+  );
 };
 
 export default BackButton;
