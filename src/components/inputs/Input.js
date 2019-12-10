@@ -36,8 +36,10 @@ const Input = forwardRef(
       />
       {datalist && (
         <datalist id={datalistId}>
-          {datalist.map(tag => (
-            <option key={tag} value={tag} />
+          {Object.keys(datalist).map(key => (
+            <option key={key} value={key}>
+              {datalist[key]}
+            </option>
           ))}
         </datalist>
       )}
@@ -63,7 +65,7 @@ Input.propTypes = {
   inputClassName: PropTypes.string,
   children: PropTypes.node,
   onChange: PropTypes.func,
-  datalist: PropTypes.arrayOf(PropTypes.string)
+  datalist: PropTypes.objectOf(PropTypes.string)
 };
 
 export default Input;
