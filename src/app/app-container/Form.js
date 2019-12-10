@@ -75,6 +75,7 @@ const Form = () => {
             <SaveButton
               values={{ id: transactionId, type, date, amount, comment, tags }}
               oldTransaction={oldTransaction}
+              isEditing={isEditing}
             />
             {isEditing && <DeleteButton id={transactionId} />}
           </Fragment>

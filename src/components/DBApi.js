@@ -73,17 +73,31 @@ const useStore = () => {
   // TODO: maybe it's better to use dispatch hook only once
   // for query and mutation?
   const dispatch = useDispatch();
-  const store = {
-    getData: (query, variables = {}) =>
-      (getQueryFromStore(query, variables)(storeState) || {}).data,
-    setData: (query, { variables = {}, data = {} } = {}) =>
-      dispatch(setFetched(query, variables, data))
+  return () => {
+    // Use a buffer to give the illusion of instant update
+    const bufferState = {};
+
+    const bufferStateGetter = (query, variables) =>
+      bufferState[JSON.stringify({ query, variables })];
+
+    const bufferStateSetter = (query, variables, data) => {
+      bufferState[JSON.stringify({ query, variables })] = data;
+    };
+
+    const store = {
+      getData: (query, variables = {}) =>
+        bufferStateGetter(query, variables) ||
+        (getQueryFromStore(query, variables)(storeState) || {}).data,
+      setData: (query, { variables = {}, data = {} } = {}) =>
+        bufferStateSetter(query, variables, data) ||
+        dispatch(setFetched(query, variables, data))
+    };
+    return store;
   };
-  return store;
 };
 
 const useDBApiMutation = query => {
-  const store = useStore();
+  const createStore = useStore();
 
   if (!Object.keys(dbMutations).includes(query)) {
     return undefined;
@@ -94,7 +108,7 @@ const useDBApiMutation = query => {
     // the transaction is complete.
 
     const mutationResult = await dbMutations[query](variables);
-    update(mutationResult, store);
+    update(mutationResult, createStore());
     return mutationResult;
   };
   return mutate;
