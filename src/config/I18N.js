@@ -1,9 +1,10 @@
 const I18N = {
+  back: "Back",
+  delete: "Delete",
   form: "Form",
   transactions: "Transactions",
-  delete: "Delete",
   yes: "yes",
-  back: "Back",
+  actions: { save: "Save" },
   placeholders: {
     loading_dots: "Cargando..."
   },

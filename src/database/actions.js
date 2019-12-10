@@ -3,7 +3,7 @@ import { getDateStrings, inCurrentTZ } from "../utils/date";
 import uniques from "../utils/uniques";
 import { getIncomeExpense } from "../utils/stats";
 import flatten from "../utils/flatten";
-import { CASH, INCOME } from "../utils/constants";
+import { validateTransactionShape } from "../utils/validators";
 
 const DB_NAME = "mik_dabatabase";
 const TRANSACTIONS_OBJECT_STORE = "transactions";
@@ -43,29 +43,6 @@ const openDatabase = safe(() =>
     }
   })
 );
-
-export const validate = ({
-  id,
-  amount,
-  date,
-  account,
-  type,
-  comment,
-  tags
-}) => {
-  const transaction = {
-    amount: amount || 0,
-    date: date || new Date().getTime(),
-    account: account || CASH,
-    type: type || INCOME,
-    comment: comment || "",
-    tags: tags || []
-  };
-  if (id !== undefined) {
-    transaction.id = id;
-  }
-  return transaction;
-};
 
 export const dbSetTransactions = async generateTransactions => {
   const db = await openDatabase();
@@ -110,7 +87,7 @@ const dbGenerateAllTransactions = async () => {
       return undefined;
     }
 
-    return validate({ ...cursor.value });
+    return validateTransactionShape({ ...cursor.value });
   };
 
   return nextTransaction;
@@ -119,7 +96,7 @@ const dbGenerateAllTransactions = async () => {
 const dbFetchAllTransactions = async () => {
   const db = await openDatabase();
   return (await db.getAllFromIndex(TRANSACTIONS_OBJECT_STORE, "date")).map(
-    validate
+    validateTransactionShape
   );
 };
 
@@ -158,7 +135,7 @@ const getTransactionsInDateRange = async (start, end) => {
 
   return (await db.getAllFromIndex(TRANSACTIONS_OBJECT_STORE, "date", range))
     .reverse()
-    .map(validate);
+    .map(validateTransactionShape);
 };
 
 const dbFetchMonthTransactions = monthStr => {
@@ -221,7 +198,7 @@ export const dbApiFetchTransaction = async ({ id }) => {
   const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readonly");
   const transaction = await tx.store.get(id);
   await tx.done;
-  return validate(transaction);
+  return validateTransactionShape(transaction);
 };
 
 export const dbApiFetchTagsInstantly = async () => {
@@ -246,10 +223,12 @@ export const dbApiFetchTags = async () => {
 export const dbApiUpsertTransaction = async ({ transaction }) => {
   const db = await openDatabase();
   const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");
-  const transactionId = await tx.store.put(validate(transaction));
+  const transactionId = await tx.store.put(
+    validateTransactionShape(transaction)
+  );
   const newTransaction = tx.store.get(transactionId);
   await tx.done;
-  return newTransaction;
+  return validateTransactionShape(newTransaction);
 };
 
 export const dbApiDeleteTransaction = async ({ id }) => {

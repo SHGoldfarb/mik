@@ -5,7 +5,7 @@ import IncomeExpense from "../../../../components/IncomeExpense";
 import Spinner from "../../../../components/Spinner";
 import { classnames } from "../../../../utils";
 import style from "./CardHeader.module.css";
-import { numberOrString } from "../../../../utils/propTypes";
+import { numberOrString } from "../../../../utils/validators";
 
 const CardHeader = ({
   income,

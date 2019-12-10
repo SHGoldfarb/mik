@@ -10,12 +10,12 @@ import {
   DateInput,
   AmountInput,
   CommentInput,
-  TagsInput
+  TagsInput,
+  SaveButton
 } from "./form";
 import style from "./Form.module.scss";
 import State from "../../components/State";
 
-const SaveButton = () => <div>SaveButton</div>;
 const DeleteButton = () => <div>DeleteButton</div>;
 
 const Form = () => {
@@ -33,10 +33,12 @@ const Form = () => {
     return <Spinner />;
   }
 
+  const oldTransaction = transactionData.data;
+
   return (
     <State
       initialState={
-        transactionData.data || {
+        oldTransaction || {
           type: EXPENSE,
           date: new Date(),
           tags: []
@@ -72,6 +74,7 @@ const Form = () => {
             />
             <SaveButton
               values={{ id: transactionId, type, date, amount, comment, tags }}
+              oldTransaction={oldTransaction}
             />
             {isEditing && <DeleteButton id={transactionId} />}
           </Fragment>

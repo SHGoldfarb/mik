@@ -3,7 +3,11 @@ import PropTypes from "prop-types";
 import { INCOME, EXPENSE, CASH } from "../../utils/constants";
 import style from "./FormOld.module.scss";
 import { I18N } from "../../config";
-import { transactionPropType, dataPropType } from "../../utils/propTypes";
+import {
+  transactionPropType,
+  dataPropType,
+  validateTransactionShape
+} from "../../utils/validators";
 import Clickable from "../../components/Clickable";
 import Button from "../../components/Button";
 import Modal from "../../components/Modal";
@@ -25,22 +29,10 @@ import {
 } from "../../components/DBApi";
 import { getIncomeExpense } from "../../utils/stats";
 import { getDateStrings } from "../../utils/date";
-import { validate, dbClearTransactions } from "../../database/actions";
+import { executeCommand } from "../../utils/commands";
 
 const tagsDatalistId = "TAGSDATALIST";
 const types = [EXPENSE, INCOME];
-
-const commands = {
-  __deleteAll__: dbClearTransactions
-};
-
-const executeCommand = async comment => {
-  if (Object.keys(commands).includes(comment)) {
-    await commands[comment]();
-    return true;
-  }
-  return false;
-};
 
 const removeTransactionFromMonths = (months, transaction) => {
   // Remove amount from old month
@@ -228,7 +220,7 @@ class FormOld extends Component {
       const mutationResult = await upsertMutation({
         variables: { transaction },
         update: async (returnedTransaction, store) => {
-          const newTransaction = validate(returnedTransaction);
+          const newTransaction = validateTransactionShape(returnedTransaction);
           // Update month stats
           let months;
           if ((months = store.getData(fetchMonthsQueryName))) {

@@ -1,5 +1,5 @@
 import React, { createContext } from "react";
-import { historyPropType } from "../utils/propTypes";
+import { historyPropType } from "../utils/validators";
 
 export const AppContainerContext = createContext({});
 

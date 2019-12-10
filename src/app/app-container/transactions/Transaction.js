@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { transactionPropType } from "../../../utils/propTypes";
+import { transactionPropType } from "../../../utils/validators";
 import { classnames, prettyCurrency } from "../../../utils";
 import { EXPENSE } from "../../../utils/constants";
 import Clickable from "../../../components/Clickable";
