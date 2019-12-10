@@ -4,6 +4,7 @@ import { EXPENSE } from "../../utils/constants";
 import { useDBApi, fetchTransactionQueryName } from "../../components/DBApi";
 import Spinner from "../../components/Spinner";
 import BackButton from "../../components/BackButton";
+import State from "../../components/State";
 import { AppContainerContext } from "../utils";
 import {
   TypeInput,
@@ -11,12 +12,10 @@ import {
   AmountInput,
   CommentInput,
   TagsInput,
-  SaveButton
+  SaveButton,
+  DeleteButton
 } from "./form";
 import style from "./Form.module.scss";
-import State from "../../components/State";
-
-const DeleteButton = () => <div>DeleteButton</div>;
 
 const Form = () => {
   const { history } = useContext(AppContainerContext);

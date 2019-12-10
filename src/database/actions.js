@@ -237,5 +237,5 @@ export const dbApiDeleteTransaction = async ({ id }) => {
   const transaction = tx.store.get(id);
   await tx.store.delete(id);
   await tx.done;
-  return transaction;
+  return validateTransactionShape(transaction);
 };

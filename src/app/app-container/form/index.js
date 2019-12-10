@@ -4,6 +4,7 @@ import AmountInput from "./AmountInput";
 import CommentInput from "./CommentInput";
 import TagsInput from "./TagsInput";
 import SaveButton from "./SaveButton";
+import DeleteButton from "./DeleteButton";
 
 export {
   TypeInput,
@@ -11,5 +12,6 @@ export {
   AmountInput,
   CommentInput,
   TagsInput,
-  SaveButton
+  SaveButton,
+  DeleteButton
 };
