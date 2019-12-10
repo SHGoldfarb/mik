@@ -131,7 +131,7 @@ const dbGenerateAllTags = async () => {
 
 const getTransactionsInDateRange = async (start, end) => {
   const db = await openDatabase();
-  const range = IDBKeyRange.bound(start.getTime(), end.getTime());
+  const range = IDBKeyRange.bound(start.getTime(), end.getTime(), false, true);
 
   return (await db.getAllFromIndex(TRANSACTIONS_OBJECT_STORE, "date", range))
     .reverse()
@@ -140,7 +140,7 @@ const getTransactionsInDateRange = async (start, end) => {
 
 const dbFetchMonthTransactions = monthStr => {
   const start = inCurrentTZ(`${monthStr}-01`);
-  const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+  const end = new Date(start.getFullYear(), start.getMonth() + 1, 1);
 
   return getTransactionsInDateRange(start, end);
 };
@@ -226,7 +226,7 @@ export const dbApiUpsertTransaction = async ({ transaction }) => {
   const transactionId = await tx.store.put(
     validateTransactionShape(transaction)
   );
-  const newTransaction = tx.store.get(transactionId);
+  const newTransaction = await tx.store.get(transactionId);
   await tx.done;
   return validateTransactionShape(newTransaction);
 };
@@ -234,7 +234,7 @@ export const dbApiUpsertTransaction = async ({ transaction }) => {
 export const dbApiDeleteTransaction = async ({ id }) => {
   const db = await openDatabase();
   const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");
-  const transaction = tx.store.get(id);
+  const transaction = await tx.store.get(id);
   await tx.store.delete(id);
   await tx.done;
   return validateTransactionShape(transaction);

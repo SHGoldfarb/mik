@@ -9,7 +9,7 @@ export const validateTransactionShape = ({
   type,
   comment,
   tags
-}) => {
+} = {}) => {
   const transaction = {
     amount: amount || 0,
     date: date || new Date().getTime(),
@@ -27,7 +27,7 @@ export const validateTransactionShape = ({
 export const transactionPropType = PropTypes.shape({
   amount: PropTypes.number.isRequired,
   date: PropTypes.number.isRequired,
-  account: PropTypes.string.isRequired,
+  account: PropTypes.string,
   type: PropTypes.string.isRequired,
   comment: PropTypes.string.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string).isRequired,

@@ -20,12 +20,12 @@ import style from "./Form.module.scss";
 const Form = () => {
   const { history } = useContext(AppContainerContext);
   const transactionId = getUrlParam(history, "id");
-  const isEditing = !!transactionId;
+
   const transactionData = useDBApi(fetchTransactionQueryName, {
     variables: {
       id: parseInt(transactionId, 10)
     },
-    skip: !isEditing
+    skip: !transactionId
   });
 
   if (transactionData.loading) {
@@ -33,6 +33,8 @@ const Form = () => {
   }
 
   const oldTransaction = transactionData.data;
+
+  const isEditing = !!(oldTransaction && oldTransaction.id);
 
   return (
     <State
@@ -44,7 +46,7 @@ const Form = () => {
         }
       }
     >
-      {([{ type, date, amount, comment, tags }, setValue]) => {
+      {([{ id, type, date, amount = "", comment = "", tags }, setValue]) => {
         const handleChange = valueName => value =>
           setValue(prevValues => ({ ...prevValues, [valueName]: value }));
         return (
@@ -52,7 +54,7 @@ const Form = () => {
             <BackButton />
             <TypeInput value={type} onChange={handleChange("type")} />
             <DateInput
-              value={date}
+              value={new Date(date)}
               onChange={handleChange("date")}
               className={style.field}
             />
@@ -72,11 +74,18 @@ const Form = () => {
               className={style.field}
             />
             <SaveButton
-              values={{ id: transactionId, type, date, amount, comment, tags }}
+              values={{
+                id,
+                type,
+                date: new Date(date).getTime(),
+                amount: parseInt(amount, 10),
+                comment,
+                tags
+              }}
               oldTransaction={oldTransaction}
               isEditing={isEditing}
             />
-            {isEditing && <DeleteButton id={transactionId} />}
+            {isEditing && <DeleteButton id={id} />}
           </Fragment>
         );
       }}

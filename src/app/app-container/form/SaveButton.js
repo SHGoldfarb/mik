@@ -60,7 +60,7 @@ const SaveButton = ({
 };
 
 SaveButton.defaultProps = {
-  oldTransaction: {}
+  oldTransaction: null
 };
 
 SaveButton.propTypes = {
