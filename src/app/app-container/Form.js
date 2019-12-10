@@ -15,7 +15,6 @@ import {
   SaveButton,
   DeleteButton
 } from "./form";
-import style from "./Form.module.scss";
 
 const Form = () => {
   const { history } = useContext(AppContainerContext);
@@ -53,26 +52,10 @@ const Form = () => {
           <Fragment>
             <BackButton />
             <TypeInput value={type} onChange={handleChange("type")} />
-            <DateInput
-              value={new Date(date)}
-              onChange={handleChange("date")}
-              className={style.field}
-            />
-            <AmountInput
-              value={amount}
-              onChange={handleChange("amount")}
-              className={style.field}
-            />
-            <CommentInput
-              value={comment}
-              onChange={handleChange("comment")}
-              className={style.field}
-            />
-            <TagsInput
-              value={tags}
-              onChange={handleChange("tags")}
-              className={style.field}
-            />
+            <DateInput value={new Date(date)} onChange={handleChange("date")} />
+            <AmountInput value={amount} onChange={handleChange("amount")} />
+            <CommentInput value={comment} onChange={handleChange("comment")} />
+            <TagsInput value={tags} onChange={handleChange("tags")} />
             <SaveButton
               values={{
                 id,

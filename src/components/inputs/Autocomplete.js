@@ -3,6 +3,7 @@ import { objectOf, arrayOf, string, func } from "prop-types";
 import Input from "./Input";
 import uniques from "../../utils/uniques";
 import Clickable from "../Clickable";
+import style from "./Autocomplete.module.scss";
 
 const Autocomplete = ({ source, onChange, value: selectedValues, ...rest }) => {
   const [query, setQuery] = useState("");
@@ -43,13 +44,21 @@ const Autocomplete = ({ source, onChange, value: selectedValues, ...rest }) => {
           }
         }}
         datalist={choosableSource}
+        inputSibling={
+          <div className={style.selectedValuesContainer}>
+            {selectedValues.map(value => (
+              <Clickable
+                key={value}
+                onClick={() => handleRemoveValue(value)}
+                className={style.selectedValue}
+              >
+                {source[value] || value}
+              </Clickable>
+            ))}
+          </div>
+        }
         {...rest}
       />
-      {selectedValues.map(value => (
-        <Clickable key={value} onClick={() => handleRemoveValue(value)}>
-          {source[value] || value}
-        </Clickable>
-      ))}
     </Fragment>
   );
 };

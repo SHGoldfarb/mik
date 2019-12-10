@@ -19,7 +19,7 @@ $color-red: $color3;
 $color-white: $color1;
 
 $color-grey: mix($color-white, $color-black);
-$color-grey-superlight: rgb(240, 240, 240);
+$color-grey-light: mix($color-grey, $color-white, 30);
 $color-grey-superlight: mix($color-grey, $color-white, 10);
 
 $color-background-secondary: $color-grey-superlight;
