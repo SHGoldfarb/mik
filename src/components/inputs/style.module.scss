@@ -3,7 +3,7 @@
 .input {
     border-width: 0px;
     background-color: unset;
-    min-width: 50%;
+    width: 100%;
 }
 
 .container {
@@ -15,4 +15,8 @@
 .label {
     margin-left: auto;
     margin-right: 10px;
+}
+
+.inputWrapper {
+    width: 70%;
 }

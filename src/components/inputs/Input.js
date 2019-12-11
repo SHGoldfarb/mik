@@ -26,7 +26,9 @@ const Input = ({
       htmlFor={id}
     >
       {label && <div className={inputStyle.label}>{label}</div>}
-      <div className={inputWrapperClassName}>
+      <div
+        className={classnames(inputStyle.inputWrapper, inputWrapperClassName)}
+      >
         <input
           className={classnames(inputStyle.input, style.input, inputClassName)}
           id={id}
