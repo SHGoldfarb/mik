@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, { useContext } from "react";
 import { getUrlParam } from "../../utils/navigation";
 import { EXPENSE } from "../../utils/constants";
 import { useDBApi, fetchTransactionQueryName } from "../../components/DBApi";
@@ -49,7 +49,7 @@ const Form = () => {
         const handleChange = valueName => value =>
           setValue(prevValues => ({ ...prevValues, [valueName]: value }));
         return (
-          <Fragment>
+          <form>
             <BackButton />
             <TypeInput value={type} onChange={handleChange("type")} />
             <DateInput value={new Date(date)} onChange={handleChange("date")} />
@@ -69,7 +69,7 @@ const Form = () => {
               isEditing={isEditing}
             />
             {isEditing && <DeleteButton id={id} />}
-          </Fragment>
+          </form>
         );
       }}
     </State>

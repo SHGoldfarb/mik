@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import style from "./Input.module.scss";
 import inputStyle from "./style.module.scss";
@@ -7,22 +7,20 @@ import { randInt } from "../../utils/radom";
 
 const datalistId = `${randInt()} datalistId`;
 
-const Input = forwardRef(
-  (
-    {
-      id,
-      label,
-      className,
-      inputClassName,
-      children,
-      onChange,
-      datalist,
-      inputSibling,
-      inputWrapperClassName,
-      ...rest
-    },
-    ref
-  ) => (
+const Input = ({
+  id: receivedId,
+  label,
+  className,
+  inputClassName,
+  children,
+  onChange,
+  datalist,
+  inputSibling,
+  inputWrapperClassName,
+  ...rest
+}) => {
+  const id = receivedId || randInt();
+  return (
     <label
       className={classnames(inputStyle.container, style.label, className)}
       htmlFor={id}
@@ -32,7 +30,6 @@ const Input = forwardRef(
         <input
           className={classnames(inputStyle.input, style.input, inputClassName)}
           id={id}
-          ref={ref}
           onChange={ev => onChange(ev.target.value)}
           list={datalist ? datalistId : undefined}
           {...rest}
@@ -50,11 +47,11 @@ const Input = forwardRef(
       )}
       {children}
     </label>
-  )
-);
+  );
+};
 
 Input.defaultProps = {
-  id: `${Math.random()}`,
+  id: null,
   label: "",
   className: "",
   inputClassName: "",
