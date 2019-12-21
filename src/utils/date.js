@@ -24,3 +24,5 @@ export const getDateStrings = date => {
 
 export const toISOStringInCurrentTZ = (date = new Date()) =>
   new Date(date - new Date().getTimezoneOffset() * 60 * 1000).toISOString();
+
+export const isValidDate = date => date instanceof Date && !isNaN(date);
