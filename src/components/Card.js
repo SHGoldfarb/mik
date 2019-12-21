@@ -4,8 +4,15 @@ import style from "./Card.module.scss";
 import { classnames } from "../utils";
 import Clickable from "./Clickable";
 
-const Card = ({ children, header, className, onHeaderClick, theme }) => (
-  <div className={classnames(style.container, className)}>
+const Card = ({
+  children,
+  header,
+  className,
+  onHeaderClick,
+  theme,
+  ...rest
+}) => (
+  <div className={classnames(style.container, className)} {...rest}>
     <Clickable
       className={classnames(style.headers, theme.header)}
       onClick={onHeaderClick}

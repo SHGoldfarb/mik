@@ -1,38 +1,33 @@
 import React, { Fragment } from "react";
-import { shape, func } from "prop-types";
 import { Transaction, MonthCard, DayCard } from "./transactions";
 import style from "./Transactions.module.scss";
 import Button from "../../components/Button";
-import {
-  pushForm,
-  getUrlParam,
-  upsertReplaceUrlParams
-} from "../../utils/navigation";
+import { pushForm } from "../../utils/navigation";
 import Spinner from "../../components/Spinner";
 import OnRender from "../../components/OnRender";
 import { fetchMonthsQueryName, useDBApi } from "../../components/DBApi";
+import { useHistory } from "../utils";
+import { useActiveMonthStr } from "./utils";
 
-const activeParam = "active";
-
-const Transactions = ({ history }) => {
+const Transactions = () => {
   const monthsQueryData = useDBApi(fetchMonthsQueryName);
 
-  const activeMonthStr = getUrlParam(history, activeParam);
+  const history = useHistory();
 
-  const handleActiveMonthStrChange = monthStr =>
-    upsertReplaceUrlParams(history, { [activeParam]: monthStr });
+  const [activeMonthStr, setActiveMothStr] = useActiveMonthStr();
 
   const monthsStats = (monthsQueryData && monthsQueryData.data) || {};
 
   const months = Object.keys(monthsStats).sort((month1, month2) =>
     month1 < month2 ? 1 : -1
   );
+
   return (
     <Fragment>
       <OnRender
         action={() => {
           if (months.length > 0 && activeMonthStr === undefined) {
-            handleActiveMonthStrChange(months[0]);
+            setActiveMothStr(months[0]);
           }
         }}
       />
@@ -48,8 +43,6 @@ const Transactions = ({ history }) => {
               monthStr={monthStr}
               stats={monthsStats[monthStr]}
               key={monthStr}
-              active={monthStr === activeMonthStr}
-              onClick={() => handleActiveMonthStrChange(monthStr)}
             >
               {days =>
                 days.map(dayStr => (
@@ -74,10 +67,6 @@ const Transactions = ({ history }) => {
       </div>
     </Fragment>
   );
-};
-
-Transactions.propTypes = {
-  history: shape({ push: func.isRequired }).isRequired
 };
 
 export default Transactions;

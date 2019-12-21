@@ -1,6 +1,9 @@
 export const home = "/";
 export const form = `${home}form/`;
 
+export const PUSH = "PUSH";
+export const REPLACE = "REPLACE";
+
 const getSearchFromParams = params => {
   const searchStr = Object.keys(params).reduce((acc, key) => {
     let s = "";
@@ -49,6 +52,11 @@ const replaceUrlParams = (history, params) =>
 const pushUrlParams = (history, params) =>
   history.push(getNewUrl(history, params));
 
+export const setUrlParams = (history, { params = {}, method = PUSH } = {}) =>
+  method === PUSH
+    ? pushUrlParams(history, params)
+    : replaceUrlParams(history, params);
+
 const mergeUrlParams = (history, params) => {
   const oldParams = getUrlParams(history);
   Object.keys(params).forEach(key => {
@@ -65,4 +73,19 @@ export const upsertReplaceUrlParams = (history, params) => {
 export const upsertPushUrlParams = (history, params) => {
   const newParams = mergeUrlParams(history, params);
   pushUrlParams(history, newParams);
+};
+
+export const upsertUrlParams = (history, { params = {}, method = PUSH } = {}) =>
+  method === PUSH
+    ? upsertPushUrlParams(history, params)
+    : upsertReplaceUrlParams(history, params);
+
+export const updateUrlParam = (
+  history,
+  fieldName,
+  value,
+  { method = PUSH } = {}
+) => {
+  const params = { [fieldName]: value };
+  return upsertUrlParams(history, { params, method });
 };

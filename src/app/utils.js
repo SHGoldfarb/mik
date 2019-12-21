@@ -1,5 +1,6 @@
-import React, { createContext } from "react";
+import React, { createContext, useContext } from "react";
 import { historyPropType } from "../utils/validators";
+import { getUrlParam, updateUrlParam, PUSH } from "../utils/navigation";
 
 export const AppContainerContext = createContext({});
 
@@ -13,4 +14,20 @@ export const withAppContainerContext = Target => {
   TargetWithProvider.propTypes = { history: historyPropType.isRequired };
 
   return TargetWithProvider;
+};
+
+export const useHistory = () => {
+  const { history } = useContext(AppContainerContext);
+  return history;
+};
+
+export const useHistoryParam = (
+  fieldName,
+  { method: defaultMethod = PUSH } = {}
+) => {
+  const history = useHistory();
+  const currentValue = getUrlParam(history, fieldName);
+  const setValue = (newValue, { method = defaultMethod } = {}) =>
+    updateUrlParam(history, fieldName, newValue, { method });
+  return [currentValue, setValue];
 };
