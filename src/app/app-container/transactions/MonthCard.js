@@ -9,6 +9,7 @@ import { fetchDaysQueryName, useDBApi } from "../../../components/DBApi";
 import CardHeader from "./components/CardHeader";
 import { useActiveMonthStr } from "../utils";
 import ScrollHere from "../../../components/ScrollHere";
+import { classnames } from "../../../utils";
 
 const MonthCard = ({ monthStr, children, stats }) => {
   const [activeMonthStr, setActiveMothStr] = useActiveMonthStr();
@@ -34,14 +35,25 @@ const MonthCard = ({ monthStr, children, stats }) => {
             dateNormal={date.getFullYear()}
             income={income}
             expense={expense}
-            className={style.header}
+            className={classnames(
+              style.header,
+              active && style.activeBackground
+            )}
           />
         }
-        className={style.cardBackground}
+        className={classnames(
+          style.cardBackground,
+          active && style.activeBackground
+        )}
         onHeaderClick={() => {
           setActiveMothStr(monthStr);
         }}
-        theme={{ header: style.headerContainer }}
+        theme={{
+          header: classnames(
+            style.headerContainer,
+            active && style.activeBackground
+          )
+        }}
         id={monthStr}
       >
         {(active && (daysData.loading ? <Spinner /> : children(days))) || null}
