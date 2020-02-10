@@ -15,7 +15,7 @@ export const validateTransactionShape = ({
     date: date || new Date().getTime(),
     account: account || CASH,
     type: type || INCOME,
-    comment: comment || "",
+    comment: comment ? `${comment}` : "",
     tags: tags || []
   };
   if (id !== undefined) {
