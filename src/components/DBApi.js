@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setFetching, setFetched } from "../redux/actions";
+import { setFetching, setFetched, setAllCleared } from "../redux/actions";
 import {
   dbApiFetchMonths,
   dbApiFetchDays,
@@ -93,7 +93,8 @@ const useStore = () => {
         (getQueryFromStore(query, variables)(storeState) || {}).data,
       setData: (query, { variables = {}, data = {} } = {}) =>
         bufferStateSetter(query, variables, data) ||
-        dispatch(setFetched(query, variables, data))
+        dispatch(setFetched(query, variables, data)),
+      setAllCleared: () => dispatch(setAllCleared())
     };
     return store;
   };

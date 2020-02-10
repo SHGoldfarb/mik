@@ -1,5 +1,6 @@
 export const home = "/";
 export const form = `${home}form/`;
+export const importPath = `${home}import/`;
 
 export const PUSH = "PUSH";
 export const REPLACE = "REPLACE";
@@ -22,8 +23,12 @@ const getSearchFromParams = params => {
 
 export const pushHome = (history, params = {}) =>
   history.push(`${home}${getSearchFromParams(params)}`);
+
 export const pushForm = (history, params = {}) =>
   history.push(`${form}${getSearchFromParams(params)}`);
+
+export const pushImport = (history, params = {}) =>
+  history.push(`${importPath}${getSearchFromParams(params)}`);
 
 const getParamsFromSearch = searchStr => {
   if (searchStr.length === 0) {

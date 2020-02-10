@@ -3,6 +3,9 @@ import XLSX from "xlsx";
 import Button from "../../components/Button";
 import { INCOME, EXPENSE, CASH } from "../../utils/constants";
 import { useDBApi, setTransactionsMutationName } from "../../components/DBApi";
+import BackButton from "../../components/BackButton";
+import { pushHome } from "../../utils/navigation";
+import { useHistory } from "../utils";
 
 const RAW_EXPENSE = "Expense";
 const RAW_INCOME = "Income";
@@ -68,15 +71,22 @@ const parseUploadedFile = async uploadedFile => {
 const Import = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const setTransactionsMutation = useDBApi(setTransactionsMutationName);
+  const history = useHistory();
 
   const setNewTransactions = async () => {
     const transactions = await parseUploadedFile(uploadedFile);
-    await setTransactionsMutation({ variables: { transactions } });
-    console.log("success");
+    await setTransactionsMutation({
+      variables: { transactions },
+      update: (_, store) => {
+        store.setAllCleared();
+      }
+    });
+    pushHome(history);
   };
 
   return (
     <div>
+      <BackButton />
       <input
         type="file"
         name="MyFile"

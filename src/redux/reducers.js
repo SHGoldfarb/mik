@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { SET_FETCHING, SET_FETCHED } from "./actionTypes";
+import { SET_FETCHING, SET_FETCHED, SET_ALL_CLEARED } from "./actionTypes";
 
 export const makeStoreKey = (query, variables) =>
   `${query} ${JSON.stringify(variables)}`;
@@ -24,6 +24,9 @@ const dbApiReducer = (state = {}, action) => {
           data
         }
       };
+    }
+    case SET_ALL_CLEARED: {
+      return {};
     }
     default:
       return state;
