@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
-import { Transactions, Form } from "./app-container";
+import { Transactions, Form, Import } from "./app-container";
 import style from "./AppContainer.module.css";
 import { withAppContainerContext } from "./utils";
 
@@ -16,6 +16,7 @@ const AppContainer = () => (
             component={withAppContainerContext(Transactions)}
           />
           <Route path="/form" component={withAppContainerContext(Form)} />
+          <Route path="/import" component={withAppContainerContext(Import)} />
         </div>
       )}
     />

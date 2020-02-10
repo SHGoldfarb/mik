@@ -1,14 +1,16 @@
 import React, { Component } from "react";
 import "./App.scss";
 import { AppContainer } from "./app";
-import { dbSetTransactions } from "./database/actions";
+import { dbSetTransactionsIfNone } from "./database/actions";
 import { generateTransactionsArray } from "./app/mockData";
 import Spinner from "./components/Spinner";
 
 const initialTransactionsNumber = 5000;
 
 const saveInitialTransactions = () =>
-  dbSetTransactions(() => generateTransactionsArray(initialTransactionsNumber));
+  dbSetTransactionsIfNone(() =>
+    generateTransactionsArray(initialTransactionsNumber)
+  );
 class App extends Component {
   state = { loading: true };
 

@@ -8,7 +8,8 @@ import {
   dbApiFetchTransaction,
   dbApiFetchTags,
   dbApiUpsertTransaction,
-  dbApiDeleteTransaction
+  dbApiDeleteTransaction,
+  dbApiSetTransactions
 } from "../database/actions";
 import {
   selectDBApiQuery,
@@ -23,6 +24,7 @@ export const fetchTransactionQueryName = "FETCH_TRANSACTION";
 export const fetchTagsQueryName = "FETCH_TAGS";
 export const upsertTransactionMutationName = "UPSERT_TRANSACTION_MUTATION";
 export const deleteTransactionMutationName = "DELETE_TRANSACTION_MUTATION";
+export const setTransactionsMutationName = "SET_TRANSACTIONS_MUTATION";
 
 const dbQuerys = {
   [fetchMonthsQueryName]: dbApiFetchMonths,
@@ -34,7 +36,8 @@ const dbQuerys = {
 
 const dbMutations = {
   [upsertTransactionMutationName]: dbApiUpsertTransaction,
-  [deleteTransactionMutationName]: dbApiDeleteTransaction
+  [deleteTransactionMutationName]: dbApiDeleteTransaction,
+  [setTransactionsMutationName]: dbApiSetTransactions
 };
 
 const useDBApiQuery = (query, { variables = {}, skip = false } = {}) => {

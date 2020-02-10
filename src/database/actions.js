@@ -44,7 +44,7 @@ const openDatabase = safe(() =>
   })
 );
 
-export const dbSetTransactions = async generateTransactions => {
+export const dbSetTransactionsIfNone = async generateTransactions => {
   const db = await openDatabase();
 
   const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");
@@ -238,4 +238,18 @@ export const dbApiDeleteTransaction = async ({ id }) => {
   await tx.store.delete(id);
   await tx.done;
   return validateTransactionShape(transaction);
+};
+
+export const dbApiSetTransactions = async ({ transactions }) => {
+  const db = await openDatabase();
+
+  const tx = db.transaction(TRANSACTIONS_OBJECT_STORE, "readwrite");
+
+  await tx.store.clear();
+
+  transactions.forEach(transaction => tx.store.add(transaction));
+
+  await tx.done;
+
+  return transactions.map(validateTransactionShape);
 };
