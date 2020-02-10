@@ -5,7 +5,7 @@ const I18N = {
   form: "Form",
   transactions: "Transactions",
   yes: "yes",
-  actions: { save: "Save" },
+  actions: { save: "Save", import: "Import" },
   date: {
     days: {
       0: "Sunday",

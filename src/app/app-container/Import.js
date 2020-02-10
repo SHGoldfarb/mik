@@ -6,6 +6,7 @@ import { useDBApi, setTransactionsMutationName } from "../../components/DBApi";
 import BackButton from "../../components/BackButton";
 import { pushHome } from "../../utils/navigation";
 import { useHistory } from "../utils";
+import { I18N } from "../../config";
 
 const RAW_EXPENSE = "Expense";
 const RAW_INCOME = "Income";
@@ -94,7 +95,7 @@ const Import = () => {
           setUploadedFile(ev.target.files[0]);
         }}
       />
-      <Button onClick={setNewTransactions}>Submit</Button>
+      <Button onClick={setNewTransactions}>{I18N.actions.import}</Button>
     </div>
   );
 };
